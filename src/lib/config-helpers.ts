@@ -129,7 +129,7 @@ export function getConditionTypeOptions(): Array<{ value: string; label: string 
 /**
  * Get condition field options based on condition type
  */
-export function getConditionFieldOptions(conditionType: string): Array<{ value: string; label: string }> {
+export function getConditionFieldOptions(_conditionType: string): Array<{ value: string; label: string }> {
   const commonFields = [
     { value: 'eventType', label: 'Event Type' },
     { value: 'agentId', label: 'Agent ID' },

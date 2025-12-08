@@ -42,8 +42,8 @@ describe('ApiClient', () => {
       await apiClient.get('/test', { params: { foo: 'bar', num: 123 } })
 
       expect(capturedUrl).toBeDefined()
-      expect(capturedUrl!.searchParams.get('foo')).toBe('bar')
-      expect(capturedUrl!.searchParams.get('num')).toBe('123')
+      expect(capturedUrl?.searchParams.get('foo')).toBe('bar')
+      expect(capturedUrl?.searchParams.get('num')).toBe('123')
     })
 
     it('should handle 404 errors', async () => {
@@ -106,7 +106,7 @@ describe('ApiClient', () => {
       await apiClient.post('/test', {})
 
       expect(capturedHeaders).toBeDefined()
-      expect(capturedHeaders!.get('X-CSRF-Token')).toBe('test-csrf-token')
+      expect(capturedHeaders?.get('X-CSRF-Token')).toBe('test-csrf-token')
     })
   })
 

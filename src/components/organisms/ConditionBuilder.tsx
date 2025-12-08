@@ -7,7 +7,6 @@ import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
-import { cn } from '@/lib/utils'
 import type { TriggerCondition } from '@/lib/validations/trigger'
 import { ConditionTypeSelector, type ConditionType } from './ConditionTypeSelector'
 

@@ -123,7 +123,7 @@ export function usePixelAnimation({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [autoPlay, startBoot]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     phase,

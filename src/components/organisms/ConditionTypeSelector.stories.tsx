@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { ConditionTypeSelector, type ConditionType } from './ConditionTypeSelector'
+import { ConditionTypeSelector, } from './ConditionTypeSelector'
 
 const meta = {
   title: 'Triggers/ConditionTypeSelector',

@@ -3,7 +3,6 @@ import type {
   OrganizationRole,
   QueryTier,
   Registry,
-  SupportedChainId,
 } from '@/lib/constants'
 
 /**

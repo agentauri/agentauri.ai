@@ -300,7 +300,7 @@ export const MultipleActions = {
 
         {actions
           .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
-          .map((action, index) => (
+          .map((action, _index) => (
             <ActionBuilder
               key={action.tempId}
               action={action}

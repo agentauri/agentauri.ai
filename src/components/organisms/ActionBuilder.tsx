@@ -160,7 +160,7 @@ export function ActionBuilder({ action, onChange, onRemove, canRemove }: ActionB
             max="100"
             placeholder="0"
             value={action.priority ?? 0}
-            onChange={(e) => onChange({ ...action, priority: Number.parseInt(e.target.value) || 0 })}
+            onChange={(e) => onChange({ ...action, priority: Number.parseInt(e.target.value, 10) || 0 })}
             className="typo-ui"
           />
         </div>

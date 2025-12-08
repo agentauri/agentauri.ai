@@ -62,7 +62,7 @@ function FormStepIndicatorDemo({
               onClick={() => {
                 const currentIndex = demoSteps.findIndex(s => s.value === currentStep)
                 if (currentIndex > 0) {
-                  setCurrentStep(demoSteps[currentIndex - 1]!.value)
+                  setCurrentStep(demoSteps[currentIndex - 1]?.value)
                 }
               }}
               disabled={currentStep === 'basic'}
@@ -75,7 +75,7 @@ function FormStepIndicatorDemo({
               onClick={() => {
                 const currentIndex = demoSteps.findIndex(s => s.value === currentStep)
                 if (currentIndex < demoSteps.length - 1) {
-                  setCurrentStep(demoSteps[currentIndex + 1]!.value)
+                  setCurrentStep(demoSteps[currentIndex + 1]?.value)
                 }
               }}
               disabled={currentStep === 'submit'}

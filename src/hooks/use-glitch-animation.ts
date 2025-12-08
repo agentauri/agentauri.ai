@@ -105,7 +105,7 @@ export function useGlitchAnimation({
 
       // Build the display string
       let result = ''
-      let nonWhitespaceIndex = 0
+      let _nonWhitespaceIndex = 0
 
       for (let i = 0; i < targetText.length; i++) {
         const targetChar = targetText[i]
@@ -134,7 +134,7 @@ export function useGlitchAnimation({
           result += getRandomChar()
         }
 
-        nonWhitespaceIndex++
+        _nonWhitespaceIndex++
       }
 
       setDisplayText(result)
@@ -168,7 +168,7 @@ export function useGlitchAnimation({
     }
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Only run on mount
+  }, [autoPlay, generateScrambled, start]) // Only run on mount
 
   // Update display text if target changes (without animation)
   useEffect(() => {

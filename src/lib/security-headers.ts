@@ -172,7 +172,7 @@ export function generateNonce(length = 32): string {
   }
 
   // Fallback for server-side (Node.js)
-  const { randomBytes } = require('crypto')
+  const { randomBytes } = require('node:crypto')
   return randomBytes(length).toString('hex')
 }
 

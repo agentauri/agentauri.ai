@@ -26,12 +26,14 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           </div>
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => window.location.reload()}
               className="typo-ui border-2 border-terminal-dim px-4 py-2 text-terminal-dim hover:border-terminal-green hover:text-terminal-green transition-colors"
             >
               [RELOAD]
             </button>
             <button
+              type="button"
               onClick={reset}
               className="typo-ui bg-terminal-green px-4 py-2 text-terminal-bg hover:bg-terminal-bright transition-colors"
             >

@@ -1,6 +1,6 @@
 'use client'
 
-import type { FieldValues, UseFormReturn } from 'react-hook-form'
+import type { UseFormReturn } from 'react-hook-form'
 import { Box } from '@/components/atoms/box'
 import {
   FormControl,
@@ -79,7 +79,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             <FormItem>
               <FormLabel className="typo-ui">BLOCKCHAIN</FormLabel>
               <Select
-                onValueChange={(value) => field.onChange(Number.parseInt(value))}
+                onValueChange={(value) => field.onChange(Number.parseInt(value, 10))}
                 value={field.value?.toString()}
               >
                 <FormControl>

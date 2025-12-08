@@ -32,7 +32,7 @@ export function TriggersList({ organizationId }: TriggersListProps) {
       const { chainId, ...rest } = filters
       setFilters(rest)
     } else {
-      setFilters({ ...filters, chainId: Number.parseInt(value) as SupportedChainId })
+      setFilters({ ...filters, chainId: Number.parseInt(value, 10) as SupportedChainId })
     }
   }
 

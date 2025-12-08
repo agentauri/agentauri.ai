@@ -1,6 +1,6 @@
 'use client'
 
-import type { FieldValues, UseFormReturn } from 'react-hook-form'
+import type { UseFormReturn } from 'react-hook-form'
 import { Box } from '@/components/atoms/box'
 import type { Registry } from '@/lib/constants'
 import { ChainBadge } from '../ChainBadge'

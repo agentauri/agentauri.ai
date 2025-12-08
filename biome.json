@@ -26,6 +26,7 @@
       "correctness": {
         "noUnusedImports": "error",
         "noUnusedVariables": "warn",
+        "noUnusedFunctionParameters": "warn",
         "useExhaustiveDependencies": "warn",
         "useHookAtTopLevel": "error"
       },
@@ -41,8 +42,12 @@
         "useNodejsImportProtocol": "error"
       },
       "suspicious": {
+        "noArrayIndexKey": "warn",
         "noConsole": "off",
         "noExplicitAny": "warn"
+      },
+      "a11y": {
+        "useButtonType": "warn"
       }
     }
   },
