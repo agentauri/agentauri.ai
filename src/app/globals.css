@@ -1,0 +1,541 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+   RETRO TERMINAL DESIGN SYSTEM - GREEN PHOSPHOR CRT
+   Inspired by 1980s computer terminals (Commodore, Apple II, IBM)
+   ============================================================================= */
+
+@theme inline {
+  /* Font families */
+  --font-pixel: "Press Start 2P", monospace;
+  --font-mono: "VT323", monospace;
+
+  /* Terminal color palette - direct values required */
+  --color-terminal-bg: #0a0a0a;
+  --color-terminal-green: #33FF33;
+  --color-terminal-green-dim: #1a8c1a;
+  --color-terminal-green-bright: #66FF66;
+
+  /* Map to standard Tailwind colors */
+  --color-background: #0a0a0a;
+  --color-foreground: #33FF33;
+  --color-card: #0a0a0a;
+  --color-card-foreground: #33FF33;
+  --color-popover: #0a0a0a;
+  --color-popover-foreground: #33FF33;
+  --color-primary: #33FF33;
+  --color-primary-foreground: #0a0a0a;
+  --color-secondary: #1a8c1a;
+  --color-secondary-foreground: #0a0a0a;
+  --color-muted: #1a8c1a;
+  --color-muted-foreground: #1a8c1a;
+  --color-accent: #66FF66;
+  --color-accent-foreground: #0a0a0a;
+  --color-destructive: #ff3333;
+  --color-border: #33FF33;
+  --color-input: #33FF33;
+  --color-ring: #33FF33;
+
+  /* No border radius - pixel perfect edges */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+:root {
+  /* Terminal colors - Green phosphor */
+  --terminal-bg: #0a0a0a;
+  --terminal-green: #33FF33;
+  --terminal-green-dim: #1a8c1a;
+  --terminal-green-bright: #66FF66;
+  --terminal-scanline: rgba(0, 0, 0, 0.15);
+
+  /* Glow effects */
+  --glow-sm: 0 0 5px #33FF33;
+  --glow-md: 0 0 10px #33FF33, 0 0 20px #33FF3380;
+  --glow-lg: 0 0 10px #33FF33, 0 0 20px #33FF33, 0 0 40px #33FF3340;
+}
+
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+@layer base {
+  * {
+    border-color: var(--terminal-green);
+  }
+
+  html {
+    background-color: var(--terminal-bg);
+  }
+
+  body {
+    background-color: var(--terminal-bg);
+    color: var(--terminal-green);
+    font-family: var(--font-pixel), monospace;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* Remove default focus outline, add terminal-style */
+  *:focus-visible {
+    outline: 2px solid var(--terminal-green);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--terminal-green);
+    color: var(--terminal-bg);
+  }
+}
+
+/* =============================================================================
+   CRT SCREEN EFFECTS
+   ============================================================================= */
+@layer utilities {
+  /* Scanlines overlay effect */
+  .scanlines {
+    position: relative;
+  }
+
+  .scanlines::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--terminal-scanline) 2px,
+      var(--terminal-scanline) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* CRT screen curvature effect */
+  .crt-screen {
+    position: relative;
+    box-shadow:
+      inset 0 0 100px rgba(0, 0, 0, 0.5),
+      0 0 20px var(--terminal-green-dim);
+  }
+
+  /* Subtle CRT flicker animation */
+  .crt-flicker {
+    animation: flicker 0.15s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.98; }
+  }
+
+  /* Screen glow effect */
+  .screen-glow {
+    box-shadow: 0 0 60px var(--terminal-green-dim), inset 0 0 60px rgba(51, 255, 51, 0.05);
+  }
+}
+
+/* =============================================================================
+   TEXT GLOW EFFECTS
+   ============================================================================= */
+@layer utilities {
+  .glow {
+    text-shadow: var(--glow-md);
+  }
+
+  .glow-sm {
+    text-shadow: var(--glow-sm);
+  }
+
+  .glow-lg {
+    text-shadow: var(--glow-lg);
+  }
+
+  .glow-box {
+    box-shadow: var(--glow-md);
+  }
+}
+
+/* =============================================================================
+   CURSOR ANIMATIONS
+   ============================================================================= */
+@layer utilities {
+  /* Blinking block cursor */
+  .cursor-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Typing animation */
+  .typing {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 2s steps(40, end);
+  }
+
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+}
+
+/* =============================================================================
+   TERMINAL WINDOW STYLES
+   ============================================================================= */
+@layer utilities {
+  /* Terminal window container */
+  .terminal-window {
+    background: var(--terminal-bg);
+    border: 2px solid var(--terminal-green);
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  /* Terminal header bar */
+  .terminal-header {
+    border-bottom: 1px solid var(--terminal-green-dim);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* ASCII box drawing */
+  .box-top {
+    border-top: 2px solid var(--terminal-green);
+  }
+
+  .box-bottom {
+    border-bottom: 2px solid var(--terminal-green);
+  }
+
+  .box-left {
+    border-left: 2px solid var(--terminal-green);
+  }
+
+  .box-right {
+    border-right: 2px solid var(--terminal-green);
+  }
+}
+
+/* =============================================================================
+   PIXEL FONT SIZES - DEPRECATED
+   ⚠️  DO NOT USE - Use semantic classes instead: .typo-header, .typo-ui, .typo-code
+   These classes are kept for backward compatibility but will be removed in future
+   ============================================================================= */
+@layer utilities {
+  /* Press Start 2P is small, these are adjusted sizes */
+  .text-pixel-xs {
+    font-size: 8px;
+    line-height: 1.5;
+  }
+
+  .text-pixel-sm {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .text-pixel-base {
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .text-pixel-lg {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .text-pixel-xl {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .text-pixel-2xl {
+    font-size: 20px;
+    line-height: 1.6;
+  }
+
+  .text-pixel-3xl {
+    font-size: 24px;
+    line-height: 1.4;
+  }
+}
+
+/* =============================================================================
+   SEMANTIC TERMINAL TYPOGRAPHY SYSTEM (3 LEVELS)
+   IMPORTANT: Must be outside @layer for maximum CSS specificity
+   ============================================================================= */
+
+/* 1. HEADER - For all headings (h1-h6), titles, section headers */
+.typo-header {
+  font-family: var(--font-pixel), monospace !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 2. UI - For all interface text (buttons, nav, labels, body text) */
+.typo-ui {
+  font-family: var(--font-pixel), monospace !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 3. CODE - For code blocks, technical data, monospace content (VT323) */
+.typo-code {
+  font-family: var(--font-mono), monospace !important;
+  font-size: 21px !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+/* 4. CODE INLINE - For inline code snippets within text (VT323) */
+.typo-code-inline {
+  font-family: var(--font-mono), monospace !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+/* 5. KBD - Keyboard input element */
+kbd {
+  font-family: var(--font-mono), monospace !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+/* =============================================================================
+   TERMINAL COLORS
+   ============================================================================= */
+@layer utilities {
+  .text-terminal-green {
+    color: var(--terminal-green);
+  }
+
+  .text-terminal-dim {
+    color: var(--terminal-green-dim);
+  }
+
+  .text-terminal-bright {
+    color: var(--terminal-green-bright);
+  }
+
+  .bg-terminal {
+    background-color: var(--terminal-bg);
+  }
+
+  .bg-terminal-green {
+    background-color: var(--terminal-green);
+  }
+
+  .border-terminal {
+    border-color: var(--terminal-green);
+  }
+
+  .border-terminal-dim {
+    border-color: var(--terminal-green-dim);
+  }
+
+  /* Combined terminal green + glow effect */
+  .terminal-glow {
+    color: var(--terminal-green);
+    text-shadow: var(--glow-md);
+  }
+
+  .terminal-glow-sm {
+    color: var(--terminal-green);
+    text-shadow: var(--glow-sm);
+  }
+
+  .terminal-glow-lg {
+    color: var(--terminal-green);
+    text-shadow: var(--glow-lg);
+  }
+}
+
+/* =============================================================================
+   BUTTON STYLES - TERMINAL
+   ============================================================================= */
+@layer utilities {
+  .btn-terminal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--terminal-green);
+    border: 2px solid var(--terminal-green);
+    font-family: var(--font-pixel), monospace;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+
+  .btn-terminal:hover {
+    background: var(--terminal-green);
+    color: var(--terminal-bg);
+    box-shadow: var(--glow-sm);
+  }
+
+  .btn-terminal:active {
+    transform: translateY(1px);
+  }
+}
+
+/* =============================================================================
+   INPUT STYLES - TERMINAL
+   ============================================================================= */
+@layer utilities {
+  .input-terminal {
+    background: transparent;
+    color: var(--terminal-green);
+    border: none;
+    border-bottom: 2px solid var(--terminal-green);
+    padding: 0.5rem 0;
+    font-family: var(--font-pixel), monospace;
+    caret-color: var(--terminal-green);
+  }
+
+  .input-terminal:focus {
+    outline: none;
+    border-bottom-color: var(--terminal-green-bright);
+    box-shadow: 0 2px 0 var(--terminal-green-dim);
+  }
+
+  .input-terminal::placeholder {
+    color: var(--terminal-green-dim);
+  }
+}
+
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+@layer utilities {
+  /* Boot sequence fade in */
+  .animate-boot {
+    animation: bootUp 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes bootUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Stagger delays for boot sequence */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+  .delay-900 { animation-delay: 900ms; }
+  .delay-1000 { animation-delay: 1000ms; }
+
+  /* Pulse animation for active elements */
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      text-shadow: var(--glow-sm);
+    }
+    50% {
+      text-shadow: var(--glow-lg);
+    }
+  }
+}
+
+/* =============================================================================
+   SCROLLBAR - TERMINAL STYLE
+   ============================================================================= */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--terminal-bg);
+  border: 1px solid var(--terminal-green-dim);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--terminal-green);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--terminal-green-bright);
+}
+
+/* =============================================================================
+   ASCII ART HELPER
+   ============================================================================= */
+@layer utilities {
+  .ascii-art {
+    font-family: var(--font-mono), monospace;
+    white-space: pre;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+}
+
+/* =============================================================================
+   PIXEL LOGO ANIMATIONS (80s Style)
+   ============================================================================= */
+@layer utilities {
+  /* Pixel pulse glow effect */
+  .pixel-pulse {
+    animation: pixelPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pixelPulse {
+    0%, 100% {
+      filter: brightness(1) drop-shadow(0 0 10px #33FF33) drop-shadow(0 0 20px #33FF3380);
+    }
+    50% {
+      filter: brightness(1.3) drop-shadow(0 0 15px #33FF33) drop-shadow(0 0 30px #33FF33) drop-shadow(0 0 45px #33FF3340);
+    }
+  }
+
+  /* Pixel glitch shake effect */
+  .pixel-glitch {
+    animation: pixelGlitch 0.3s ease-in-out;
+  }
+
+  @keyframes pixelGlitch {
+    0%, 100% { transform: translate(0); }
+    10% { transform: translate(-2px, 1px); }
+    20% { transform: translate(2px, -1px); }
+    30% { transform: translate(-1px, -2px); }
+    40% { transform: translate(1px, 2px); }
+    50% { transform: translate(-2px, -1px); }
+    60% { transform: translate(2px, 1px); }
+    70% { transform: translate(-1px, 2px); }
+    80% { transform: translate(1px, -2px); }
+    90% { transform: translate(-2px, 2px); }
+  }
+
+  /* Pixel logo glow base */
+  .pixel-logo-glow {
+    filter: drop-shadow(0 0 10px #33FF33) drop-shadow(0 0 20px #33FF3380);
+  }
+}

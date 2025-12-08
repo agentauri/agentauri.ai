@@ -1,0 +1,74 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 9
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Type check
+      run: pnpm type-check
+
+    - name: Run linter
+      run: pnpm lint
+
+    - name: Run tests
+      run: pnpm test:ci
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.node-version == '20.x'
+      with:
+        files: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
+    - name: Archive coverage report
+      uses: actions/upload-artifact@v3
+      if: matrix.node-version == '20.x'
+      with:
+        name: coverage-report
+        path: coverage/
+
+    - name: Comment coverage on PR
+      uses: romeovs/lcov-reporter-action@v0.3.1
+      if: github.event_name == 'pull_request' && matrix.node-version == '20.x'
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        lcov-file: ./coverage/lcov.info
+
+    - name: Check coverage thresholds
+      run: |
+        COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+        echo "Coverage: $COVERAGE%"
+        if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+          echo "Coverage is below 80%"
+          exit 1
+        fi
