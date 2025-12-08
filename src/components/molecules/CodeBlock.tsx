@@ -78,6 +78,7 @@ export function CodeBlock({
               <table className="w-full border-spacing-0">
                 <tbody>
                   {lines.map((line, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Code lines are static, index is appropriate
                     <tr key={i}>
                       <td className="text-terminal-dim/50 select-none pr-4 text-right align-top">
                         {i + 1}

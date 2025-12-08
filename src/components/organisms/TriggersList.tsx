@@ -29,7 +29,7 @@ export function TriggersList({ organizationId }: TriggersListProps) {
 
   const handleChainFilter = (value: string) => {
     if (value === 'all') {
-      const { chainId, ...rest } = filters
+      const { chainId: _, ...rest } = filters
       setFilters(rest)
     } else {
       setFilters({ ...filters, chainId: Number.parseInt(value, 10) as SupportedChainId })

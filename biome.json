@@ -44,10 +44,14 @@
       "suspicious": {
         "noArrayIndexKey": "warn",
         "noConsole": "off",
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noShadowRestrictedNames": "warn"
       },
       "a11y": {
-        "useButtonType": "warn"
+        "useButtonType": "warn",
+        "useKeyWithClickEvents": "warn",
+        "noSvgWithoutTitle": "warn",
+        "useSemanticElements": "warn"
       }
     }
   },

@@ -39,6 +39,7 @@ export function ArrayFieldBuilder<T>({
       ) : (
         <div className="space-y-4">
           {items.map((item, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: Items lack stable IDs, index is acceptable here
             <div key={index} className="relative">
               {renderItem(item, index)}
               {items.length > 1 && (
