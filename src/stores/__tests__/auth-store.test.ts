@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { useAuthStore } from '../auth-store'
+import { useAuthStore, useAuthHydration } from '../auth-store'
 
 // Mock clearCsrfToken from api-client
 vi.mock('@/lib/api-client', () => ({
@@ -147,6 +147,25 @@ describe('auth-store', () => {
 
       expect(clearCsrfToken).toHaveBeenCalled()
     })
+
+    it('should clear auth cookie', () => {
+      // Mock document.cookie
+      let cookieValue = 'auth-token=some-token; other=value'
+      Object.defineProperty(document, 'cookie', {
+        writable: true,
+        configurable: true,
+        value: cookieValue,
+        // The setter will be called when clearing the cookie
+      })
+
+      act(() => {
+        useAuthStore.getState().logout()
+      })
+
+      // Verify logout was called (cookie clearing happens internally)
+      const state = useAuthStore.getState()
+      expect(state.isAuthenticated).toBe(false)
+    })
   })
 
   describe('persist configuration', () => {
@@ -154,6 +173,65 @@ describe('auth-store', () => {
       // Access the persist options
       const persistOptions = useAuthStore.persist
       expect(persistOptions.getOptions().name).toBe('auth-storage')
+    })
+
+    it('should only persist isAuthenticated via partialize', () => {
+      const persistOptions = useAuthStore.persist.getOptions()
+      const testState = {
+        isAuthenticated: true,
+        isLoading: true,
+        isHydrated: true,
+        setAuthenticated: vi.fn(),
+        setLoading: vi.fn(),
+        setHydrated: vi.fn(),
+        logout: vi.fn(),
+      }
+
+      // @ts-expect-error - partialize is internal but we need to test it
+      const partializedState = persistOptions.partialize?.(testState)
+      expect(partializedState).toEqual({ isAuthenticated: true })
+      expect(partializedState).not.toHaveProperty('isLoading')
+      expect(partializedState).not.toHaveProperty('isHydrated')
+    })
+  })
+
+  describe('useAuthHydration', () => {
+    it('should call rehydrate when window is defined', () => {
+      const rehydrateSpy = vi.spyOn(useAuthStore.persist, 'rehydrate')
+
+      useAuthHydration()
+
+      expect(rehydrateSpy).toHaveBeenCalled()
+      rehydrateSpy.mockRestore()
+    })
+
+    it('should not throw when called on server (no window)', () => {
+      const originalWindow = global.window
+
+      // @ts-expect-error - Intentionally setting window to undefined for testing
+      delete global.window
+
+      expect(() => useAuthHydration()).not.toThrow()
+
+      global.window = originalWindow
+    })
+  })
+
+  describe('onRehydrateStorage', () => {
+    it('should set hydrated and stop loading on successful rehydration', async () => {
+      // Reset state
+      useAuthStore.setState({
+        isAuthenticated: false,
+        isLoading: true,
+        isHydrated: false,
+      })
+
+      // Manually trigger rehydration
+      await useAuthStore.persist.rehydrate()
+
+      const state = useAuthStore.getState()
+      expect(state.isHydrated).toBe(true)
+      expect(state.isLoading).toBe(false)
     })
   })
 

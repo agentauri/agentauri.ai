@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { useOrganizationStore } from '../organization-store'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { useOrganizationStore, useOrganizationHydration } from '../organization-store'
 
 describe('organization-store', () => {
   beforeEach(() => {
@@ -152,6 +152,65 @@ describe('organization-store', () => {
     it('should have correct persist name', () => {
       const persistOptions = useOrganizationStore.persist
       expect(persistOptions.getOptions().name).toBe('organization-storage')
+    })
+
+    it('should only persist currentOrganizationId and currentRole via partialize', () => {
+      const persistOptions = useOrganizationStore.persist.getOptions()
+      const testState = {
+        currentOrganizationId: 'test-org-id',
+        currentRole: 'admin' as const,
+        isHydrated: true,
+        setCurrentOrganization: vi.fn(),
+        setHydrated: vi.fn(),
+        reset: vi.fn(),
+      }
+
+      // @ts-expect-error - partialize is internal but we need to test it
+      const partializedState = persistOptions.partialize?.(testState)
+      expect(partializedState).toEqual({
+        currentOrganizationId: 'test-org-id',
+        currentRole: 'admin',
+      })
+      expect(partializedState).not.toHaveProperty('isHydrated')
+    })
+  })
+
+  describe('useOrganizationHydration', () => {
+    it('should call rehydrate when window is defined', () => {
+      const rehydrateSpy = vi.spyOn(useOrganizationStore.persist, 'rehydrate')
+
+      useOrganizationHydration()
+
+      expect(rehydrateSpy).toHaveBeenCalled()
+      rehydrateSpy.mockRestore()
+    })
+
+    it('should not throw when called on server (no window)', () => {
+      const originalWindow = global.window
+
+      // @ts-expect-error - Intentionally setting window to undefined for testing
+      delete global.window
+
+      expect(() => useOrganizationHydration()).not.toThrow()
+
+      global.window = originalWindow
+    })
+  })
+
+  describe('onRehydrateStorage', () => {
+    it('should set hydrated on successful rehydration', async () => {
+      // Reset state
+      useOrganizationStore.setState({
+        currentOrganizationId: null,
+        currentRole: null,
+        isHydrated: false,
+      })
+
+      // Manually trigger rehydration
+      await useOrganizationStore.persist.rehydrate()
+
+      const state = useOrganizationStore.getState()
+      expect(state.isHydrated).toBe(true)
     })
   })
 
