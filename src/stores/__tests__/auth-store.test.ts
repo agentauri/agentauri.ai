@@ -150,7 +150,7 @@ describe('auth-store', () => {
 
     it('should clear auth cookie', () => {
       // Mock document.cookie
-      let cookieValue = 'auth-token=some-token; other=value'
+      const cookieValue = 'auth-token=some-token; other=value'
       Object.defineProperty(document, 'cookie', {
         writable: true,
         configurable: true,

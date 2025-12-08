@@ -39,7 +39,9 @@ const createSafeStorage = () => {
 const clearAuthCookie = () => {
   if (typeof document !== 'undefined') {
     // Clear with all possible path/domain combinations
+    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API not widely supported yet
     document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API not widely supported yet
     document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure;'
   }
 }

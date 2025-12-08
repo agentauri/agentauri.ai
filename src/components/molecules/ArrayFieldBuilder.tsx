@@ -22,7 +22,7 @@ interface ArrayFieldBuilderProps<T> {
 export function ArrayFieldBuilder<T>({
   items,
   onAdd,
-  onUpdate,
+  onUpdate: _onUpdate,
   onRemove,
   canRemove,
   addButtonLabel,

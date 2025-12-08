@@ -136,7 +136,7 @@ export const RATE_LIMITS = {
  * Decorator for rate-limited async functions
  * Throws error if rate limit exceeded
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: Generic function wrapper requires any for type inference
 export function withRateLimit<T extends (...args: any[]) => Promise<any>>(
   fn: T,
   key: string,
