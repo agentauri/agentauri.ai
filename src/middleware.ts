@@ -14,6 +14,10 @@ const PUBLIC_PATHS = new Set([
   '/reset-password',
   '/verify-email',
   '/home-warp',
+  '/features',
+  '/pricing',
+  '/docs',
+  '/changelog',
 ])
 
 /**

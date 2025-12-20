@@ -9,8 +9,8 @@ interface NavItem {
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: 'DASHBOARD', href: '/dashboard' },
   { label: 'FEATURES', href: '/features' },
+  { label: 'PRICING', href: '/pricing' },
   { label: 'DOCS', href: '/docs' },
   { label: 'CONNECT', href: '/login' },
 ]
