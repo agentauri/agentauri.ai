@@ -179,7 +179,7 @@ export default function FeaturesPage() {
             Get started with just a few lines of code.
           </p>
           <Box variant="default" padding="lg" className="overflow-x-auto">
-            <pre className="typo-ui text-terminal-green text-sm">
+            <pre className="font-mono text-terminal-green text-base leading-relaxed">
               <code>{codeExample}</code>
             </pre>
           </Box>

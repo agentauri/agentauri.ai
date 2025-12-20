@@ -117,7 +117,7 @@ export default function DocsPage() {
                     </h3>
                     <p className="typo-ui text-terminal-dim mb-4">{step.description}</p>
                     <div className="bg-terminal-green/5 border border-terminal-dim p-4 overflow-x-auto">
-                      <pre className="typo-ui text-terminal-green text-sm">
+                      <pre className="font-mono text-terminal-green text-base leading-relaxed">
                         <code>{step.code}</code>
                       </pre>
                     </div>
