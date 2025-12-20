@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { DashboardSidebar } from './dashboard-sidebar'
+import { DashboardSidebar } from './DashboardSidebar'
 
 const meta: Meta<typeof DashboardSidebar> = {
   title: 'Layout/DashboardSidebar',

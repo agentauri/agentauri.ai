@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { useState } from 'react'
-import { MobileMenu } from './mobile-menu'
+import { MobileMenu } from './MobileMenu'
 
 const meta: Meta<typeof MobileMenu> = {
   title: 'Layout/MobileMenu',

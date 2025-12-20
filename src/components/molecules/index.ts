@@ -15,9 +15,24 @@ export { EmptyState } from './EmptyState'
 // Filter molecules
 export { FilterBar } from './FilterBar'
 
-// Loading molecules
-export { LoadingSkeleton } from './loading-skeleton'
+// Loading molecules (Skeleton not exported to avoid conflict with atoms/skeleton)
+export { LoadingSkeleton, PageSkeleton, CardSkeleton, TableSkeleton, FormSkeleton } from './LoadingSkeleton'
 
 // Interactive molecules
-export { ConfirmDialog } from './confirm-dialog'
-export { Pagination } from './pagination'
+export { ConfirmDialog } from './ConfirmDialog'
+export { Pagination } from './Pagination'
+
+// Badge molecules (specialized badges with icons)
+export { AgentAddressBadge } from './AgentAddressBadge'
+export { ChainBadge } from './ChainBadge'
+export { EventTypeBadge } from './EventTypeBadge'
+export { RegistryBadge } from './RegistryBadge'
+export { StatusBadge } from './StatusBadge'
+export { TierBadge } from './TierBadge'
+
+// Status molecules
+export { CircuitBreakerStatus } from './CircuitBreakerStatus'
+
+// Warp homepage molecules
+export { WarpLogoCenter } from './WarpLogoCenter'
+export { WarpNavMenu } from './WarpNavMenu'

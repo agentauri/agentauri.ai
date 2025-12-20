@@ -12,6 +12,7 @@ const navItems: { href: string; icon: IconName; label: string }[] = [
   { href: '/dashboard/events', icon: 'events', label: 'EVENTS' },
   { href: '/dashboard/agents', icon: 'agents', label: 'AGENTS' },
   { href: '/dashboard/api-keys', icon: 'api-keys', label: 'API KEYS' },
+  { href: '/dashboard/billing', icon: 'chart', label: 'BILLING' },
   { href: '/dashboard/settings', icon: 'settings', label: 'SETTINGS' },
 ]
 

@@ -23,6 +23,9 @@ export type IconName =
   | 'info'
   | 'check'
   | 'retry'
+  | 'copy'
+  | 'edit'
+  | 'send'
   // Status
   | 'active'
   | 'inactive'
@@ -139,6 +142,21 @@ const icons: Record<IconName, React.ReactNode> = {
   // Retry: Circular arrow
   retry: (
     <path d="M6 2h6v2H6zM4 4h2v2H4zM12 4h2v2h-2zM2 6h2v4H2zM12 6h2v2h-2zM4 10h2v2H4zM6 12h6v2H6zM10 6h2v2h-2zM8 6h2v2H8zM6 6h2v2H6z" />
+  ),
+
+  // Copy: Two overlapping squares
+  copy: (
+    <path d="M5 2h8v2H5zM5 2h2v8H5zM11 2h2v8h-2zM5 10h8v2H5zM2 5h2v9H2zM2 5h6v2H2zM2 12h6v2H2zM8 7h2v7H8z" />
+  ),
+
+  // Edit: Pencil
+  edit: (
+    <path d="M11 1h2v2h-2zM9 3h2v2H9zM7 5h2v2H7zM5 7h2v2H5zM3 9h2v2H3zM2 11h2v2H2zM13 3h2v2h-2zM11 5h2v2h-2zM9 7h2v2H9zM7 9h2v2H7zM5 11h2v2H5zM2 14h12v2H2z" />
+  ),
+
+  // Send: Arrow pointing up-right (like send/export)
+  send: (
+    <path d="M6 2h8v2H6zM12 2h2v8h-2zM10 4h2v2h-2zM8 6h2v2H8zM6 8h2v2H6zM4 10h2v2H4zM2 12h2v2H2z" />
   ),
 
   // === STATUS ===
@@ -272,6 +290,7 @@ export function Icon({ name, size = 'md', className, ...props }: IconProps) {
 
   return (
     <svg
+      data-slot="icon"
       width={s}
       height={s}
       viewBox="0 0 16 16"

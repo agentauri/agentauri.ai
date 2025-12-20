@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { ErrorBoundary, QueryErrorBoundary } from './error-boundary'
+import { ErrorBoundary, QueryErrorBoundary } from './ErrorBoundary'
 import { Button } from '@/components/atoms/button'
 
 const meta = {

@@ -17,9 +17,7 @@ import { useDeleteTrigger, useToggleTrigger } from '@/hooks'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { cn } from '@/lib/utils'
 import type { Trigger } from '@/types/models'
-import { ChainBadge } from './ChainBadge'
-import { RegistryBadge } from './RegistryBadge'
-import { StatusBadge } from './StatusBadge'
+import { ChainBadge, RegistryBadge, StatusBadge } from '@/components/molecules'
 
 interface TriggerCardProps {
   trigger: Trigger

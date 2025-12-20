@@ -1,0 +1,169 @@
+'use client'
+
+import { useRef, useEffect, useCallback } from 'react'
+import type { Star } from '@/hooks/use-warp-animation'
+import { cn } from '@/lib/utils'
+
+// Terminal color palette
+const COLORS = {
+  green: '#33FF33',
+  greenDim: '#1a8c1a',
+  greenBright: '#66FF66',
+}
+
+interface WarpStarFieldProps {
+  /** Array of star objects to render */
+  stars: Star[]
+  /** Mouse parallax offset (-1 to 1) */
+  parallaxOffset?: { x: number; y: number }
+  /** Radius around center where stars fade (0-1) */
+  centerDeadzone?: number
+  /** Additional CSS classes */
+  className?: string
+}
+
+export function WarpStarField({
+  stars,
+  parallaxOffset = { x: 0, y: 0 },
+  centerDeadzone = 0.15,
+  className,
+}: WarpStarFieldProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current
+    const container = containerRef.current
+    if (!canvas || !container) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    // Get actual size
+    const rect = container.getBoundingClientRect()
+    const width = rect.width
+    const height = rect.height
+
+    // Set canvas size (handle DPR for sharpness)
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = width * dpr
+    canvas.height = height * dpr
+    canvas.style.width = `${width}px`
+    canvas.style.height = `${height}px`
+    ctx.scale(dpr, dpr)
+
+    // Clear canvas
+    ctx.fillStyle = '#0a0a0a'
+    ctx.fillRect(0, 0, width, height)
+
+    // Calculate center with parallax offset
+    const centerX = width / 2 + parallaxOffset.x * width * 0.05
+    const centerY = height / 2 + parallaxOffset.y * height * 0.05
+
+    // Draw each star
+    for (const star of stars) {
+      // Calculate screen position (perspective projection)
+      const scale = 1 / (1 - star.z * 0.9)
+      const screenX = centerX + star.x * scale * Math.min(width, height) * 0.5
+      const screenY = centerY + star.y * scale * Math.min(width, height) * 0.5
+
+      // Skip if outside canvas
+      if (screenX < -50 || screenX > width + 50 || screenY < -50 || screenY > height + 50) {
+        continue
+      }
+
+      // Calculate distance from center for deadzone fade
+      const distFromCenter = Math.sqrt(
+        Math.pow((screenX - centerX) / width, 2) + Math.pow((screenY - centerY) / height, 2)
+      )
+      const centerFade = Math.min(distFromCenter / centerDeadzone, 1)
+
+      // Skip stars in deadzone
+      if (centerFade < 0.1) continue
+
+      // Calculate star properties based on depth (z)
+      const alpha = star.brightness * centerFade
+      const baseSize = 1 + star.z * 3
+
+      // Color based on brightness
+      let color: string
+      if (star.brightness > 0.8) {
+        color = COLORS.greenBright
+      } else if (star.brightness > 0.5) {
+        color = COLORS.green
+      } else {
+        color = COLORS.greenDim
+      }
+
+      ctx.save()
+
+      // Set glow effect
+      ctx.shadowColor = COLORS.green
+      ctx.shadowBlur = star.z * 15
+
+      if (star.z < 0.6) {
+        // Far stars: Draw as dots
+        ctx.beginPath()
+        ctx.arc(screenX, screenY, baseSize, 0, Math.PI * 2)
+        ctx.fillStyle = color
+        ctx.globalAlpha = alpha * 0.7
+        ctx.fill()
+      } else {
+        // Near stars: Draw as speed lines
+        const angle = Math.atan2(screenY - centerY, screenX - centerX)
+        const lineLength = (star.z - 0.5) * 60 * star.speed
+        const lineWidth = baseSize * 0.8
+
+        ctx.beginPath()
+        ctx.moveTo(screenX, screenY)
+        ctx.lineTo(
+          screenX - Math.cos(angle) * lineLength,
+          screenY - Math.sin(angle) * lineLength
+        )
+        ctx.strokeStyle = color
+        ctx.lineWidth = lineWidth
+        ctx.lineCap = 'round'
+        ctx.globalAlpha = alpha
+        ctx.stroke()
+
+        // Add bright tip
+        ctx.beginPath()
+        ctx.arc(screenX, screenY, baseSize * 1.2, 0, Math.PI * 2)
+        ctx.fillStyle = COLORS.greenBright
+        ctx.globalAlpha = alpha * 0.9
+        ctx.fill()
+      }
+
+      ctx.restore()
+    }
+  }, [stars, parallaxOffset, centerDeadzone])
+
+  // Redraw on star changes
+  useEffect(() => {
+    draw()
+  }, [draw])
+
+  // Handle resize
+  useEffect(() => {
+    const handleResize = () => {
+      draw()
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [draw])
+
+  return (
+    <div
+      ref={containerRef}
+      data-slot="warp-star-field"
+      className={cn('absolute inset-0 overflow-hidden', className)}
+    >
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full"
+        aria-hidden="true"
+      />
+    </div>
+  )
+}

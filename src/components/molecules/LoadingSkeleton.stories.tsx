@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { PageSkeleton, CardSkeleton, TableSkeleton, FormSkeleton, LoadingSkeleton } from './loading-skeleton'
+import { PageSkeleton, CardSkeleton, TableSkeleton, FormSkeleton, LoadingSkeleton } from './LoadingSkeleton'
 
 const meta = {
   title: 'Utility/LoadingSkeleton',

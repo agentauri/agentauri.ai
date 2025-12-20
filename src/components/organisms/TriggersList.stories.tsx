@@ -138,7 +138,7 @@ const mockTriggers: Trigger[] = [
 
 // Simple wrapper component that displays triggers without hooks
 import { TriggerCard } from './TriggerCard'
-import { LoadingSkeleton } from '@/components/molecules/loading-skeleton'
+import { LoadingSkeleton } from '@/components/molecules'
 
 function TriggersListDisplay({
   triggers = [],

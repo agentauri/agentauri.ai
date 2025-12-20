@@ -1,10 +1,31 @@
 // Organisms - Complex UI components composed of molecules and atoms
 
 // Navigation organisms
-export { BottomNav } from './bottom-nav'
-export { DashboardSidebar } from './dashboard-sidebar'
-export { MobileMenu } from './mobile-menu'
-export { PublicNav } from './public-nav'
+export { BottomNav } from './BottomNav'
+export { DashboardSidebar } from './DashboardSidebar'
+export { MobileMenu } from './MobileMenu'
+export { PublicNav } from './PublicNav'
+
+// Event organisms
+export { EventCard } from './EventCard'
+export { EventDetail } from './EventDetail'
+export { EventsList } from './EventsList'
+
+// Agent organisms
+export { AgentCard } from './AgentCard'
+export { AgentDetail } from './AgentDetail'
+export { AgentsList } from './AgentsList'
+export { LinkAgentDialog } from './LinkAgentDialog'
+
+// API Key organisms
+export { ApiKeyCard } from './ApiKeyCard'
+export { ApiKeyCreatedDialog } from './ApiKeyCreatedDialog'
+export { ApiKeysList } from './ApiKeysList'
+export { CreateApiKeyDialog } from './CreateApiKeyDialog'
+
+// Billing organisms
+export { CreditBalanceCard } from './CreditBalanceCard'
+export { TransactionHistoryTable } from './TransactionHistoryTable'
 
 // Trigger organisms
 export { ActionBuilder } from './ActionBuilder'
@@ -16,10 +37,8 @@ export { TriggerForm } from './TriggerForm'
 export { TriggerJsonEditor } from './TriggerJsonEditor'
 export { TriggersList } from './TriggersList'
 
-// Badge organisms (specialized badges with icons)
-export { ChainBadge } from './ChainBadge'
-export { RegistryBadge } from './RegistryBadge'
-export { StatusBadge } from './StatusBadge'
-
 // Utility organisms
-export { ErrorBoundary } from './error-boundary'
+export { ErrorBoundary } from './ErrorBoundary'
+
+// Homepage organisms
+export { WarpHomepage } from './WarpHomepage'

@@ -3,8 +3,7 @@
 import type { UseFormReturn } from 'react-hook-form'
 import { Box } from '@/components/atoms/box'
 import type { Registry } from '@/lib/constants'
-import { ChainBadge } from '../ChainBadge'
-import { RegistryBadge } from '../RegistryBadge'
+import { ChainBadge, RegistryBadge } from '@/components/molecules'
 
 interface ReviewStepProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

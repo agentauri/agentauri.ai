@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { PublicNav, } from './public-nav'
+import { PublicNav } from './PublicNav'
 
 const meta: Meta<typeof PublicNav> = {
   title: 'Layout/PublicNav',

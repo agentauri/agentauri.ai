@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { InfoCard, InfoCardItem, InfoCardList } from './InfoCard'
-import { ChainBadge } from '@/components/organisms/ChainBadge'
-import { StatusBadge } from '@/components/organisms/StatusBadge'
+import { ChainBadge, StatusBadge } from '@/components/molecules'
 
 const meta = {
   title: 'Shared/InfoCard',

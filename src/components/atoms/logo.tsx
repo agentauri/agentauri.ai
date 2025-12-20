@@ -55,14 +55,16 @@ export function Logo({
   const resolvedGlow = glow ?? defaultGlow
 
   return (
-    <PixelLogo
-      text={text}
-      animation={resolvedAnimation}
-      autoPlay={autoPlay}
-      bootDuration={bootDuration}
-      glow={resolvedGlow}
-      className={cn(sizeClass, className)}
-      onAnimationComplete={onAnimationComplete}
-    />
+    <div data-slot="logo">
+      <PixelLogo
+        text={text}
+        animation={resolvedAnimation}
+        autoPlay={autoPlay}
+        bootDuration={bootDuration}
+        glow={resolvedGlow}
+        className={cn(sizeClass, className)}
+        onAnimationComplete={onAnimationComplete}
+      />
+    </div>
   )
 }

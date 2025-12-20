@@ -2,7 +2,7 @@
 
 // Re-export layout organisms as templates
 // These are used as page layouts
-export { DashboardSidebar } from '../organisms/dashboard-sidebar'
-export { PublicNav } from '../organisms/public-nav'
-export { BottomNav } from '../organisms/bottom-nav'
-export { MobileMenu } from '../organisms/mobile-menu'
+export { DashboardSidebar } from '../organisms/DashboardSidebar'
+export { PublicNav } from '../organisms/PublicNav'
+export { BottomNav } from '../organisms/BottomNav'
+export { MobileMenu } from '../organisms/MobileMenu'

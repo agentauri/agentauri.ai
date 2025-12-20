@@ -16,6 +16,7 @@ const sizeClasses = {
 export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
     <div
+      data-slot="spinner"
       className={cn(
         'animate-spin border-2 border-terminal-dim border-t-terminal-green rounded-full',
         sizeClasses[size],

@@ -539,3 +539,64 @@ kbd {
     filter: drop-shadow(0 0 10px #33FF33) drop-shadow(0 0 20px #33FF3380);
   }
 }
+
+/* =============================================================================
+   WARP SPEED HOMEPAGE EFFECTS
+   ============================================================================= */
+@layer utilities {
+  /* Logo emergence animation */
+  .animate-emerge {
+    animation: logoEmerge 2s ease-out forwards;
+  }
+
+  @keyframes logoEmerge {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+      filter: blur(8px);
+    }
+    60% {
+      opacity: 0.8;
+      transform: scale(0.98);
+      filter: blur(2px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0);
+    }
+  }
+
+  /* Intensified glow for warp logo */
+  .glow-warp {
+    text-shadow:
+      0 0 10px #33FF33,
+      0 0 20px #33FF33,
+      0 0 40px #33FF3380,
+      0 0 60px #33FF3340;
+  }
+
+  /* Warp nav item appear animation */
+  .animate-warp-nav {
+    animation: warpNavAppear 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes warpNavAppear {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Warp nav stagger delays */
+  .warp-nav-delay-1 { animation-delay: 0.1s; }
+  .warp-nav-delay-2 { animation-delay: 0.2s; }
+  .warp-nav-delay-3 { animation-delay: 0.3s; }
+  .warp-nav-delay-4 { animation-delay: 0.4s; }
+  .warp-nav-delay-5 { animation-delay: 0.5s; }
+}

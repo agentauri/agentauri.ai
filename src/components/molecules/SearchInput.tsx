@@ -81,7 +81,7 @@ export function SearchInput({
   }
 
   return (
-    <div className={cn('relative', className)}>
+    <div data-slot="search-input" className={cn('relative', className)}>
       <Input
         type="text"
         value={currentValue}

@@ -41,6 +41,7 @@ function ActionLabel({
 }: ActionLabelProps) {
   return (
     <button
+      data-slot="action-label"
       type="button"
       className={cn(actionLabelVariants({ variant, size, className }))}
       {...props}

@@ -1,4 +1,4 @@
-import { PageSkeleton } from '@/components/molecules/loading-skeleton'
+import { PageSkeleton } from '@/components/molecules'
 
 export default function DashboardLoading() {
   return <PageSkeleton />

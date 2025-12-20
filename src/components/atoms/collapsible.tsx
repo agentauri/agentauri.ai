@@ -24,7 +24,7 @@ function Collapsible({
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
   return (
-    <Box variant={variant} padding="sm" className={cn('p-0', className)}>
+    <Box data-slot="collapsible" variant={variant} padding="sm" className={cn('p-0', className)}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}

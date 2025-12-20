@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Agentauri.ai project uses Jest and React Testing Library to ensure code quality and maintainability. The test suite includes 180+ test cases across 1,795 lines of test code, covering hooks, components, and utility functions.
+The AgentAuri.AI project uses Jest and React Testing Library to ensure code quality and maintainability. The test suite includes 180+ test cases across 1,795 lines of test code, covering hooks, components, and utility functions.
 
 ## Quick Start
 

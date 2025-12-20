@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description:
     'Reputation infrastructure for autonomous AI agents. Monitor blockchain events, create automated triggers, and query agent reputation data on the ERC-8004 protocol.',
   keywords: ['ERC-8004', 'blockchain', 'reputation', 'AI agents', 'Web3', 'Ethereum'],
-  authors: [{ name: 'Agentauri Team' }],
+  authors: [{ name: 'AgentAuri Team' }],
   creator: 'agentauri.ai',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   openGraph: {

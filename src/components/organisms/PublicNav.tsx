@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from '@/components/atoms/logo'
+import { LogoBull } from '@/components/atoms/BullLogo'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Icon, type IconName } from '@/components/atoms/icon'
@@ -62,9 +63,10 @@ function NavLogo({ href }: { href: string }) {
   return (
     <Link
       href={href}
-      className="hover:text-terminal-bright transition-colors"
+      className="flex items-center gap-2 hover:text-terminal-bright transition-colors"
       aria-label="Home"
     >
+      <LogoBull size={24} glow={true} />
       <Logo variant="compact" />
     </Link>
   )

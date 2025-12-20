@@ -192,6 +192,7 @@ export function PixelLogo({
 
   return (
     <div
+      data-slot="pixel-logo"
       role="img"
       aria-label={text}
       onClick={phase === 'pulse' || phase === 'idle' ? startBoot : undefined}
