@@ -36,3 +36,7 @@ export { CircuitBreakerStatus } from './CircuitBreakerStatus'
 // Warp homepage molecules
 export { WarpLogoCenter } from './WarpLogoCenter'
 export { WarpNavMenu } from './WarpNavMenu'
+
+// Auth molecules
+export { WalletOptions } from './WalletOptions'
+export { OAuthButtons } from './OAuthButtons'

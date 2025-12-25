@@ -38,6 +38,7 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
     <aside
       className={cn(
         'hidden md:flex flex-col h-screen',
+        'fixed left-0 top-0 z-40',
         'bg-terminal border-r-2 border-terminal',
         'transition-all duration-300',
         sidebarCollapsed ? 'w-16' : 'w-56',

@@ -64,8 +64,8 @@ export function WarpHomepage({
   // Initialize mouse parallax (disabled on mobile)
   const { offset } = useMouseParallax({
     enabled: !isMobile && !prefersReducedMotion,
-    sensitivity: 0.3,
-    smoothing: 0.08,
+    sensitivity: 0.8,
+    smoothing: 0.06,
   })
 
   // Handle logo emergence complete

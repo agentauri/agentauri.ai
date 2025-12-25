@@ -13,10 +13,10 @@ import {
 import { Input } from '@/components/atoms/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
-import { REGISTRIES, SUPPORTED_CHAINS } from '@/lib/constants'
-
+import { CHAIN_NAMES, REGISTRIES, TESTNET_CHAINS } from '@/lib/constants'
+// TODO: Replace 'any' with CreateTriggerRequest when form types are aligned
 interface BasicInfoStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Form types need alignment with Zod schema
   form: UseFormReturn<any>
 }
 
@@ -88,9 +88,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.entries(SUPPORTED_CHAINS).map(([name, id]) => (
+                  {Object.entries(TESTNET_CHAINS).map(([, id]) => (
                     <SelectItem key={id} value={id.toString()} className="typo-ui">
-                      {name}
+                      {CHAIN_NAMES[id] ?? `Chain ${id}`}
                     </SelectItem>
                   ))}
                 </SelectContent>

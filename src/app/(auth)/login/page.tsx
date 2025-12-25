@@ -2,27 +2,20 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
+import { useAccount, useDisconnect, useSignMessage } from 'wagmi'
 import { Button } from '@/components/atoms/button'
+import { WalletOptions, OAuthButtons } from '@/components/molecules'
 import { useLogin, useNonce } from '@/hooks'
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
 
   const { address, isConnected } = useAccount()
-  const { connect, connectors, isPending: isConnecting } = useConnect()
   const { disconnect } = useDisconnect()
   const { signMessageAsync, isPending: isSigning } = useSignMessage()
 
   const { data: nonceData, isLoading: isLoadingNonce } = useNonce(address)
   const login = useLogin()
-
-  const handleConnect = () => {
-    const injectedConnector = connectors.find((c) => c.id === 'injected')
-    if (injectedConnector) {
-      connect({ connector: injectedConnector })
-    }
-  }
 
   const handleSignIn = async () => {
     if (!address || !nonceData) return
@@ -63,27 +56,45 @@ Issued At: ${issuedAt}`
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="typo-header">Sign in to agentauri.ai</h1>
-        <p className="mt-2 typo-ui text-muted-foreground">
-          Connect your wallet to access the dashboard
+        <h1 className="typo-header text-terminal-green glow">
+          Sign in to agentauri.ai
+        </h1>
+        <p className="mt-2 typo-ui text-terminal-dim">
+          Connect your wallet or use social login
         </p>
       </div>
 
-      <div className="rounded-lg border bg-card p-6">
+      <div className="rounded-lg border-2 border-terminal-dim bg-terminal p-6">
         {!isConnected ? (
-          <div className="space-y-4">
-            <Button className="w-full" onClick={handleConnect} disabled={isConnecting}>
-              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-            </Button>
-            <p className="text-center typo-ui text-muted-foreground">
-              MetaMask or any injected wallet
-            </p>
+          <div className="space-y-6">
+            {/* Wallet Options */}
+            <div>
+              <h2 className="typo-ui text-terminal-green text-sm mb-3 text-center">
+                [ CONNECT WALLET ]
+              </h2>
+              <WalletOptions />
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-px bg-terminal-dim" />
+              <span className="typo-ui text-terminal-dim text-xs">OR</span>
+              <div className="flex-1 h-px bg-terminal-dim" />
+            </div>
+
+            {/* OAuth Options */}
+            <div>
+              <h2 className="typo-ui text-terminal-green text-sm mb-3 text-center">
+                [ SOCIAL LOGIN ]
+              </h2>
+              <OAuthButtons />
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-lg bg-muted p-4">
-              <p className="typo-ui text-muted-foreground">Connected as</p>
-              <p className="typo-code">
+            <div className="rounded-lg bg-terminal-green/10 border border-terminal-dim p-4">
+              <p className="typo-ui text-terminal-dim text-sm">Connected as</p>
+              <p className="typo-code text-terminal-green">
                 {address?.slice(0, 6)}...{address?.slice(-4)}
               </p>
             </div>
@@ -93,14 +104,16 @@ Issued At: ${issuedAt}`
               onClick={handleSignIn}
               disabled={isSigning || login.isPending || isLoadingNonce}
             >
-              {isSigning || login.isPending ? 'Signing in...' : 'Sign In'}
+              {isSigning || login.isPending ? 'Signing in...' : '[ SIGN IN ]'}
             </Button>
 
             <Button variant="outline" className="w-full" onClick={() => disconnect()}>
-              Disconnect
+              [ DISCONNECT ]
             </Button>
 
-            {error && <p className="text-center typo-ui text-destructive">{error}</p>}
+            {error && (
+              <p className="text-center typo-ui text-destructive">{error}</p>
+            )}
             {login.isError && (
               <p className="text-center typo-ui text-destructive">
                 {login.error instanceof Error ? login.error.message : 'Login failed'}
@@ -110,9 +123,13 @@ Issued At: ${issuedAt}`
         )}
       </div>
 
-      <p className="text-center typo-ui text-muted-foreground">
+      <p className="text-center typo-ui text-terminal-dim text-sm">
         Don&apos;t have a wallet?{' '}
-        <Link href="https://metamask.io" className="text-primary hover:underline" target="_blank">
+        <Link
+          href="https://metamask.io"
+          className="text-terminal-green hover:underline"
+          target="_blank"
+        >
           Get MetaMask
         </Link>
       </p>

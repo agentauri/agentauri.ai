@@ -10,7 +10,7 @@ import { Icon } from '@/components/atoms/icon'
 import { Form } from '@/components/atoms/form'
 import { FormStepIndicator } from '@/components/molecules/FormStepIndicator'
 import { useCreateTrigger, useUpdateTrigger } from '@/hooks'
-import { SUPPORTED_CHAINS } from '@/lib/constants'
+import { TESTNET_CHAINS } from '@/lib/constants'
 import {
   createTriggerRequestSchema,
   type CreateTriggerRequest,
@@ -46,7 +46,7 @@ export function TriggerForm({ organizationId, trigger, mode = 'create' }: Trigge
     defaultValues: {
       name: trigger?.name ?? '',
       description: trigger?.description ?? '',
-      chainId: trigger?.chainId ?? SUPPORTED_CHAINS.MAINNET,
+      chainId: trigger?.chainId ?? TESTNET_CHAINS.SEPOLIA,
       registry: trigger?.registry ?? 'reputation',
       enabled: trigger?.enabled ?? true,
       isStateful: trigger?.isStateful ?? false,

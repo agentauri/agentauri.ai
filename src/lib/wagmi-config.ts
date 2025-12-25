@@ -1,6 +1,6 @@
 import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
 import { base, baseSepolia, lineaSepolia, mainnet, polygonAmoy, sepolia } from 'wagmi/chains'
-import { injected } from 'wagmi/connectors'
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
 
 /**
  * Wagmi configuration for Web3 wallet connections.
@@ -26,7 +26,15 @@ export const wagmiConfig = createConfig({
   storage: createStorage({
     storage: cookieStorage,
   }),
-  connectors: [injected()],
+  connectors: [
+    injected(),
+    walletConnect({
+      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
+    }),
+    coinbaseWallet({
+      appName: 'AgentAuri.AI',
+    }),
+  ],
   transports: {
     // Using public RPC endpoints (rate-limited but sufficient for wallet ops)
     // These are only used as fallback - wallet provider handles most operations

@@ -44,6 +44,70 @@ export const ACTION_TYPES = ['telegram', 'rest', 'mcp'] as const
 export type ActionType = (typeof ACTION_TYPES)[number]
 
 /**
+ * Event types supported by the backend
+ * These are the blockchain events that can trigger automations
+ */
+export const EVENT_TYPES = {
+  AGENT_REGISTERED: 'AgentRegistered',
+  AGENT_UPDATED: 'AgentUpdated',
+  REPUTATION_UPDATED: 'ReputationUpdated',
+  VALIDATION_COMPLETED: 'ValidationCompleted',
+} as const
+
+export type EventType = (typeof EVENT_TYPES)[keyof typeof EVENT_TYPES]
+
+export const EVENT_TYPE_LIST = Object.values(EVENT_TYPES)
+
+/**
+ * Event type metadata with registry mapping and descriptions
+ */
+export const EVENT_TYPE_INFO: Record<
+  EventType,
+  { registry: Registry; description: string; icon: string }
+> = {
+  AgentRegistered: {
+    registry: 'identity',
+    description: 'New agent registered on-chain',
+    icon: 'agents',
+  },
+  AgentUpdated: {
+    registry: 'identity',
+    description: 'Agent metadata updated',
+    icon: 'edit',
+  },
+  ReputationUpdated: {
+    registry: 'reputation',
+    description: 'Agent reputation score changed',
+    icon: 'star',
+  },
+  ValidationCompleted: {
+    registry: 'validation',
+    description: 'Agent validation finished',
+    icon: 'check',
+  },
+}
+
+/**
+ * Chains currently supported by the backend (testnet only)
+ */
+export const TESTNET_CHAINS = {
+  SEPOLIA: 11155111,
+  BASE_SEPOLIA: 84532,
+  LINEA_SEPOLIA: 59141,
+} as const
+
+export type TestnetChainId = (typeof TESTNET_CHAINS)[keyof typeof TESTNET_CHAINS]
+
+export const CHAIN_NAMES: Record<number, string> = {
+  1: 'Ethereum',
+  8453: 'Base',
+  11155111: 'Sepolia',
+  84532: 'Base Sepolia',
+  59141: 'Linea Sepolia',
+  80002: 'Polygon Amoy',
+}
+
+/**
  * Query tiers
  */
 export const QUERY_TIERS = ['basic', 'standard', 'advanced', 'full'] as const

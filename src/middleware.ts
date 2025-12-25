@@ -32,11 +32,17 @@ const EXCLUDED_PREFIXES = ['/_next', '/api', '/favicon.ico', '/robots.txt', '/si
 
 /**
  * JWT secret for token validation
- * In production, this should come from environment variables
+ * SECURITY: Throws in production if JWT_SECRET is not configured
  */
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? 'fallback-secret-for-development-only'
-)
+const getJwtSecret = (): Uint8Array => {
+  const secret = process.env.JWT_SECRET
+  if (!secret && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable must be set in production')
+  }
+  return new TextEncoder().encode(secret ?? 'fallback-secret-for-development-only')
+}
+
+const JWT_SECRET = getJwtSecret()
 
 interface JwtPayload {
   sub: string
