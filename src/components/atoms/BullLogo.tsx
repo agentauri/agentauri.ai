@@ -63,6 +63,8 @@ export function LogoBull({
         strokeWidth="0"
         className={cn(animationClass, className)}
         style={glowStyle}
+        role="img"
+        aria-label="AgentAuri Bull Logo"
       >
         {/* Corna sinistra */}
         <rect x="0" y="2" width="2" height="2" fill={color} />
@@ -107,6 +109,8 @@ export function LogoBull({
         fill={color}
         className={cn(animationClass, className)}
         style={glowStyle}
+        role="img"
+        aria-label="AgentAuri Bull Logo"
       >
         {/* Corna sinistra */}
         <rect x="1" y="2" width="2" height="2" />
@@ -138,6 +142,8 @@ export function LogoBull({
       fill={color}
       className={cn(animationClass, className)}
       style={glowStyle}
+      role="img"
+      aria-label="AgentAuri Bull Logo"
     >
       {/* Corna sinistra */}
       <rect x="0" y="2" width="2" height="2" />

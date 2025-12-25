@@ -57,8 +57,8 @@ export function WarpStarField({
     ctx.fillRect(0, 0, width, height)
 
     // Calculate center with parallax offset
-    const centerX = width / 2 + parallaxOffset.x * width * 0.05
-    const centerY = height / 2 + parallaxOffset.y * height * 0.05
+    const centerX = width / 2 + parallaxOffset.x * width * 0.15
+    const centerY = height / 2 + parallaxOffset.y * height * 0.15
 
     // Draw each star
     for (const star of stars) {
@@ -74,7 +74,7 @@ export function WarpStarField({
 
       // Calculate distance from center for deadzone fade
       const distFromCenter = Math.sqrt(
-        Math.pow((screenX - centerX) / width, 2) + Math.pow((screenY - centerY) / height, 2)
+        ((screenX - centerX) / width) ** 2 + ((screenY - centerY) / height) ** 2
       )
       const centerFade = Math.min(distFromCenter / centerDeadzone, 1)
 
@@ -163,6 +163,7 @@ export function WarpStarField({
         ref={canvasRef}
         className="w-full h-full"
         aria-hidden="true"
+        tabIndex={-1}
       />
     </div>
   )

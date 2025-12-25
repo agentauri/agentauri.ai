@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
-import { Input } from '@/components/atoms/input'
 import {
   Select,
   SelectContent,

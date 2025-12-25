@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'

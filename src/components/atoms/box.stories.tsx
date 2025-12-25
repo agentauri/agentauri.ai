@@ -61,7 +61,7 @@ export const Success: Story = {
   },
 }
 
-export const Error: Story = {
+export const ErrorVariant: Story = {
   args: {
     children: (
       <div className="typo-ui text-destructive">
