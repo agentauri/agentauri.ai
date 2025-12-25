@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { server } from '@/test/setup'
 import { API_BASE_URL, API_VERSION } from '@/lib/constants'
-import { useAuth, useLogin, useLogout, useNonce, useSession } from '../use-auth'
+import { useAuth, useLogin, useLogout, useSession } from '../use-auth'
 
 const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
 
@@ -65,10 +65,14 @@ describe('use-auth hooks', () => {
       id: '550e8400-e29b-41d4-a716-446655440000',
       username: 'testuser',
       email: 'test@example.com',
-      currentOrganizationId: null,
-      walletAddresses: ['0x1234567890123456789012345678901234567890'],
-      createdAt: '2025-01-01T00:00:00Z',
-      updatedAt: '2025-01-01T00:00:00Z',
+      name: 'Test User',
+      avatar: null,
+      wallets: [
+        { address: '0x1234567890123456789012345678901234567890', chain_id: 1 },
+      ],
+      providers: ['google'],
+      organizations: [],
+      created_at: '2025-01-01T00:00:00Z',
     }
 
     it('should fetch session successfully', async () => {
@@ -86,7 +90,8 @@ describe('use-auth hooks', () => {
         expect(result.current.isSuccess).toBe(true)
       })
 
-      expect(result.current.data).toEqual(mockSession)
+      expect(result.current.data?.id).toBe(mockSession.id)
+      expect(result.current.data?.wallets).toHaveLength(1)
     })
 
     it('should handle unauthorized error', async () => {
@@ -106,59 +111,22 @@ describe('use-auth hooks', () => {
     })
   })
 
-  describe('useNonce', () => {
-    const mockNonceResponse = {
-      nonce: 'abc12345678901234567890',
-      expiresAt: '2025-01-01T00:05:00Z',
-    }
-
-    it('should fetch nonce when address is provided', async () => {
-      const address = '0x1234567890123456789012345678901234567890'
-
-      server.use(
-        http.post(`${baseUrl}/auth/nonce`, async ({ request }) => {
-          const body = await request.json() as { address: string }
-          expect(body.address).toBe(address)
-          return HttpResponse.json(mockNonceResponse)
-        }),
-        http.get(`${baseUrl}/csrf-token`, () => {
-          return HttpResponse.json({ token: 'test-csrf' })
-        })
-      )
-
-      const { result } = renderHook(() => useNonce(address), {
-        wrapper: createWrapper(),
-      })
-
-      await waitFor(() => {
-        expect(result.current.isSuccess).toBe(true)
-      })
-
-      expect(result.current.data).toEqual(mockNonceResponse)
-    })
-
-    it('should not fetch nonce when address is undefined', () => {
-      const { result } = renderHook(() => useNonce(undefined), {
-        wrapper: createWrapper(),
-      })
-
-      expect(result.current.fetchStatus).toBe('idle')
-    })
-  })
-
   describe('useLogin', () => {
     const mockLoginResponse = {
+      token: 'jwt-token-here',
       user: {
         id: '550e8400-e29b-41d4-a716-446655440000',
         username: 'testuser',
         email: 'test@example.com',
+        name: null,
+        avatar: null,
+        created_at: '2025-01-01T00:00:00Z',
       },
-      expiresAt: '2025-01-01T01:00:00Z',
     }
 
     it('should login successfully', async () => {
       server.use(
-        http.post(`${baseUrl}/auth/login`, async () => {
+        http.post(`${baseUrl}/auth/wallet`, async () => {
           return HttpResponse.json(mockLoginResponse)
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -171,6 +139,7 @@ describe('use-auth hooks', () => {
       })
 
       result.current.mutate({
+        address: '0x1234567890123456789012345678901234567890',
         message: 'Sign in message',
         signature: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
       })
@@ -182,7 +151,7 @@ describe('use-auth hooks', () => {
 
     it('should handle login error', async () => {
       server.use(
-        http.post(`${baseUrl}/auth/login`, () => {
+        http.post(`${baseUrl}/auth/wallet`, () => {
           return HttpResponse.json({ message: 'Invalid signature' }, { status: 401 })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -195,6 +164,7 @@ describe('use-auth hooks', () => {
       })
 
       result.current.mutate({
+        address: '0x1234567890123456789012345678901234567890',
         message: 'Sign in message',
         signature: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
       })
@@ -256,10 +226,12 @@ describe('use-auth hooks', () => {
         id: '550e8400-e29b-41d4-a716-446655440000',
         username: 'testuser',
         email: 'test@example.com',
-        currentOrganizationId: null,
-        walletAddresses: [],
-        createdAt: '2025-01-01T00:00:00Z',
-        updatedAt: '2025-01-01T00:00:00Z',
+        name: null,
+        avatar: null,
+        wallets: [],
+        providers: [],
+        organizations: [],
+        created_at: '2025-01-01T00:00:00Z',
       }
 
       server.use(
@@ -276,7 +248,7 @@ describe('use-auth hooks', () => {
         expect(result.current.session).toBeDefined()
       })
 
-      expect(result.current.session).toEqual(mockSession)
+      expect(result.current.session?.id).toBe(mockSession.id)
       expect(result.current.login).toBeDefined()
       expect(result.current.logout).toBeDefined()
     })

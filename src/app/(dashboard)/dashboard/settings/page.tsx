@@ -134,7 +134,7 @@ export default function SettingsPage() {
               <div>
                 <div className="typo-ui text-terminal-dim mb-1">&gt; MEMBER SINCE</div>
                 <div className="typo-ui text-terminal-green">
-                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}
+                  {user?.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}
                 </div>
               </div>
             </>
@@ -146,10 +146,10 @@ export default function SettingsPage() {
       <Box variant="default" padding="lg">
         <h2 className="typo-ui text-terminal-green glow mb-4">&gt; CONNECTED WALLETS</h2>
         <div className="space-y-2">
-          {user?.walletAddresses && user.walletAddresses.length > 0 ? (
-            user.walletAddresses.map((address: string) => (
-              <div key={address} className="flex items-center justify-between">
-                <AgentAddressBadge address={address} />
+          {user?.wallets && user.wallets.length > 0 ? (
+            user.wallets.map((wallet) => (
+              <div key={wallet.address} className="flex items-center justify-between">
+                <AgentAddressBadge address={wallet.address} />
               </div>
             ))
           ) : (

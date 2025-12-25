@@ -17,18 +17,15 @@ describe('authApi', () => {
   })
 
   describe('getNonce', () => {
-    const validAddress = '0x1234567890123456789012345678901234567890'
-
-    it('should fetch nonce for address', async () => {
+    it('should fetch nonce', async () => {
       const mockResponse = {
-        nonce: 'abc12345678901234567890',
-        expiresAt: '2025-01-01T00:05:00Z',
+        nonce: '550e8400-e29b-41d4-a716-446655440000',
+        expires_at: '2025-01-01T00:05:00Z',
+        message: 'Sign this message to authenticate with AgentAuri.\n\nNonce: 550e8400-...',
       }
 
       server.use(
-        http.post(`${baseUrl}/auth/nonce`, async ({ request }) => {
-          const body = await request.json() as { address: string }
-          expect(body.address).toBe(validAddress)
+        http.post(`${baseUrl}/auth/nonce`, () => {
           return HttpResponse.json(mockResponse)
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -36,18 +33,20 @@ describe('authApi', () => {
         })
       )
 
-      const result = await authApi.getNonce(validAddress)
+      const result = await authApi.getNonce()
 
       expect(result.nonce).toBe(mockResponse.nonce)
-      expect(result.expiresAt).toBe(mockResponse.expiresAt)
+      expect(result.expires_at).toBe(mockResponse.expires_at)
+      expect(result.message).toBe(mockResponse.message)
     })
 
     it('should validate response with schema', async () => {
       server.use(
         http.post(`${baseUrl}/auth/nonce`, () => {
           return HttpResponse.json({
-            nonce: 'short', // Too short, should fail validation
-            expiresAt: '2025-01-01T00:05:00Z',
+            nonce: 'not-a-uuid', // Invalid UUID format
+            expires_at: '2025-01-01T00:05:00Z',
+            message: 'Some message',
           })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -55,30 +54,35 @@ describe('authApi', () => {
         })
       )
 
-      await expect(authApi.getNonce(validAddress)).rejects.toThrow()
+      await expect(authApi.getNonce()).rejects.toThrow()
     })
   })
 
-  describe('login', () => {
+  describe('loginWithWallet', () => {
     const validRequest = {
-      message: 'Sign in with Ethereum to Example App',
+      address: '0x1234567890123456789012345678901234567890',
+      message: 'Sign in with Ethereum to AgentAuri',
       signature: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
     }
 
     it('should login successfully', async () => {
       const mockResponse = {
+        token: 'jwt-token-here',
         user: {
           id: '550e8400-e29b-41d4-a716-446655440000',
-          username: 'testuser',
+          username: 'wallet_1234abcd',
           email: 'test@example.com',
-          walletAddresses: ['0x1234567890123456789012345678901234567890'],
+          name: null,
+          avatar: null,
+          created_at: '2025-01-01T00:00:00Z',
+          is_active: true,
         },
-        expiresAt: '2025-01-01T01:00:00Z',
       }
 
       server.use(
-        http.post(`${baseUrl}/auth/login`, async ({ request }) => {
-          const body = await request.json() as { message: string; signature: string }
+        http.post(`${baseUrl}/auth/wallet`, async ({ request }) => {
+          const body = await request.json() as { address: string; message: string; signature: string }
+          expect(body.address).toBe(validRequest.address)
           expect(body.message).toBe(validRequest.message)
           expect(body.signature).toBe(validRequest.signature)
           return HttpResponse.json(mockResponse)
@@ -88,15 +92,15 @@ describe('authApi', () => {
         })
       )
 
-      const result = await authApi.login(validRequest)
+      const result = await authApi.loginWithWallet(validRequest)
 
+      expect(result.token).toBe(mockResponse.token)
       expect(result.user.id).toBe(mockResponse.user.id)
-      expect(result.expiresAt).toBe(mockResponse.expiresAt)
     })
 
     it('should handle login error', async () => {
       server.use(
-        http.post(`${baseUrl}/auth/login`, () => {
+        http.post(`${baseUrl}/auth/wallet`, () => {
           return HttpResponse.json({ message: 'Invalid signature' }, { status: 401 })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -104,23 +108,28 @@ describe('authApi', () => {
         })
       )
 
-      await expect(authApi.login(validRequest)).rejects.toThrow()
+      await expect(authApi.loginWithWallet(validRequest)).rejects.toThrow()
     })
   })
 
   describe('logout', () => {
     it('should logout successfully', async () => {
+      const mockResponse = {
+        success: true,
+        message: 'Logged out successfully',
+      }
+
       server.use(
         http.post(`${baseUrl}/auth/logout`, () => {
-          return new Response(null, { status: 204 })
+          return HttpResponse.json(mockResponse)
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
         })
       )
 
-      // Should not throw
-      await expect(authApi.logout()).resolves.toBeUndefined()
+      const result = await authApi.logout()
+      expect(result.success).toBe(true)
     })
 
     it('should handle logout error', async () => {
@@ -143,10 +152,16 @@ describe('authApi', () => {
         id: '550e8400-e29b-41d4-a716-446655440000',
         username: 'testuser',
         email: 'test@example.com',
-        currentOrganizationId: '550e8400-e29b-41d4-a716-446655440001',
-        walletAddresses: ['0x1234567890123456789012345678901234567890'],
-        createdAt: '2025-01-01T00:00:00Z',
-        updatedAt: '2025-01-01T00:00:00Z',
+        name: 'Test User',
+        avatar: 'https://example.com/avatar.png',
+        wallets: [
+          { address: '0x1234567890123456789012345678901234567890', chain_id: 1 },
+        ],
+        providers: ['google'],
+        organizations: [
+          { id: '550e8400-e29b-41d4-a716-446655440001', name: 'Test Org', slug: 'test-org', role: 'owner' },
+        ],
+        created_at: '2025-01-01T00:00:00Z',
       }
 
       server.use(
@@ -160,7 +175,8 @@ describe('authApi', () => {
       expect(result.id).toBe(mockSession.id)
       expect(result.username).toBe(mockSession.username)
       expect(result.email).toBe(mockSession.email)
-      expect(result.walletAddresses).toHaveLength(1)
+      expect(result.wallets).toHaveLength(1)
+      expect(result.providers).toContain('google')
     })
 
     it('should handle unauthorized error', async () => {
@@ -180,10 +196,9 @@ describe('authApi', () => {
             id: 'not-a-uuid', // Invalid UUID
             username: 'testuser',
             email: 'test@example.com',
-            currentOrganizationId: null,
-            walletAddresses: [],
-            createdAt: '2025-01-01T00:00:00Z',
-            updatedAt: '2025-01-01T00:00:00Z',
+            name: null,
+            avatar: null,
+            created_at: '2025-01-01T00:00:00Z',
           })
         })
       )
@@ -192,37 +207,25 @@ describe('authApi', () => {
     })
   })
 
-  describe('refreshToken', () => {
-    it('should refresh token successfully', async () => {
-      const mockResponse = {
-        expiresAt: '2025-01-01T02:00:00Z',
-      }
-
-      server.use(
-        http.post(`${baseUrl}/auth/refresh`, () => {
-          return HttpResponse.json(mockResponse)
-        }),
-        http.get(`${baseUrl}/csrf-token`, () => {
-          return HttpResponse.json({ token: 'test-csrf' })
-        })
-      )
-
-      const result = await authApi.refreshToken()
-
-      expect(result.expiresAt).toBe(mockResponse.expiresAt)
+  describe('getOAuthUrl', () => {
+    it('should generate correct Google OAuth URL', () => {
+      const url = authApi.getOAuthUrl('google', '/dashboard')
+      expect(url).toContain('/auth/google')
+      expect(url).toContain('redirect_after=%2Fdashboard')
     })
 
-    it('should handle refresh error', async () => {
-      server.use(
-        http.post(`${baseUrl}/auth/refresh`, () => {
-          return HttpResponse.json({ message: 'Token expired' }, { status: 401 })
-        }),
-        http.get(`${baseUrl}/csrf-token`, () => {
-          return HttpResponse.json({ token: 'test-csrf' })
-        })
-      )
+    it('should generate correct GitHub OAuth URL', () => {
+      const url = authApi.getOAuthUrl('github')
+      expect(url).toContain('/auth/github')
+      expect(url).not.toContain('redirect_after')
+    })
+  })
 
-      await expect(authApi.refreshToken()).rejects.toThrow()
+  describe('getLinkUrl', () => {
+    it('should generate correct account linking URL', () => {
+      const url = authApi.getLinkUrl('google', '/settings')
+      expect(url).toContain('/auth/link/google')
+      expect(url).toContain('redirect_after=%2Fsettings')
     })
   })
 })

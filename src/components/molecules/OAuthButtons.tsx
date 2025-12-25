@@ -1,53 +1,54 @@
 'use client'
 
 import { Button } from '@/components/atoms/button'
+import { authApi } from '@/lib/api/auth'
+import type { OAuthProvider } from '@/lib/validations'
 import { cn } from '@/lib/utils'
 
-interface OAuthProvider {
-  id: string
+interface OAuthProviderConfig {
+  id: OAuthProvider
   name: string
   icon: string
-  disabled?: boolean
 }
 
-const OAUTH_PROVIDERS: OAuthProvider[] = [
+const OAUTH_PROVIDERS: OAuthProviderConfig[] = [
   {
     id: 'google',
     name: 'Google',
     icon: 'G',
-    disabled: true, // Backend not implemented yet
   },
   {
     id: 'github',
     name: 'GitHub',
     icon: '🐙',
-    disabled: true, // Backend not implemented yet
   },
 ]
 
 interface OAuthButtonsProps {
   /** Which providers to show (default: all) */
-  providers?: string[]
-  /** Callback when a provider is selected */
-  onSelect?: (providerId: string) => void
+  providers?: OAuthProvider[]
+  /** Where to redirect after successful auth */
+  redirectAfter?: string
   /** Additional CSS classes */
   className?: string
+  /** Loading state */
+  isLoading?: boolean
 }
 
 export function OAuthButtons({
   providers,
-  onSelect,
+  redirectAfter = '/dashboard',
   className,
+  isLoading = false,
 }: OAuthButtonsProps) {
   const availableProviders = providers
     ? OAUTH_PROVIDERS.filter((p) => providers.includes(p.id))
     : OAUTH_PROVIDERS
 
-  const handleClick = (provider: OAuthProvider) => {
-    if (provider.disabled) return
-    onSelect?.(provider.id)
-    // When enabled, redirect to OAuth endpoint
-    // window.location.href = `/api/auth/${provider.id}`
+  const handleClick = (provider: OAuthProviderConfig) => {
+    if (isLoading) return
+    const url = authApi.getOAuthUrl(provider.id, redirectAfter)
+    window.location.href = url
   }
 
   return (
@@ -55,16 +56,15 @@ export function OAuthButtons({
       {availableProviders.map((provider) => (
         <Button
           key={provider.id}
+          type="button"
           variant="outline"
           className={cn(
             'w-full justify-between gap-2 h-auto py-3 px-4',
             'border-terminal-dim',
-            provider.disabled
-              ? 'opacity-50 cursor-not-allowed'
-              : 'hover:border-terminal-green hover:bg-terminal-green/10 transition-all'
+            'hover:border-terminal-green hover:bg-terminal-green/10 transition-all'
           )}
           onClick={() => handleClick(provider)}
-          disabled={provider.disabled}
+          disabled={isLoading}
         >
           <div className="flex items-center gap-3 min-w-0">
             <span
@@ -80,11 +80,6 @@ export function OAuthButtons({
               {provider.name}
             </span>
           </div>
-          {provider.disabled && (
-            <span className="typo-ui text-[10px] text-terminal-dim border border-terminal-dim px-1.5 py-0.5 shrink-0 whitespace-nowrap">
-              SOON
-            </span>
-          )}
         </Button>
       ))}
     </div>

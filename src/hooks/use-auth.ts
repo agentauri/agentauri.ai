@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { authApi } from '@/lib/api'
 import { ApiError } from '@/lib/api-client'
 import { queryKeys } from '@/lib/query-keys'
-import type { LoginRequest, UserSession } from '@/lib/validations'
+import type { UserSession, WalletLoginRequest } from '@/lib/validations'
 import { useAuthStore } from '@/stores/auth-store'
 import { useOrganizationStore } from '@/stores/organization-store'
 
@@ -46,19 +46,21 @@ export function useSession() {
 
 /**
  * Hook for getting nonce for SIWE authentication
+ * Returns a pre-formatted message to sign
  */
-export function useNonce(address: string | undefined) {
+export function useNonce() {
   return useQuery({
-    queryKey: queryKeys.auth.nonce(address ?? ''),
-    queryFn: () => authApi.getNonce(address!),
-    enabled: !!address,
+    queryKey: queryKeys.auth.nonce('wallet'),
+    queryFn: () => authApi.getNonce(),
     staleTime: 2 * 60 * 1000, // 2 minutes (nonce has short expiry)
     gcTime: 5 * 60 * 1000,
+    // Don't auto-fetch, only when needed
+    enabled: false,
   })
 }
 
 /**
- * Hook for login mutation
+ * Hook for wallet login mutation (SIWE)
  */
 export function useLogin() {
   const queryClient = useQueryClient()
@@ -66,7 +68,7 @@ export function useLogin() {
   const { setAuthenticated } = useAuthStore()
 
   return useMutation({
-    mutationFn: (request: LoginRequest) => authApi.login(request),
+    mutationFn: (request: WalletLoginRequest) => authApi.loginWithWallet(request),
     onSuccess: async () => {
       setAuthenticated(true)
       // Invalidate and refetch session

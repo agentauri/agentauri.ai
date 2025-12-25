@@ -5,53 +5,46 @@ import { useState } from 'react'
 import { useAccount, useDisconnect, useSignMessage } from 'wagmi'
 import { Button } from '@/components/atoms/button'
 import { WalletOptions, OAuthButtons } from '@/components/molecules'
-import { useLogin, useNonce } from '@/hooks'
+import { authApi } from '@/lib/api/auth'
+import { useLogin } from '@/hooks'
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
+  const [isLoadingNonce, setIsLoadingNonce] = useState(false)
 
   const { address, isConnected } = useAccount()
   const { disconnect } = useDisconnect()
   const { signMessageAsync, isPending: isSigning } = useSignMessage()
 
-  const { data: nonceData, isLoading: isLoadingNonce } = useNonce(address)
   const login = useLogin()
 
   const handleSignIn = async () => {
-    if (!address || !nonceData) return
+    if (!address) return
 
     setError(null)
+    setIsLoadingNonce(true)
 
     try {
-      // Create SIWE message
-      const domain = window.location.host
-      const origin = window.location.origin
-      const statement = 'Sign in to agentauri.ai'
-      const issuedAt = new Date().toISOString()
+      // 1. Get nonce and pre-formatted message from backend
+      const nonceData = await authApi.getNonce()
+      setIsLoadingNonce(false)
 
-      const message = `${domain} wants you to sign in with your Ethereum account:
-${address}
+      // 2. Sign the pre-formatted message
+      const signature = await signMessageAsync({ message: nonceData.message })
 
-${statement}
-
-URI: ${origin}
-Version: 1
-Chain ID: 1
-Nonce: ${nonceData.nonce}
-Issued At: ${issuedAt}`
-
-      // Sign message
-      const signature = await signMessageAsync({ message })
-
-      // Login
+      // 3. Login with address, signature, and message
       await login.mutateAsync({
-        message,
+        address,
         signature,
+        message: nonceData.message,
       })
     } catch (err) {
+      setIsLoadingNonce(false)
       setError(err instanceof Error ? err.message : 'Failed to sign in')
     }
   }
+
+  const isLoading = isLoadingNonce || isSigning || login.isPending
 
   return (
     <div className="space-y-6">
@@ -87,7 +80,7 @@ Issued At: ${issuedAt}`
               <h2 className="typo-ui text-terminal-green text-sm mb-3 text-center">
                 [ SOCIAL LOGIN ]
               </h2>
-              <OAuthButtons />
+              <OAuthButtons redirectAfter="/dashboard" />
             </div>
           </div>
         ) : (
@@ -102,9 +95,15 @@ Issued At: ${issuedAt}`
             <Button
               className="w-full"
               onClick={handleSignIn}
-              disabled={isSigning || login.isPending || isLoadingNonce}
+              disabled={isLoading}
             >
-              {isSigning || login.isPending ? 'Signing in...' : '[ SIGN IN ]'}
+              {isLoadingNonce
+                ? 'Preparing...'
+                : isSigning
+                  ? 'Sign in wallet...'
+                  : login.isPending
+                    ? 'Signing in...'
+                    : '[ SIGN IN ]'}
             </Button>
 
             <Button variant="outline" className="w-full" onClick={() => disconnect()}>

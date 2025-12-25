@@ -133,6 +133,7 @@ describe('error-handler', () => {
     })
 
     it('should fallback to sanitized error message', () => {
+      // biome-ignore lint/suspicious/noExplicitAny: Intentionally testing unknown error code fallback
       const customError = new AppError('CUSTOM_CODE' as any, 'Custom error message')
       const message = getUserFriendlyMessage(customError)
       expect(message).toBeTruthy()
