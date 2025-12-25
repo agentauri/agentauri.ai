@@ -29,13 +29,13 @@ export function WarpNavMenu({
   visible = false,
   className,
 }: WarpNavMenuProps) {
-  if (!visible) return null
-
   return (
     <nav
       data-slot="warp-nav-menu"
       className={cn(
         'flex flex-wrap items-center justify-center gap-2 sm:gap-4',
+        'transition-opacity duration-300',
+        visible ? 'opacity-100' : 'opacity-0 pointer-events-none',
         className
       )}
       aria-label="Main navigation"
