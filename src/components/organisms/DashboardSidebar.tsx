@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 import { Icon, type IconName } from '@/components/atoms/icon'
+import { OrganizationSwitcher } from '@/components/molecules'
 
 const navItems: { href: string; icon: IconName; label: string }[] = [
   { href: '/dashboard', icon: 'dashboard', label: 'DASHBOARD' },
@@ -65,6 +66,11 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
         >
           <Icon name={sidebarCollapsed ? 'collapse' : 'expand'} size="sm" />
         </button>
+      </div>
+
+      {/* Organization Switcher */}
+      <div className="px-2 py-3 border-b-2 border-terminal-dim">
+        <OrganizationSwitcher collapsed={sidebarCollapsed} />
       </div>
 
       {/* Navigation */}

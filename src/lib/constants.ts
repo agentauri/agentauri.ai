@@ -7,8 +7,21 @@ export const APP_DESCRIPTION = 'ERC-8004 Reputation Dashboard' as const
 
 /**
  * API Configuration
+ * In development, use empty string to make API calls through Next.js proxy (same origin).
+ * This avoids cross-origin cookie issues when backend runs on different port.
+ * In production, set NEXT_PUBLIC_API_BASE_URL to the actual API domain.
  */
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? ''
+
+// Use empty string (relative URLs) in dev to leverage Next.js proxy for API calls
+export const API_BASE_URL = configuredApiUrl
+
+// OAuth requires direct browser redirect to backend (can't use proxy)
+// In dev, this points directly to backend; in prod, same as API_BASE_URL
+export const OAUTH_BASE_URL = process.env.NEXT_PUBLIC_OAUTH_BASE_URL
+  || process.env.NEXT_PUBLIC_API_BASE_URL
+  || 'http://localhost:8080'
+
 export const API_VERSION = 'v1' as const
 
 /**

@@ -83,8 +83,25 @@ export function clearCsrfToken(): void {
 }
 
 function buildUrl(endpoint: string, params?: ApiRequestOptions['params']): string {
-  const url = new URL(`/api/${API_VERSION}${endpoint}`, API_BASE_URL)
+  const path = `/api/${API_VERSION}${endpoint}`
 
+  // Handle both absolute URLs (production) and relative URLs (dev proxy)
+  if (!API_BASE_URL) {
+    // Relative URL for Next.js proxy
+    if (!params || Object.keys(params).length === 0) {
+      return path
+    }
+    const searchParams = new URLSearchParams()
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined) {
+        searchParams.set(key, String(value))
+      }
+    }
+    return `${path}?${searchParams.toString()}`
+  }
+
+  // Absolute URL for production
+  const url = new URL(path, API_BASE_URL)
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined) {
@@ -92,7 +109,6 @@ function buildUrl(endpoint: string, params?: ApiRequestOptions['params']): strin
       }
     }
   }
-
   return url.toString()
 }
 

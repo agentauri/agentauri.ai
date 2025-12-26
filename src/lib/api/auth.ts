@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api-client'
-import { API_BASE_URL, API_VERSION } from '@/lib/constants'
+import { API_VERSION, OAUTH_BASE_URL } from '@/lib/constants'
 import {
   type ClassicLoginRequest,
   type ClassicLoginResponse,
@@ -24,9 +24,10 @@ export const authApi = {
   /**
    * Get OAuth authorization URL for redirect
    * User should be redirected to this URL to start OAuth flow
+   * Note: OAuth requires direct backend URL (can't use proxy for browser redirects)
    */
   getOAuthUrl(provider: OAuthProvider, redirectAfter?: string): string {
-    const url = new URL(`/api/${API_VERSION}/auth/${provider}`, API_BASE_URL)
+    const url = new URL(`/api/${API_VERSION}/auth/${provider}`, OAUTH_BASE_URL)
     if (redirectAfter) {
       url.searchParams.set('redirect_after', redirectAfter)
     }
@@ -35,9 +36,10 @@ export const authApi = {
 
   /**
    * Get account linking URL (for authenticated users to add providers)
+   * Note: Uses direct backend URL like OAuth
    */
   getLinkUrl(provider: OAuthProvider, redirectAfter?: string): string {
-    const url = new URL(`/api/${API_VERSION}/auth/link/${provider}`, API_BASE_URL)
+    const url = new URL(`/api/${API_VERSION}/auth/link/${provider}`, OAUTH_BASE_URL)
     if (redirectAfter) {
       url.searchParams.set('redirect_after', redirectAfter)
     }

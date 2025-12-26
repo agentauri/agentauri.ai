@@ -40,3 +40,6 @@ export { WarpNavMenu } from './WarpNavMenu'
 // Auth molecules
 export { WalletOptions } from './WalletOptions'
 export { OAuthButtons } from './OAuthButtons'
+
+// Organization molecules
+export { OrganizationSwitcher } from './OrganizationSwitcher'

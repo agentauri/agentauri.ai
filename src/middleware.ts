@@ -91,7 +91,7 @@ function isExcludedPath(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
   const normalizedPath = normalizePath(pathname)
 
   // Skip middleware for excluded paths
@@ -103,6 +103,39 @@ export async function middleware(request: NextRequest) {
       response.headers.set(key, value)
     })
     return response
+  }
+
+  // Handle token in URL (from OAuth callback in development)
+  // This allows cross-port auth when backend (8080) redirects to frontend (8004)
+  const urlToken = searchParams.get('token')
+  if (urlToken) {
+    // Validate token before setting cookie
+    const isValid = await isValidToken(urlToken)
+    if (isValid) {
+      // Create redirect URL without the token param
+      const cleanUrl = new URL(request.url)
+      cleanUrl.searchParams.delete('token')
+
+      const response = NextResponse.redirect(cleanUrl)
+
+      // Set the auth cookie
+      response.cookies.set('auth-token', urlToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
+      // Add security headers
+      const headers = getSecurityHeaders()
+      Object.entries(headers).forEach(([key, value]) => {
+        response.headers.set(key, value)
+      })
+
+      return response
+    }
+    // Invalid token - fall through to normal flow (will redirect to login)
   }
 
   const token = request.cookies.get('auth-token')?.value

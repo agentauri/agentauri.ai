@@ -65,6 +65,17 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // Proxy API calls through Next.js to avoid cross-origin cookie issues in development
+  async rewrites() {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${apiBaseUrl}/api/:path*`,
+      },
+    ];
+  },
+
   // Strict React mode for development
   reactStrictMode: true,
 

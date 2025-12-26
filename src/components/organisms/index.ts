@@ -23,6 +23,9 @@ export { ApiKeyCreatedDialog } from './ApiKeyCreatedDialog'
 export { ApiKeysList } from './ApiKeysList'
 export { CreateApiKeyDialog } from './CreateApiKeyDialog'
 
+// Organization organisms
+export { CreateOrganizationDialog } from './CreateOrganizationDialog'
+
 // Billing organisms
 export { CreditBalanceCard } from './CreditBalanceCard'
 export { TransactionHistoryTable } from './TransactionHistoryTable'
