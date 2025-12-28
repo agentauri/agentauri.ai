@@ -300,7 +300,7 @@ describe('Common validation schemas', () => {
           total: 10,
           limit: 2,
           offset: 0,
-          hasMore: true,
+          has_more: true,
         },
       }
 
@@ -320,7 +320,7 @@ describe('Common validation schemas', () => {
           total: 0,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       })
 

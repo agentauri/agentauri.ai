@@ -19,9 +19,9 @@ describe('Organization validation schemas', () => {
       name: 'Test Organization',
       slug: 'test-org',
       description: 'A test organization',
-      isPersonal: false,
-      createdAt: validDatetime,
-      updatedAt: validDatetime,
+      is_personal: false,
+      created_at: validDatetime,
+      updated_at: validDatetime,
     }
 
     it('should accept valid organization', () => {
@@ -54,43 +54,42 @@ describe('Organization validation schemas', () => {
       expect(() => organizationSchema.parse({ ...validOrganization, description: 'a'.repeat(501) })).toThrow()
     })
 
-    it('should require boolean isPersonal', () => {
-      const result = organizationSchema.parse({ ...validOrganization, isPersonal: true })
-      expect(result.isPersonal).toBe(true)
+    it('should require boolean is_personal', () => {
+      const result = organizationSchema.parse({ ...validOrganization, is_personal: true })
+      expect(result.is_personal).toBe(true)
     })
   })
 
   describe('organizationWithRoleSchema', () => {
+    // Flat structure matching backend response
     const validOrgWithRole = {
-      organization: {
-        id: validUuid,
-        name: 'Test Organization',
-        slug: 'test-org',
-        description: null,
-        isPersonal: false,
-        createdAt: validDatetime,
-        updatedAt: validDatetime,
-      },
-      myRole: 'owner' as const,
+      id: validUuid,
+      name: 'Test Organization',
+      slug: 'test-org',
+      description: null,
+      is_personal: false,
+      created_at: validDatetime,
+      updated_at: validDatetime,
+      my_role: 'owner' as const,
     }
 
     it('should accept valid organization with role', () => {
       const result = organizationWithRoleSchema.parse(validOrgWithRole)
-      expect(result.organization.name).toBe('Test Organization')
-      expect(result.myRole).toBe('owner')
+      expect(result.name).toBe('Test Organization')
+      expect(result.my_role).toBe('owner')
     })
 
     it('should accept all valid roles', () => {
       const roles = ['owner', 'admin', 'member', 'viewer'] as const
 
       for (const role of roles) {
-        const orgWithRole = { ...validOrgWithRole, myRole: role }
+        const orgWithRole = { ...validOrgWithRole, my_role: role }
         expect(() => organizationWithRoleSchema.parse(orgWithRole)).not.toThrow()
       }
     })
 
     it('should reject invalid role', () => {
-      const orgWithRole = { ...validOrgWithRole, myRole: 'superadmin' }
+      const orgWithRole = { ...validOrgWithRole, my_role: 'superadmin' }
       expect(() => organizationWithRoleSchema.parse(orgWithRole)).toThrow()
     })
   })

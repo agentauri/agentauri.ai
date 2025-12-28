@@ -44,7 +44,7 @@ describe('apiKeysApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 

@@ -11,19 +11,21 @@ describe('organizationsApi', () => {
   const mockOrgId = '550e8400-e29b-41d4-a716-446655440000'
   const mockMemberId = '550e8400-e29b-41d4-a716-446655440001'
 
+  // Backend returns snake_case
   const mockOrganization = {
     id: mockOrgId,
     name: 'Test Organization',
     slug: 'test-org',
     description: 'A test organization',
-    isPersonal: false,
-    createdAt: '2025-01-01T00:00:00Z',
-    updatedAt: '2025-01-01T00:00:00Z',
+    is_personal: false,
+    created_at: '2025-01-01T00:00:00Z',
+    updated_at: '2025-01-01T00:00:00Z',
   }
 
+  // Flat structure with my_role
   const mockOrgWithRole = {
-    organization: mockOrganization,
-    myRole: 'owner',
+    ...mockOrganization,
+    my_role: 'owner',
   }
 
   const mockMember = {
@@ -52,7 +54,7 @@ describe('organizationsApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 
@@ -65,8 +67,8 @@ describe('organizationsApi', () => {
       const result = await organizationsApi.list()
 
       expect(result.data).toHaveLength(1)
-      expect(result.data[0].organization.id).toBe(mockOrgId)
-      expect(result.data[0].myRole).toBe('owner')
+      expect(result.data[0].id).toBe(mockOrgId)
+      expect(result.data[0].my_role).toBe('owner')
     })
 
     it('should pass pagination parameters', async () => {
@@ -77,7 +79,7 @@ describe('organizationsApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 50, offset: 10, hasMore: false },
+            pagination: { total: 0, limit: 50, offset: 10, has_more: false },
           })
         })
       )
@@ -93,7 +95,7 @@ describe('organizationsApi', () => {
         http.get(`${baseUrl}/organizations`, () => {
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )
@@ -109,15 +111,15 @@ describe('organizationsApi', () => {
     it('should get organization by id', async () => {
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrgId}`, () => {
-          return HttpResponse.json(mockOrgWithRole)
+          return HttpResponse.json({ data: mockOrgWithRole })
         })
       )
 
       const result = await organizationsApi.get(mockOrgId)
 
-      expect(result.organization.id).toBe(mockOrgId)
-      expect(result.organization.name).toBe('Test Organization')
-      expect(result.myRole).toBe('owner')
+      expect(result.id).toBe(mockOrgId)
+      expect(result.name).toBe('Test Organization')
+      expect(result.my_role).toBe('owner')
     })
 
     it('should handle not found error', async () => {
@@ -143,7 +145,7 @@ describe('organizationsApi', () => {
         http.post(`${baseUrl}/organizations`, async ({ request }) => {
           const body = await request.json()
           expect(body).toMatchObject(createRequest)
-          return HttpResponse.json({ ...mockOrganization, name: 'New Organization' })
+          return HttpResponse.json({ data: { ...mockOrganization, name: 'New Organization' } })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -177,7 +179,7 @@ describe('organizationsApi', () => {
         http.patch(`${baseUrl}/organizations/${mockOrgId}`, async ({ request }) => {
           const body = await request.json()
           expect(body).toMatchObject(updateRequest)
-          return HttpResponse.json({ ...mockOrganization, name: 'Updated Name' })
+          return HttpResponse.json({ data: { ...mockOrganization, name: 'Updated Name' } })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -192,7 +194,7 @@ describe('organizationsApi', () => {
     it('should handle partial update', async () => {
       server.use(
         http.patch(`${baseUrl}/organizations/${mockOrgId}`, () => {
-          return HttpResponse.json({ ...mockOrganization, description: 'Updated description' })
+          return HttpResponse.json({ data: { ...mockOrganization, description: 'Updated description' } })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -241,7 +243,7 @@ describe('organizationsApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 
@@ -266,7 +268,7 @@ describe('organizationsApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 50, offset: 10, hasMore: false },
+            pagination: { total: 0, limit: 50, offset: 10, has_more: false },
           })
         })
       )
@@ -289,7 +291,7 @@ describe('organizationsApi', () => {
         http.post(`${baseUrl}/organizations/${mockOrgId}/members/invite`, async ({ request }) => {
           const body = await request.json()
           expect(body).toMatchObject(inviteRequest)
-          return HttpResponse.json({ ...mockMember, email: 'newmember@example.com' })
+          return HttpResponse.json({ data: { ...mockMember, email: 'newmember@example.com' } })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -323,7 +325,7 @@ describe('organizationsApi', () => {
         http.patch(`${baseUrl}/organizations/${mockOrgId}/members/${mockMemberId}`, async ({ request }) => {
           const body = await request.json()
           expect(body).toMatchObject(roleRequest)
-          return HttpResponse.json({ ...mockMember, role: 'admin' })
+          return HttpResponse.json({ data: { ...mockMember, role: 'admin' } })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
