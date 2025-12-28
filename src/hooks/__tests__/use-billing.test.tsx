@@ -4,7 +4,6 @@ import { HttpResponse, http } from 'msw'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { server } from '@/test/setup'
-import { API_BASE_URL, API_VERSION } from '@/lib/constants'
 import {
   useCreditBalance,
   useCreditTransactions,
@@ -13,7 +12,17 @@ import {
   useCancelSubscription,
 } from '../use-billing'
 
-const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
+// Mock constants to provide absolute URL for Node.js environment
+// This ensures fetch() works without a browser context
+vi.mock('@/lib/constants', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/lib/constants')>()
+  return {
+    ...original,
+    API_BASE_URL: 'http://localhost:3000',
+  }
+})
+
+const baseUrl = 'http://localhost:3000/api/v1'
 
 // Mock sonner toast
 vi.mock('sonner', () => ({
@@ -92,8 +101,7 @@ describe('use-billing hooks', () => {
   })
 
   describe('useCreditBalance', () => {
-    // TODO: Fix MSW handler matching issue - skipping temporarily
-    it.skip('should fetch credit balance successfully', async () => {
+    it('should fetch credit balance successfully', async () => {
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrgId}/credits/balance`, () => {
           return HttpResponse.json(mockBalance)
@@ -121,8 +129,7 @@ describe('use-billing hooks', () => {
   })
 
   describe('useCreditTransactions', () => {
-    // TODO: Fix MSW handler matching issue - skipping temporarily
-    it.skip('should fetch transactions successfully', async () => {
+    it('should fetch transactions successfully', async () => {
       const mockResponse = {
         data: [mockTransaction],
         pagination: {
@@ -161,8 +168,7 @@ describe('use-billing hooks', () => {
   })
 
   describe('useCreateCheckout', () => {
-    // TODO: Fix MSW handler matching issue - skipping temporarily
-    it.skip('should create checkout and redirect', async () => {
+    it('should create checkout and redirect', async () => {
       const checkoutUrl = 'https://checkout.stripe.com/test'
       const sessionId = 'cs_test_123'
 
@@ -217,8 +223,7 @@ describe('use-billing hooks', () => {
   })
 
   describe('useSubscriptions', () => {
-    // TODO: Fix MSW handler matching issue - skipping temporarily
-    it.skip('should fetch subscriptions successfully', async () => {
+    it('should fetch subscriptions successfully', async () => {
       // subscriptionListResponseSchema returns array directly
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrgId}/subscriptions`, () => {
@@ -248,8 +253,7 @@ describe('use-billing hooks', () => {
   })
 
   describe('useCancelSubscription', () => {
-    // TODO: Fix MSW handler matching issue - skipping temporarily
-    it.skip('should cancel subscription successfully', async () => {
+    it('should cancel subscription successfully', async () => {
       server.use(
         http.delete(`${baseUrl}/subscriptions/${mockSubscription.id}`, () => {
           return HttpResponse.json({ success: true })
