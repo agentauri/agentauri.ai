@@ -112,8 +112,11 @@ describe('use-auth hooks', () => {
   })
 
   describe('useLogin', () => {
+    // Match walletLoginResponseSchema
     const mockLoginResponse = {
       token: 'jwt-token-here',
+      refresh_token: 'refresh-token-here',
+      expires_in: 3600,
       user: {
         id: '550e8400-e29b-41d4-a716-446655440000',
         username: 'testuser',
@@ -131,6 +134,10 @@ describe('use-auth hooks', () => {
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
+        }),
+        // Mock the local Next.js API route for storing tokens
+        http.post('/api/auth/set-tokens', () => {
+          return HttpResponse.json({ success: true })
         })
       )
 
@@ -183,6 +190,10 @@ describe('use-auth hooks', () => {
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
+        }),
+        // Mock the local Next.js API route for clearing cookies
+        http.post('/api/auth/logout', () => {
+          return HttpResponse.json({ success: true })
         })
       )
 
@@ -204,6 +215,10 @@ describe('use-auth hooks', () => {
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
+        }),
+        // Mock the local Next.js API route for clearing cookies
+        http.post('/api/auth/logout', () => {
+          return HttpResponse.json({ success: true })
         })
       )
 
@@ -214,8 +229,8 @@ describe('use-auth hooks', () => {
       result.current.mutate()
 
       await waitFor(() => {
-        // Even on error, logout should complete (error handler clears state)
-        expect(result.current.isError).toBe(true)
+        // Logout still succeeds because the hook catches backend errors
+        expect(result.current.isSuccess).toBe(true)
       })
     })
   })

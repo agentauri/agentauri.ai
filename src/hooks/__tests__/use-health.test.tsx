@@ -121,6 +121,7 @@ describe('use-health hooks', () => {
     })
 
     it('should handle API error gracefully', async () => {
+      // Health API catches errors and returns unhealthy status
       server.use(
         http.get(`${baseUrl}/health`, () => {
           return HttpResponse.json({ error: 'Service unavailable' }, { status: 503 })
@@ -132,11 +133,15 @@ describe('use-health hooks', () => {
       })
 
       await waitFor(() => {
-        expect(result.current.isError).toBe(true)
+        expect(result.current.isSuccess).toBe(true)
       })
+
+      // The hook returns unhealthy status on error instead of throwing
+      expect(result.current.data?.status).toBe('unhealthy')
     })
 
     it('should handle network error gracefully', async () => {
+      // Health API catches errors and returns unhealthy status
       server.use(
         http.get(`${baseUrl}/health`, () => {
           return HttpResponse.error()
@@ -148,8 +153,11 @@ describe('use-health hooks', () => {
       })
 
       await waitFor(() => {
-        expect(result.current.isError).toBe(true)
+        expect(result.current.isSuccess).toBe(true)
       })
+
+      // The hook returns unhealthy status on error instead of throwing
+      expect(result.current.data?.status).toBe('unhealthy')
     })
   })
 })

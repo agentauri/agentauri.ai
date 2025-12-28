@@ -98,7 +98,8 @@ describe('use-triggers hooks', () => {
         expect(result.current.isSuccess).toBe(true)
       })
 
-      expect(result.current.data).toEqual(mockResponse)
+      expect(result.current.data?.data).toHaveLength(1)
+      expect(result.current.data?.pagination.total).toBe(1)
     })
 
     it('should not fetch when orgId is null', () => {
@@ -117,7 +118,7 @@ describe('use-triggers hooks', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )

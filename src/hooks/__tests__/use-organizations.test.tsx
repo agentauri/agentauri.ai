@@ -117,9 +117,10 @@ describe('use-organizations hooks', () => {
 
   describe('useOrganization', () => {
     it('should fetch organization by id', async () => {
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrganization.id}`, () => {
-          return HttpResponse.json(mockOrgWithRole)
+          return HttpResponse.json({ data: mockOrgWithRole })
         })
       )
 
@@ -145,9 +146,10 @@ describe('use-organizations hooks', () => {
 
   describe('useCurrentOrganization', () => {
     it('should fetch current organization from store', async () => {
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrganization.id}`, () => {
-          return HttpResponse.json(mockOrgWithRole)
+          return HttpResponse.json({ data: mockOrgWithRole })
         })
       )
 
@@ -165,9 +167,10 @@ describe('use-organizations hooks', () => {
 
   describe('useCreateOrganization', () => {
     it('should create organization successfully', async () => {
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.post(`${baseUrl}/organizations`, async () => {
-          return HttpResponse.json(mockOrganization)
+          return HttpResponse.json({ data: mockOrganization })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -215,9 +218,10 @@ describe('use-organizations hooks', () => {
     it('should update organization successfully', async () => {
       const updatedOrg = { ...mockOrganization, name: 'Updated Name' }
 
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.patch(`${baseUrl}/organizations/${mockOrganization.id}`, async () => {
-          return HttpResponse.json(updatedOrg)
+          return HttpResponse.json({ data: updatedOrg })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -299,9 +303,10 @@ describe('use-organizations hooks', () => {
 
   describe('useInviteMember', () => {
     it('should invite member successfully', async () => {
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.post(`${baseUrl}/organizations/${mockOrganization.id}/members/invite`, async () => {
-          return HttpResponse.json(mockMember)
+          return HttpResponse.json({ data: mockMember })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -327,9 +332,10 @@ describe('use-organizations hooks', () => {
     it('should update member role successfully', async () => {
       const updatedMember = { ...mockMember, role: 'admin' }
 
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.patch(`${baseUrl}/organizations/${mockOrganization.id}/members/${mockMember.id}`, async () => {
-          return HttpResponse.json(updatedMember)
+          return HttpResponse.json({ data: updatedMember })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -383,9 +389,10 @@ describe('use-organizations hooks', () => {
         my_role: 'admin',
       }
 
+      // Backend wraps single resources in { data: {...} }
       server.use(
         http.get(`${baseUrl}/organizations/${newOrgId}`, () => {
-          return HttpResponse.json(newOrg)
+          return HttpResponse.json({ data: newOrg })
         })
       )
 
