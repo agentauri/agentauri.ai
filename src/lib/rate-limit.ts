@@ -133,6 +133,42 @@ export const RATE_LIMITS = {
 } as const
 
 /**
+ * Server-side rate limit presets for API routes
+ */
+export const AUTH_RATE_LIMITS = {
+  /** Login attempts: 5 per minute */
+  login: { maxRequests: 5, windowMs: 60 * 1000 },
+  /** Token refresh: 10 per minute */
+  refresh: { maxRequests: 10, windowMs: 60 * 1000 },
+  /** Code exchange: 5 per minute */
+  exchange: { maxRequests: 5, windowMs: 60 * 1000 },
+  /** Set tokens: 10 per minute */
+  setTokens: { maxRequests: 10, windowMs: 60 * 1000 },
+  /** Logout: 10 per minute */
+  logout: { maxRequests: 10, windowMs: 60 * 1000 },
+} as const
+
+/**
+ * Get client IP from request headers (for server-side rate limiting)
+ */
+export function getClientIp(headers: Headers): string {
+  // Check common proxy headers
+  const forwardedFor = headers.get('x-forwarded-for')
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0]?.trim() || 'unknown'
+  }
+
+  const realIp = headers.get('x-real-ip')
+  if (realIp) {
+    return realIp.trim()
+  }
+
+  // Fallback identifier using user agent
+  const userAgent = headers.get('user-agent') || 'unknown'
+  return `ua:${userAgent.slice(0, 50)}`
+}
+
+/**
  * Decorator for rate-limited async functions
  * Throws error if rate limit exceeded
  */

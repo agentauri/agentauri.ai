@@ -56,6 +56,8 @@ export const walletLoginRequestSchema = z.object({
 // Wallet login response schema
 export const walletLoginResponseSchema = z.object({
   token: z.string(),
+  refresh_token: z.string(),
+  expires_in: z.number(), // seconds until access token expires
   user: authUserSchema,
 })
 
@@ -72,6 +74,40 @@ export const classicLoginResponseSchema = walletLoginResponseSchema
 export const logoutResponseSchema = z.object({
   success: z.boolean(),
   message: z.string().optional(),
+})
+
+// Refresh token request schema
+export const refreshTokenRequestSchema = z.object({
+  refresh_token: z.string(),
+})
+
+// Refresh token response schema (token rotation - new tokens issued)
+export const refreshTokenResponseSchema = z.object({
+  token: z.string(),
+  refresh_token: z.string(),
+  expires_in: z.number(),
+})
+
+// OAuth code exchange request schema
+export const exchangeCodeRequestSchema = z.object({
+  code: z.string().min(1, 'Authorization code is required'),
+})
+
+// OAuth code exchange response (same structure as login response)
+export const exchangeCodeResponseSchema = z.object({
+  token: z.string(),
+  refresh_token: z.string(),
+  expires_in: z.number(),
+  user: z.object({
+    id: uuidSchema,
+    username: z.string(),
+    email: z.string().email(),
+    name: z.string().nullable(),
+    avatar: z.string().url().nullable(),
+    created_at: z.string().datetime(),
+    last_login_at: z.string().datetime().optional(),
+    is_active: z.boolean().optional(),
+  }),
 })
 
 // User session schema (from /me endpoint)
@@ -101,6 +137,8 @@ export type WalletLoginResponse = z.infer<typeof walletLoginResponseSchema>
 export type ClassicLoginRequest = z.infer<typeof classicLoginRequestSchema>
 export type ClassicLoginResponse = z.infer<typeof classicLoginResponseSchema>
 export type LogoutResponse = z.infer<typeof logoutResponseSchema>
+export type RefreshTokenRequest = z.infer<typeof refreshTokenRequestSchema>
+export type RefreshTokenResponse = z.infer<typeof refreshTokenResponseSchema>
 export type UserSession = z.infer<typeof userSessionSchema>
 
 // Legacy types

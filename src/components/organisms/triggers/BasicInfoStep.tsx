@@ -14,10 +14,10 @@ import { Input } from '@/components/atoms/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
 import { CHAIN_NAMES, REGISTRIES, TESTNET_CHAINS } from '@/lib/constants'
-// TODO: Replace 'any' with CreateTriggerRequest when form types are aligned
+import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
+
 interface BasicInfoStepProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Form types need alignment with Zod schema
-  form: UseFormReturn<any>
+  form: UseFormReturn<CreateTriggerFormValues>
 }
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {

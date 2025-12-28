@@ -5,21 +5,31 @@ import { organizationRoleSchema, paginatedResponseSchema, uuidSchema } from './c
  * Organization-related validation schemas
  */
 
-// Organization base schema
+// Organization base schema (matches backend snake_case response)
 export const organizationSchema = z.object({
   id: uuidSchema,
   name: z.string().min(1).max(100),
   slug: z.string().regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
   description: z.string().max(500).nullable(),
-  isPersonal: z.boolean(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  owner_id: uuidSchema.optional(),
+  plan: z.string().optional(),
+  is_personal: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
 })
 
-// Organization with role schema
+// Organization with role schema (flat structure from backend list endpoint)
 export const organizationWithRoleSchema = z.object({
-  organization: organizationSchema,
-  myRole: organizationRoleSchema,
+  id: uuidSchema,
+  name: z.string().min(1).max(100),
+  slug: z.string().regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
+  description: z.string().max(500).nullable(),
+  owner_id: uuidSchema.optional(),
+  plan: z.string().optional(),
+  is_personal: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  my_role: organizationRoleSchema,
 })
 
 // Organization member schema

@@ -10,7 +10,7 @@ import { useCreateCheckout, useCurrentOrganization } from '@/hooks'
 
 export default function BillingPage() {
   const { data: orgData, isLoading } = useCurrentOrganization()
-  const organization = orgData?.organization
+  const organization = orgData
 
   const createCheckout = useCreateCheckout(organization?.id ?? '')
 

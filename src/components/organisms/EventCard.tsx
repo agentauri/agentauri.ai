@@ -1,15 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
 import { Button } from '@/components/atoms/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/atoms/card'
 import { Icon } from '@/components/atoms/icon'
 import { ChainBadge, RegistryBadge } from '@/components/molecules'
 import { EventTypeBadge } from '@/components/molecules/EventTypeBadge'
+import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
+import { formatDateTime, formatTxHash } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { BlockchainEvent } from '@/types/models'
-import { toast } from 'sonner'
 
 interface EventCardProps {
   event: BlockchainEvent
@@ -19,21 +19,10 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, className, compact = false }: EventCardProps) {
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopyToClipboard({ successMessage: 'Transaction hash copied' })
 
-  const copyTxHash = async () => {
-    try {
-      await navigator.clipboard.writeText(event.transactionHash)
-      setCopied(true)
-      toast.success('Transaction hash copied')
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      toast.error('Failed to copy')
-    }
-  }
-
-  const truncatedHash = `${event.transactionHash.slice(0, 10)}...${event.transactionHash.slice(-8)}`
-  const eventTime = new Date(event.timestamp).toLocaleString()
+  const truncatedHash = formatTxHash(event.transactionHash)
+  const eventTime = formatDateTime(event.timestamp)
 
   // Compact mode for inline lists
   if (compact) {
@@ -92,7 +81,7 @@ export function EventCard({ event, className, compact = false }: EventCardProps)
             <div className="typo-ui text-terminal-dim mb-1">&gt; TX HASH</div>
             <button
               type="button"
-              onClick={copyTxHash}
+              onClick={() => copy(event.transactionHash)}
               className="typo-ui text-terminal-green hover:text-terminal-bright flex items-center gap-1 transition-colors"
               aria-label="Copy transaction hash"
             >

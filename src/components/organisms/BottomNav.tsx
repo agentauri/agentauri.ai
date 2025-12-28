@@ -46,17 +46,20 @@ export function BottomNav({ variant, onMoreClick, className }: BottomNavProps) {
 
   return (
     <nav
+      aria-label={variant === 'dashboard' ? 'Dashboard navigation' : 'Main navigation'}
       className={cn(
         'fixed bottom-0 left-0 right-0 z-50 md:hidden',
         'bg-terminal border-t-2 border-terminal',
         className
       )}
     >
-      <div className="flex items-center justify-around h-16">
+      <div className="flex items-center justify-around h-16" role="list">
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            aria-label={item.label}
             className={cn(
               'flex flex-col items-center justify-center flex-1 h-full',
               'transition-all duration-150',
@@ -74,6 +77,7 @@ export function BottomNav({ variant, onMoreClick, className }: BottomNavProps) {
           <button
             type="button"
             onClick={onMoreClick}
+            aria-label="Open more options menu"
             className={cn(
               'flex flex-col items-center justify-center flex-1 h-full',
               'text-terminal-dim hover:text-terminal-green',

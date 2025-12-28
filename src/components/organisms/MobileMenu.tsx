@@ -44,13 +44,14 @@ export function MobileMenu({ isOpen, onClose, activePath }: MobileMenuProps) {
     >
       {/* Header */}
       <div className="flex items-center justify-between h-16 px-6 border-b-2 border-terminal">
-        <span className="text-terminal-green typo-ui glow flex items-center gap-2">
+        <span className="text-terminal-green typo-ui glow flex items-center gap-2" id="mobile-menu-title">
           <Icon name="menu" size="sm" />
           MENU
         </span>
         <button
           type="button"
           onClick={onClose}
+          aria-label="Close navigation menu"
           className="text-terminal-dim hover:text-terminal-green typo-ui transition-colors flex items-center gap-2"
         >
           <Icon name="close" size="sm" />
@@ -59,7 +60,7 @@ export function MobileMenu({ isOpen, onClose, activePath }: MobileMenuProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col justify-start pt-8 px-8">
+      <nav aria-labelledby="mobile-menu-title" className="flex-1 flex flex-col justify-start pt-8 px-8">
         <ul className="space-y-4">
           {menuItems.map((item, index) => (
             <li
@@ -96,6 +97,7 @@ export function MobileMenu({ isOpen, onClose, activePath }: MobileMenuProps) {
       <div className="px-8 py-6 border-t-2 border-terminal-dim">
         <button
           type="button"
+          aria-label="Disconnect wallet and sign out"
           className={cn(
             'flex items-center gap-4 w-full',
             'text-terminal-dim hover:text-destructive',

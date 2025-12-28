@@ -11,15 +11,17 @@ import { Label } from '@/components/atoms/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
 import { EVENT_TYPES, EVENT_TYPE_INFO, type EventType } from '@/lib/constants'
-// TODO: Replace 'any' with CreateTriggerRequest when form types are aligned
+import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
+
 interface ConditionsStepProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Form types need alignment with Zod schema
-  form: UseFormReturn<any>
+  form: UseFormReturn<CreateTriggerFormValues>
 }
+
+type ConditionOperator = 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'contains' | 'startsWith' | 'endsWith'
 
 interface FieldFilter {
   field: string
-  operator: string
+  operator: ConditionOperator
   value: string
 }
 
@@ -36,12 +38,12 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
       return
     }
 
-    const conditions = [
+    const conditions: CreateTriggerFormValues['conditions'] = [
       // Primary event type condition
       {
         conditionType: 'event_filter',
         field: 'event_type',
-        operator: 'eq',
+        operator: 'eq' as const,
         value: eventType,
         config: {},
       },
@@ -174,7 +176,7 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
                           if (existingIndex >= 0) {
                             const existingFilter = filters[existingIndex]
                             if (existingFilter) {
-                              updateFilter(existingIndex, { ...existingFilter, operator: op })
+                              updateFilter(existingIndex, { ...existingFilter, operator: op as ConditionOperator })
                             }
                           }
                         }}
@@ -201,7 +203,7 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
                               updateFilter(existingIndex, { ...existingFilter, value })
                             }
                           } else if (value) {
-                            const newFilters = [...filters, { field: 'score', operator: 'gte', value }]
+                            const newFilters: FieldFilter[] = [...filters, { field: 'score', operator: 'gte' as const, value }]
                             setFilters(newFilters)
                             updateConditions(selectedEventType, newFilters)
                           }
@@ -235,7 +237,7 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
                         removeFilter(existingIndex)
                       }
                     } else if (value) {
-                      const newFilters = [...filters, { field: 'agent_address', operator: 'in', value }]
+                      const newFilters: FieldFilter[] = [...filters, { field: 'agent_address', operator: 'in' as const, value }]
                       setFilters(newFilters)
                       updateConditions(selectedEventType, newFilters)
                     }
@@ -268,7 +270,7 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
                           <Label className="typo-ui">OPERATOR</Label>
                           <Select
                             value={filter.operator}
-                            onValueChange={(op) => updateFilter(actualIndex, { ...filter, operator: op })}
+                            onValueChange={(op) => updateFilter(actualIndex, { ...filter, operator: op as ConditionOperator })}
                           >
                             <SelectTrigger className="typo-ui">
                               <SelectValue />

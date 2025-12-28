@@ -1,9 +1,11 @@
 import { API_BASE_URL, API_VERSION } from './constants'
+import { handleSessionExpired } from './auth-utils'
 
 interface ApiRequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined>
   body?: unknown
   timeout?: number
+  skipRefresh?: boolean // Flag to prevent infinite refresh loops
 }
 
 interface ApiErrorData {
@@ -82,6 +84,48 @@ export function clearCsrfToken(): void {
   csrfToken = null
 }
 
+/**
+ * Token refresh state to prevent concurrent refresh attempts
+ */
+let isRefreshing = false
+let refreshPromise: Promise<boolean> | null = null
+
+/**
+ * Attempt to refresh the access token
+ * Uses the refresh token stored in httpOnly cookie
+ * Returns true if refresh succeeded, false otherwise
+ */
+async function attemptTokenRefresh(): Promise<boolean> {
+  // If already refreshing, wait for the existing refresh to complete
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise
+  }
+
+  isRefreshing = true
+  refreshPromise = (async () => {
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      })
+
+      if (response.ok) {
+        return true
+      }
+
+      // Refresh failed - tokens are invalid
+      return false
+    } catch {
+      return false
+    } finally {
+      isRefreshing = false
+      refreshPromise = null
+    }
+  })()
+
+  return refreshPromise
+}
+
 function buildUrl(endpoint: string, params?: ApiRequestOptions['params']): string {
   const path = `/api/${API_VERSION}${endpoint}`
 
@@ -134,7 +178,7 @@ async function parseJsonResponse<T>(response: Response): Promise<T | null> {
 }
 
 async function request<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { params, body, timeout = 30000, headers: customHeaders, ...fetchOptions } = options
+  const { params, body, timeout = 30000, skipRefresh = false, headers: customHeaders, ...fetchOptions } = options
 
   const url = buildUrl(endpoint, params)
   const headers = new Headers(customHeaders)
@@ -144,6 +188,10 @@ async function request<T>(endpoint: string, options: ApiRequestOptions = {}): Pr
     headers.set('Content-Type', 'application/json')
   }
   headers.set('Accept', 'application/json')
+
+  // Note: We no longer set Authorization header from client-readable cookie
+  // The httpOnly cookie is sent automatically via credentials: 'include'
+  // The backend reads the token from the cookie
 
   // Add CSRF token for state-changing requests
   const method = fetchOptions.method ?? 'GET'
@@ -186,6 +234,24 @@ async function request<T>(endpoint: string, options: ApiRequestOptions = {}): Pr
       // Clear CSRF token on 403 (might be expired)
       if (response.status === 403) {
         clearCsrfToken()
+      }
+
+      // Handle 401 (token expired) - attempt refresh before logout
+      if (response.status === 401) {
+        const isAuthEndpoint = endpoint.startsWith('/auth/')
+
+        if (!isAuthEndpoint && !skipRefresh) {
+          // Try to refresh the token
+          const refreshed = await attemptTokenRefresh()
+
+          if (refreshed) {
+            // Retry the original request with the new token
+            return request<T>(endpoint, { ...options, skipRefresh: true })
+          }
+
+          // Refresh failed - session is truly expired
+          handleSessionExpired()
+        }
       }
 
       throw new ApiError(

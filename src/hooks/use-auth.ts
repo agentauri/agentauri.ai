@@ -2,12 +2,20 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useRef } from 'react'
 import { authApi } from '@/lib/api'
 import { ApiError } from '@/lib/api-client'
 import { queryKeys } from '@/lib/query-keys'
 import type { UserSession, WalletLoginRequest } from '@/lib/validations'
 import { useAuthStore } from '@/stores/auth-store'
 import { useOrganizationStore } from '@/stores/organization-store'
+
+/**
+ * Token refresh configuration
+ * Token expires in 60 minutes, refresh 5 minutes before expiration
+ */
+const TOKEN_REFRESH_INTERVAL = 55 * 60 * 1000 // 55 minutes
+const TOKEN_REFRESH_ON_FOCUS_THRESHOLD = 5 * 60 * 1000 // 5 minutes since last refresh
 
 /**
  * Hook for fetching current user session
@@ -68,7 +76,28 @@ export function useLogin() {
   const { setAuthenticated } = useAuthStore()
 
   return useMutation({
-    mutationFn: (request: WalletLoginRequest) => authApi.loginWithWallet(request),
+    mutationFn: async (request: WalletLoginRequest) => {
+      // 1. Call backend login
+      const response = await authApi.loginWithWallet(request)
+
+      // 2. Store tokens in httpOnly cookies via Next.js API route
+      const setTokensResponse = await fetch('/api/auth/set-tokens', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: response.token,
+          refresh_token: response.refresh_token,
+          expires_in: response.expires_in,
+        }),
+        credentials: 'include',
+      })
+
+      if (!setTokensResponse.ok) {
+        throw new Error('Failed to store authentication tokens')
+      }
+
+      return response
+    },
     onSuccess: async () => {
       setAuthenticated(true)
       // Invalidate and refetch session
@@ -93,7 +122,20 @@ export function useLogout() {
   const { reset: resetOrg } = useOrganizationStore()
 
   return useMutation({
-    mutationFn: () => authApi.logout(),
+    mutationFn: async () => {
+      // 1. Call backend logout (invalidates session server-side)
+      try {
+        await authApi.logout()
+      } catch {
+        // Ignore backend logout errors - we'll clear local state anyway
+      }
+
+      // 2. Clear httpOnly cookies via local API route
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+    },
     onSuccess: () => {
       // Clear all auth state
       clearAuth()
@@ -114,6 +156,105 @@ export function useLogout() {
 }
 
 /**
+ * Hook for proactive token refresh
+ * Refreshes the access token before it expires to maintain seamless session
+ */
+export function useTokenRefresh() {
+  const { isAuthenticated } = useAuthStore()
+  const lastRefreshRef = useRef<number>(Date.now())
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const refreshToken = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      })
+
+      if (response.ok) {
+        lastRefreshRef.current = Date.now()
+        return true
+      }
+
+      // If refresh fails with 401, token is invalid
+      if (response.status === 401) {
+        return false
+      }
+
+      return false
+    } catch {
+      return false
+    }
+  }, [])
+
+  // Set up periodic refresh timer
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Clear any existing timer when not authenticated
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current)
+        refreshTimeoutRef.current = null
+      }
+      return
+    }
+
+    const scheduleRefresh = () => {
+      refreshTimeoutRef.current = setTimeout(async () => {
+        const success = await refreshToken()
+        if (success) {
+          // Schedule next refresh
+          scheduleRefresh()
+        }
+        // If refresh fails, the next API call will handle it
+      }, TOKEN_REFRESH_INTERVAL)
+    }
+
+    scheduleRefresh()
+
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current)
+        refreshTimeoutRef.current = null
+      }
+    }
+  }, [isAuthenticated, refreshToken])
+
+  // Refresh on window focus if enough time has passed
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const handleFocus = async () => {
+      const timeSinceLastRefresh = Date.now() - lastRefreshRef.current
+      if (timeSinceLastRefresh >= TOKEN_REFRESH_ON_FOCUS_THRESHOLD) {
+        await refreshToken()
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [isAuthenticated, refreshToken])
+
+  // Refresh on visibility change (tab becomes visible)
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        const timeSinceLastRefresh = Date.now() - lastRefreshRef.current
+        if (timeSinceLastRefresh >= TOKEN_REFRESH_ON_FOCUS_THRESHOLD) {
+          await refreshToken()
+        }
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [isAuthenticated, refreshToken])
+
+  return { refreshToken, lastRefresh: lastRefreshRef.current }
+}
+
+/**
  * Combined auth hook for convenience
  */
 export function useAuth(): {
@@ -129,6 +270,9 @@ export function useAuth(): {
   const loginMutation = useLogin()
   const logoutMutation = useLogout()
   const { isAuthenticated, isLoading: isStoreLoading, isHydrated } = useAuthStore()
+
+  // Set up proactive token refresh
+  useTokenRefresh()
 
   return {
     session: sessionQuery.data,

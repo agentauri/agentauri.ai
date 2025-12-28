@@ -93,7 +93,13 @@ src/components/molecules/
 ├── Pagination.tsx        # Button list
 ├── StatusBadge.tsx       # Badge + Icon
 ├── ChainBadge.tsx        # Badge + chain logic
-└── RegistryBadge.tsx     # Badge + registry logic
+├── RegistryBadge.tsx     # Badge + registry logic
+├── OAuthButtons.tsx      # Google/GitHub OAuth buttons
+├── WalletOptions.tsx     # Wallet connection options
+├── SidebarUserInfo.tsx   # User/org info per sidebar
+├── OrganizationSwitcher.tsx # Dropdown cambio org
+├── CircuitBreakerStatus.tsx # System health status
+└── WarpLogoCenter.tsx    # Logo animato homepage
 ```
 
 **Caratteristiche Molecules:**
@@ -121,6 +127,10 @@ src/components/organisms/
 ├── BottomNav.tsx             # Mobile navigation
 ├── MobileMenu.tsx            # Fullscreen menu
 ├── ErrorBoundary.tsx         # Error handling
+├── WarpHomepage.tsx          # Landing page animata
+├── WarpStarField.tsx         # Background stelle
+├── EventTypeSelector.tsx     # Selettore tipo evento
+├── CreateOrganizationDialog.tsx # Modal creazione org
 └── triggers/
     ├── BasicInfoStep.tsx
     ├── ConditionsStep.tsx
@@ -435,8 +445,8 @@ Minimo **44x44px** per elementi interattivi su mobile:
 ### Font Families
 
 ```css
---font-pixel: 'Press Start 2P', monospace  /* UI text, headers */
---font-mono:  'VT323', monospace           /* Code, data */
+--font-sans:  'JetBrains Mono', monospace  /* UI text, headers, data */
+--font-mono:  'JetBrains Mono', monospace  /* Code */
 ```
 
 ### Typography Classes

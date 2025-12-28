@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -52,6 +52,7 @@ export function CreateOrganizationDialog({
 }: CreateOrganizationDialogProps) {
   const createOrg = useCreateOrganization()
   const switchOrg = useSwitchOrganization()
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
 
   const form = useForm<CreateOrganizationRequest>({
     resolver: zodResolver(createOrganizationRequestSchema),
@@ -64,13 +65,13 @@ export function CreateOrganizationDialog({
 
   const watchedName = form.watch('name')
 
-  // Auto-generate slug from name
+  // Auto-generate slug from name (unless user manually edited it)
   useEffect(() => {
-    if (watchedName && !form.getValues('slug')) {
+    if (watchedName && !slugManuallyEdited) {
       const slug = generateSlug(watchedName)
       form.setValue('slug', slug, { shouldValidate: false })
     }
-  }, [watchedName, form])
+  }, [watchedName, slugManuallyEdited, form])
 
   const onSubmit = async (data: CreateOrganizationRequest) => {
     try {
@@ -85,6 +86,7 @@ export function CreateOrganizationDialog({
 
       // Reset form and close dialog
       form.reset()
+      setSlugManuallyEdited(false)
       onOpenChange(false)
       onSuccess?.(result)
     } catch {
@@ -95,6 +97,7 @@ export function CreateOrganizationDialog({
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
       form.reset()
+      setSlugManuallyEdited(false)
     }
     onOpenChange(newOpen)
   }
@@ -150,6 +153,10 @@ export function CreateOrganizationDialog({
                       {...field}
                       placeholder="my-organization"
                       className="bg-terminal border-terminal-dim focus:border-terminal-green typo-ui font-mono"
+                      onChange={(e) => {
+                        field.onChange(e)
+                        setSlugManuallyEdited(true)
+                      }}
                     />
                   </FormControl>
                   <FormDescription className="text-terminal-dim text-xs">

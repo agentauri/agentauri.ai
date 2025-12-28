@@ -2,12 +2,20 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { BuildingIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
+import { useLogout } from '@/hooks/use-auth'
 import { Icon, type IconName } from '@/components/atoms/icon'
-import { OrganizationSwitcher } from '@/components/molecules'
+import { SidebarUserInfo } from '@/components/molecules/SidebarUserInfo'
 
-const navItems: { href: string; icon: IconName; label: string }[] = [
+type NavItem = {
+  href: string
+  label: string
+} & ({ icon: IconName; lucideIcon?: never } | { lucideIcon: React.ComponentType<{ className?: string }>; icon?: never })
+
+const navItems: NavItem[] = [
+  { href: '/dashboard/organizations', lucideIcon: BuildingIcon, label: 'ORGANIZATION' },
   { href: '/dashboard', icon: 'dashboard', label: 'DASHBOARD' },
   { href: '/dashboard/triggers', icon: 'triggers', label: 'TRIGGERS' },
   { href: '/dashboard/events', icon: 'events', label: 'EVENTS' },
@@ -27,12 +35,21 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
   const routerPathname = usePathname() ?? ''
   const pathname = activePath ?? routerPathname
   const { sidebarCollapsed, toggleSidebar } = useUIStore()
+  const logout = useLogout()
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
       return pathname === href
     }
+    // Special case: /dashboard/organizations should match exactly
+    if (href === '/dashboard/organizations') {
+      return pathname === href || pathname.startsWith('/dashboard/organizations/')
+    }
     return pathname.startsWith(href)
+  }
+
+  const handleDisconnect = () => {
+    logout.mutate()
   }
 
   return (
@@ -68,18 +85,14 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
         </button>
       </div>
 
-      {/* Organization Switcher */}
-      <div className="px-2 py-3 border-b-2 border-terminal-dim">
-        <OrganizationSwitcher collapsed={sidebarCollapsed} />
-      </div>
-
       {/* Navigation */}
-      <nav className="flex-1 py-4">
+      <nav aria-label="Main navigation" className="flex-1 py-4">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
                 className={cn(
                   'flex items-center gap-3 px-4 py-3',
                   'transition-all duration-150',
@@ -92,6 +105,8 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
                 <span className="shrink-0">
                   {isActive(item.href) ? (
                     <Icon name="active-nav" size="sm" />
+                  ) : item.lucideIcon ? (
+                    <item.lucideIcon className="w-3 h-3" />
                   ) : (
                     <Icon name={item.icon} size="sm" />
                   )}
@@ -106,20 +121,33 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
       </nav>
 
       {/* Footer */}
-      <div className="border-t-2 border-terminal-dim p-4">
-        <button
-          type="button"
-          className={cn(
-            'flex items-center gap-3 w-full',
-            'text-terminal-dim hover:text-destructive',
-            'transition-all duration-150'
-          )}
-        >
-          <Icon name="close" size="sm" />
-          {!sidebarCollapsed && (
-            <span className="typo-ui">DISCONNECT</span>
-          )}
-        </button>
+      <div className="border-t-2 border-terminal-dim">
+        {/* User Info */}
+        <SidebarUserInfo collapsed={sidebarCollapsed} />
+
+        {/* Disconnect Button */}
+        <div className="p-4 pt-2">
+          <button
+            type="button"
+            onClick={handleDisconnect}
+            disabled={logout.isPending}
+            aria-label={sidebarCollapsed ? 'Disconnect wallet and sign out' : undefined}
+            aria-busy={logout.isPending}
+            className={cn(
+              'flex items-center gap-3 w-full',
+              'text-terminal-dim hover:text-destructive',
+              'transition-all duration-150',
+              logout.isPending && 'opacity-50 cursor-not-allowed'
+            )}
+          >
+            <Icon name="close" size="sm" />
+            {!sidebarCollapsed && (
+              <span className="typo-ui">
+                {logout.isPending ? 'DISCONNECTING...' : 'DISCONNECT'}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </aside>
   )

@@ -22,7 +22,7 @@ export default function SettingsPage() {
 
   // Session IS the user data directly
   const user = session
-  const organization = orgData?.organization
+  const organization = orgData
 
   const handleEdit = () => {
     if (user) {

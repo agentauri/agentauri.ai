@@ -33,7 +33,9 @@ export const organizationsApi = {
    * Get organization by ID
    */
   async get(id: string): Promise<OrganizationWithRole> {
-    const data = await apiClient.get<OrganizationWithRole>(`/organizations/${id}`)
+    const response = await apiClient.get<{ data: OrganizationWithRole }>(`/organizations/${id}`)
+    // Backend wraps single resource in { data: {...} }
+    const data = response.data
     return organizationWithRoleSchema.parse(data)
   },
 
@@ -41,16 +43,18 @@ export const organizationsApi = {
    * Create new organization
    */
   async create(request: CreateOrganizationRequest): Promise<Organization> {
-    const data = await apiClient.post<Organization>('/organizations', request)
-    return organizationSchema.parse(data)
+    const response = await apiClient.post<{ data: Organization }>('/organizations', request)
+    // Backend wraps single resource in { data: {...} }
+    return organizationSchema.parse(response.data)
   },
 
   /**
    * Update organization
    */
   async update(id: string, request: UpdateOrganizationRequest): Promise<Organization> {
-    const data = await apiClient.patch<Organization>(`/organizations/${id}`, request)
-    return organizationSchema.parse(data)
+    const response = await apiClient.patch<{ data: Organization }>(`/organizations/${id}`, request)
+    // Backend wraps single resource in { data: {...} }
+    return organizationSchema.parse(response.data)
   },
 
   /**
@@ -75,11 +79,12 @@ export const organizationsApi = {
    * Invite member to organization
    */
   async inviteMember(orgId: string, request: InviteMemberRequest): Promise<OrganizationMember> {
-    const data = await apiClient.post<OrganizationMember>(
+    const response = await apiClient.post<{ data: OrganizationMember }>(
       `/organizations/${orgId}/members/invite`,
       request
     )
-    return organizationMemberSchema.parse(data)
+    // Backend wraps single resource in { data: {...} }
+    return organizationMemberSchema.parse(response.data)
   },
 
   /**
@@ -90,11 +95,12 @@ export const organizationsApi = {
     memberId: string,
     request: UpdateMemberRoleRequest
   ): Promise<OrganizationMember> {
-    const data = await apiClient.patch<OrganizationMember>(
+    const response = await apiClient.patch<{ data: OrganizationMember }>(
       `/organizations/${orgId}/members/${memberId}`,
       request
     )
-    return organizationMemberSchema.parse(data)
+    // Backend wraps single resource in { data: {...} }
+    return organizationMemberSchema.parse(response.data)
   },
 
   /**

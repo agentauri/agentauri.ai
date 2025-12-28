@@ -175,5 +175,7 @@ export type Trigger = z.infer<typeof triggerSchema>
 export type TriggerCondition = z.infer<typeof triggerConditionSchema>
 export type TriggerAction = z.infer<typeof triggerActionSchema>
 export type CreateTriggerRequest = z.infer<typeof createTriggerRequestSchema>
+// Form input type (before Zod transforms/coerces values)
+export type CreateTriggerFormValues = z.input<typeof createTriggerRequestSchema>
 export type UpdateTriggerRequest = z.infer<typeof updateTriggerRequestSchema>
 export type TriggerFilters = z.infer<typeof triggerFiltersSchema>

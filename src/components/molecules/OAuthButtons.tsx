@@ -27,7 +27,7 @@ const OAUTH_PROVIDERS: OAuthProviderConfig[] = [
 interface OAuthButtonsProps {
   /** Which providers to show (default: all) */
   providers?: OAuthProvider[]
-  /** Where to redirect after successful auth */
+  /** Where to redirect after successful auth (default: /dashboard) */
   redirectAfter?: string
   /** Additional CSS classes */
   className?: string
@@ -37,7 +37,7 @@ interface OAuthButtonsProps {
 
 export function OAuthButtons({
   providers,
-  redirectAfter = '/dashboard',
+  redirectAfter,
   className,
   isLoading = false,
 }: OAuthButtonsProps) {
@@ -47,7 +47,12 @@ export function OAuthButtons({
 
   const handleClick = (provider: OAuthProviderConfig) => {
     if (isLoading) return
-    const url = authApi.getOAuthUrl(provider.id, redirectAfter)
+    // Build callback URL with optional redirect destination
+    // Backend will redirect to: /callback?token=xxx (legacy) or /callback?code=oac_xxx (new)
+    // The callback page handles auth and then redirects to final destination
+    const finalRedirect = redirectAfter || '/dashboard'
+    const callbackUrl = `/callback?redirect=${encodeURIComponent(finalRedirect)}`
+    const url = authApi.getOAuthUrl(provider.id, callbackUrl)
     window.location.href = url
   }
 

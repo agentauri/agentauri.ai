@@ -20,21 +20,27 @@ import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
  * The wallet provider handles signing without needing RPC.
  */
 
+// Build connectors list - WalletConnect uses indexedDB which requires browser
+const connectors =
+  typeof window !== 'undefined'
+    ? [
+        injected(),
+        walletConnect({
+          projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
+        }),
+        coinbaseWallet({
+          appName: 'AgentAuri.AI',
+        }),
+      ]
+    : [injected()] // SSR: only injected (doesn't use indexedDB)
+
 export const wagmiConfig = createConfig({
   chains: [mainnet, base, sepolia, baseSepolia, lineaSepolia, polygonAmoy],
   ssr: true,
   storage: createStorage({
     storage: cookieStorage,
   }),
-  connectors: [
-    injected(),
-    walletConnect({
-      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
-    }),
-    coinbaseWallet({
-      appName: 'AgentAuri.AI',
-    }),
-  ],
+  connectors,
   transports: {
     // Using public RPC endpoints (rate-limited but sufficient for wallet ops)
     // These are only used as fallback - wallet provider handles most operations

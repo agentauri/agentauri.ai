@@ -14,10 +14,10 @@ import {
 } from '@/components/atoms/dialog'
 import { StatusBadge } from '@/components/molecules/StatusBadge'
 import { TierBadge } from '@/components/molecules/TierBadge'
-import { useDeleteApiKey, useUpdateApiKey, useRegenerateApiKey } from '@/hooks'
+import { useDeleteApiKey, useUpdateApiKey, useRegenerateApiKey, useCopyToClipboard } from '@/hooks'
+import { formatDate, formatDateOrDefault } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { ApiKey } from '@/types/models'
-import { toast } from 'sonner'
 
 interface ApiKeyCardProps {
   apiKey: ApiKey
@@ -28,22 +28,11 @@ interface ApiKeyCardProps {
 export function ApiKeyCard({ apiKey, className, onRegenerate }: ApiKeyCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [regenerateDialogOpen, setRegenerateDialogOpen] = useState(false)
-  const [copied, setCopied] = useState(false)
 
+  const { copied, copy } = useCopyToClipboard({ successMessage: 'Key prefix copied' })
   const deleteMutation = useDeleteApiKey()
   const updateMutation = useUpdateApiKey()
   const regenerateMutation = useRegenerateApiKey()
-
-  const handleCopyPrefix = async () => {
-    try {
-      await navigator.clipboard.writeText(apiKey.keyPrefix)
-      setCopied(true)
-      toast.success('Key prefix copied')
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      toast.error('Failed to copy')
-    }
-  }
 
   const handleToggleEnabled = async () => {
     try {
@@ -75,13 +64,9 @@ export function ApiKeyCard({ apiKey, className, onRegenerate }: ApiKeyCardProps)
     }
   }
 
-  const createdAt = new Date(apiKey.createdAt).toLocaleDateString()
-  const lastUsed = apiKey.lastUsedAt
-    ? new Date(apiKey.lastUsedAt).toLocaleDateString()
-    : 'Never'
-  const expiresAt = apiKey.expiresAt
-    ? new Date(apiKey.expiresAt).toLocaleDateString()
-    : 'Never'
+  const createdAt = formatDate(apiKey.createdAt)
+  const lastUsed = formatDateOrDefault(apiKey.lastUsedAt)
+  const expiresAt = formatDateOrDefault(apiKey.expiresAt)
 
   return (
     <>
@@ -112,7 +97,7 @@ export function ApiKeyCard({ apiKey, className, onRegenerate }: ApiKeyCardProps)
               <div className="typo-ui text-terminal-dim mb-1">&gt; KEY PREFIX</div>
               <button
                 type="button"
-                onClick={handleCopyPrefix}
+                onClick={() => copy(apiKey.keyPrefix)}
                 className="typo-ui text-terminal-green hover:text-terminal-bright flex items-center gap-1 transition-colors font-mono"
                 aria-label="Copy key prefix"
               >

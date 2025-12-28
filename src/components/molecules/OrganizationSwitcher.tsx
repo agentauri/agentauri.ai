@@ -37,8 +37,8 @@ export function OrganizationSwitcher({ collapsed = false, className }: Organizat
   const switchOrg = useSwitchOrganization()
 
   const organizations = orgsData?.data ?? []
-  const currentOrg = currentOrgData?.organization
-  const currentRole = currentOrgData?.myRole
+  const currentOrg = currentOrgData
+  const currentRole = currentOrgData?.my_role
 
   const handleSwitch = (orgId: string) => {
     if (orgId !== currentOrg?.id) {
@@ -74,12 +74,12 @@ export function OrganizationSwitcher({ collapsed = false, className }: Organizat
           <DropdownMenuSeparator className="bg-terminal-dim" />
           {organizations.map((org) => (
             <DropdownMenuItem
-              key={org.organization.id}
-              onClick={() => handleSwitch(org.organization.id)}
+              key={org.id}
+              onClick={() => handleSwitch(org.id)}
               className="typo-ui text-terminal-dim hover:text-terminal-green cursor-pointer"
             >
-              <span className="flex-1 truncate">{org.organization.name}</span>
-              {org.organization.id === currentOrg?.id && (
+              <span className="flex-1 truncate">{org.name}</span>
+              {org.id === currentOrg?.id && (
                 <CheckIcon className="h-4 w-4 text-terminal-green ml-2" />
               )}
             </DropdownMenuItem>
@@ -141,26 +141,26 @@ export function OrganizationSwitcher({ collapsed = false, className }: Organizat
           ) : (
             organizations.map((org) => (
               <DropdownMenuItem
-                key={org.organization.id}
-                onClick={() => handleSwitch(org.organization.id)}
+                key={org.id}
+                onClick={() => handleSwitch(org.id)}
                 className={cn(
                   'typo-ui cursor-pointer flex items-center',
-                  org.organization.id === currentOrg?.id
+                  org.id === currentOrg?.id
                     ? 'text-terminal-green'
                     : 'text-terminal-dim hover:text-terminal-green'
                 )}
               >
-                <span className="flex-1 truncate">{org.organization.name}</span>
+                <span className="flex-1 truncate">{org.name}</span>
                 <Badge
                   variant="outline"
                   className={cn(
                     'text-xs border-none ml-2',
-                    ROLE_COLORS[org.myRole]
+                    ROLE_COLORS[org.my_role]
                   )}
                 >
-                  {org.myRole}
+                  {org.my_role}
                 </Badge>
-                {org.organization.id === currentOrg?.id && (
+                {org.id === currentOrg?.id && (
                   <CheckIcon className="h-4 w-4 text-terminal-green ml-2 shrink-0" />
                 )}
               </DropdownMenuItem>

@@ -8,7 +8,7 @@ import { useCurrentOrganization } from '@/hooks'
 export default function AgentsPage() {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false)
   const { data: orgData, isLoading } = useCurrentOrganization()
-  const organization = orgData?.organization
+  const organization = orgData
 
   if (isLoading) {
     return (

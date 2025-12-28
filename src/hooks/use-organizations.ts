@@ -164,7 +164,7 @@ export function useSwitchOrganization() {
       return org
     },
     onSuccess: (org) => {
-      setCurrentOrganization(org.organization.id, org.myRole)
+      setCurrentOrganization(org.id, org.my_role)
       // Invalidate org-specific queries
       queryClient.invalidateQueries({ queryKey: queryKeys.triggers.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all })

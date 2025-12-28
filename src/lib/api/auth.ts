@@ -4,11 +4,14 @@ import {
   type ClassicLoginRequest,
   type ClassicLoginResponse,
   classicLoginResponseSchema,
+  exchangeCodeResponseSchema,
   type LogoutResponse,
   logoutResponseSchema,
   type NonceResponse,
   nonceResponseSchema,
   type OAuthProvider,
+  type RefreshTokenResponse,
+  refreshTokenResponseSchema,
   type UserSession,
   userSessionSchema,
   type WalletLoginRequest,
@@ -78,6 +81,28 @@ export const authApi = {
   async logout(): Promise<LogoutResponse> {
     const data = await apiClient.post<LogoutResponse>('/auth/logout')
     return logoutResponseSchema.parse(data)
+  },
+
+  /**
+   * Refresh access token using refresh token
+   * Backend implements token rotation: old refresh token is invalidated
+   * Returns new access token and new refresh token
+   */
+  async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
+    const data = await apiClient.post<RefreshTokenResponse>('/auth/refresh', {
+      refresh_token: refreshToken,
+    })
+    return refreshTokenResponseSchema.parse(data)
+  },
+
+  /**
+   * Exchange OAuth authorization code for tokens
+   * Called after OAuth callback redirects with ?code=oac_xxx
+   * Code is one-time use and expires in 5 minutes
+   */
+  async exchangeCode(code: string): Promise<WalletLoginResponse> {
+    const data = await apiClient.post<WalletLoginResponse>('/auth/exchange', { code })
+    return exchangeCodeResponseSchema.parse(data)
   },
 
   /**

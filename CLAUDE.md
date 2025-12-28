@@ -70,7 +70,10 @@ src/
 
 **API Layer**: API clients in `src/lib/api/` use a central `api-client.ts`. Backend handles all blockchain reads via Ponder indexers.
 
-**Authentication**: JWT-based auth with middleware protection. Token stored in cookie, validated via jose library.
+**Authentication**: JWT-based auth with middleware protection. Token stored in cookie, validated via jose library. Supports:
+- OAuth (Google, GitHub) via `OAuthButtons` component
+- Wallet connection via `WalletOptions` component
+- Legacy `?token=` callback for backward compatibility
 
 **Route Groups**:
 - `(auth)` - login/register flows
@@ -83,6 +86,21 @@ Key entities defined in `src/types/models.ts`:
 - Trigger, TriggerCondition, TriggerAction
 - ApiKey, LinkedAgent, BlockchainEvent
 - CreditBalance, CreditTransaction
+
+### Recent Components
+
+**Auth Molecules** (`src/components/molecules/`):
+- `OAuthButtons` - Google/GitHub OAuth login buttons
+- `WalletOptions` - Wallet connection options (wagmi)
+
+**Sidebar Components**:
+- `SidebarUserInfo` - User/org info in sidebar footer
+- `DashboardSidebar` - Main navigation with ORGANIZATION link
+
+**Warp Homepage** (`src/components/organisms/`):
+- `WarpHomepage` - Animated landing page
+- `WarpStarField` - Background star animation
+- `WarpLogoCenter`, `WarpNavMenu` - Homepage molecules
 
 ### Supported Chains
 Mainnet, Base, Sepolia, Base Sepolia, Linea Sepolia, Polygon Amoy

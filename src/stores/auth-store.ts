@@ -6,6 +6,11 @@ import { clearCsrfToken } from '@/lib/api-client'
  * Minimal auth state - only authentication status.
  * User data should be fetched via TanStack Query, not stored here.
  * Sensitive data (email, wallets) is NEVER persisted client-side.
+ *
+ * SECURITY NOTE:
+ * - Auth tokens are stored in httpOnly cookies (not accessible to JS)
+ * - Use /api/auth/logout to clear cookies (server-side only)
+ * - No client-readable token cookies (XSS protection)
  */
 
 interface AuthState {
@@ -34,16 +39,12 @@ const createSafeStorage = () => {
 }
 
 /**
- * Clear auth cookie on logout
+ * Clear auth cookies via API route (httpOnly cookies can't be cleared from JS)
+ * This is called synchronously to update local state, but cookie clearing
+ * should be done via the /api/auth/logout route in the useLogout hook
  */
-const clearAuthCookie = () => {
-  if (typeof document !== 'undefined') {
-    // Clear with all possible path/domain combinations
-    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API not widely supported yet
-    document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API not widely supported yet
-    document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure;'
-  }
+const clearLocalAuthState = () => {
+  clearCsrfToken()
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -64,8 +65,7 @@ export const useAuthStore = create<AuthState>()(
       setHydrated: (isHydrated) => set({ isHydrated }),
 
       logout: () => {
-        clearAuthCookie()
-        clearCsrfToken()
+        clearLocalAuthState()
         set({
           isAuthenticated: false,
           isLoading: false,

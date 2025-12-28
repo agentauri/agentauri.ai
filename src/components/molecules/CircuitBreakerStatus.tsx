@@ -96,8 +96,8 @@ export function CircuitBreakerStatus({ className, compact = false }: CircuitBrea
   )
 }
 
-function ServiceStatus({ name, status }: { name: string; status: 'up' | 'down' }) {
-  const isUp = status === 'up'
+function ServiceStatus({ name, status }: { name: string; status: 'up' | 'down' | 'connected' | 'disconnected' }) {
+  const isUp = status === 'up' || status === 'connected'
   return (
     <div className="text-center">
       <div className="typo-ui text-terminal-dim text-xs mb-1">{name}</div>

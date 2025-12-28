@@ -1,4 +1,3 @@
-import { jwtVerify } from 'jose'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { getSecurityHeaders } from '@/lib/security-headers'
@@ -13,6 +12,7 @@ const PUBLIC_PATHS = new Set([
   '/forgot-password',
   '/reset-password',
   '/verify-email',
+  '/callback', // OAuth callback - handles code exchange
   '/home-warp',
   '/features',
   '/pricing',
@@ -31,46 +31,25 @@ const AUTH_PATHS = new Set(['/login', '/register'])
 const EXCLUDED_PREFIXES = ['/_next', '/api', '/favicon.ico', '/robots.txt', '/sitemap.xml']
 
 /**
- * JWT secret for token validation
- * SECURITY: Throws in production if JWT_SECRET is not configured
+ * Check if token has valid JWT structure
+ *
+ * The middleware only checks token structure, NOT validity.
+ * The backend is the single source of truth for authentication.
+ * This approach:
+ * - Avoids JWT_SECRET sync issues between frontend/backend
+ * - Backend validates tokens on every API call
+ * - Middleware just manages cookie/redirect flow
  */
-const getJwtSecret = (): Uint8Array => {
-  const secret = process.env.JWT_SECRET
-  if (!secret && process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET environment variable must be set in production')
-  }
-  return new TextEncoder().encode(secret ?? 'fallback-secret-for-development-only')
-}
-
-const JWT_SECRET = getJwtSecret()
-
-interface JwtPayload {
-  sub: string
-  exp: number
-  iat: number
-}
-
-/**
- * Validate JWT token structure and expiration
- * Returns true if token is valid, false otherwise
- */
-async function isValidToken(token: string): Promise<boolean> {
-  try {
-    const { payload } = await jwtVerify<JwtPayload>(token, JWT_SECRET, {
-      algorithms: ['HS256'],
-    })
-
-    // Check if token has required fields
-    if (!payload.sub || !payload.exp) {
-      return false
-    }
-
-    // Token expiration is automatically checked by jwtVerify
-    return true
-  } catch {
-    // Token is invalid, expired, or malformed
+function hasValidTokenStructure(token: string): boolean {
+  // JWT has 3 base64url parts separated by dots: header.payload.signature
+  const parts = token.split('.')
+  if (parts.length !== 3) {
     return false
   }
+
+  // Each part should be non-empty and look like base64url
+  const base64urlRegex = /^[A-Za-z0-9_-]+$/
+  return parts.every((part) => part.length > 0 && base64urlRegex.test(part))
 }
 
 /**
@@ -90,7 +69,7 @@ function isExcludedPath(pathname: string): boolean {
   return EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
 }
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
   const normalizedPath = normalizePath(pathname)
 
@@ -105,38 +84,10 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // Handle token in URL (from OAuth callback in development)
-  // This allows cross-port auth when backend (8080) redirects to frontend (8004)
-  const urlToken = searchParams.get('token')
-  if (urlToken) {
-    // Validate token before setting cookie
-    const isValid = await isValidToken(urlToken)
-    if (isValid) {
-      // Create redirect URL without the token param
-      const cleanUrl = new URL(request.url)
-      cleanUrl.searchParams.delete('token')
-
-      const response = NextResponse.redirect(cleanUrl)
-
-      // Set the auth cookie
-      response.cookies.set('auth-token', urlToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      })
-
-      // Add security headers
-      const headers = getSecurityHeaders()
-      Object.entries(headers).forEach(([key, value]) => {
-        response.headers.set(key, value)
-      })
-
-      return response
-    }
-    // Invalid token - fall through to normal flow (will redirect to login)
-  }
+  // OAuth now uses Authorization Code Flow:
+  // Backend redirects to /callback?code=oac_xxx
+  // The /callback page exchanges the code for tokens via /api/auth/exchange
+  // No token handling needed in middleware - the callback page handles everything
 
   const token = request.cookies.get('auth-token')?.value
 
@@ -144,8 +95,9 @@ export async function middleware(request: NextRequest) {
   const isPublicPath = PUBLIC_PATHS.has(normalizedPath)
   const isAuthPath = AUTH_PATHS.has(normalizedPath)
 
-  // Validate token if present
-  const hasValidToken = token ? await isValidToken(token) : false
+  // Check if token exists and has valid structure
+  // Actual validation happens on the backend for every API call
+  const hasValidToken = token ? hasValidTokenStructure(token) : false
 
   // Redirect authenticated users away from auth pages
   if (hasValidToken && isAuthPath) {

@@ -124,11 +124,17 @@ export function paginatedResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
     data: z.array(itemSchema),
     pagination: z.object({
       total: z.number(),
-      limit: z.number(),
-      offset: z.number(),
-      hasMore: z.boolean(),
-    }),
-  })
+      limit: z.number().optional(),
+      offset: z.number().optional(),
+      has_more: z.boolean(),
+    }).passthrough(),
+  }).transform((data) => ({
+    ...data,
+    pagination: {
+      ...data.pagination,
+      hasMore: data.pagination.has_more, // Map snake_case to camelCase for frontend
+    },
+  }))
 }
 
 // API error response schema

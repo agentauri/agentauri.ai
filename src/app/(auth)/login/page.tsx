@@ -1,16 +1,26 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
 import { useAccount, useDisconnect, useSignMessage } from 'wagmi'
 import { Button } from '@/components/atoms/button'
-import { WalletOptions, OAuthButtons } from '@/components/molecules'
+import { OAuthButtons, WalletOptions } from '@/components/molecules'
 import { authApi } from '@/lib/api/auth'
 import { useLogin } from '@/hooks'
+import { resetSessionExpiredFlag } from '@/lib/auth-utils'
 
-export default function LoginPage() {
+function LoginContent() {
+  const searchParams = useSearchParams()
+  const sessionExpired = searchParams.get('session') === 'expired'
+
   const [error, setError] = useState<string | null>(null)
   const [isLoadingNonce, setIsLoadingNonce] = useState(false)
+
+  // Reset redirect flag when landing on login page
+  useEffect(() => {
+    resetSessionExpiredFlag()
+  }, [])
 
   const { address, isConnected } = useAccount()
   const { disconnect } = useDisconnect()
@@ -48,12 +58,21 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-6">
+      {/* Session expired message */}
+      {sessionExpired && (
+        <div className="rounded-lg border-2 border-amber-500/50 bg-amber-500/10 p-4 text-center">
+          <p className="typo-ui text-amber-400">
+            Your session has expired. Please sign in again.
+          </p>
+        </div>
+      )}
+
       <div className="text-center">
         <h1 className="typo-header text-terminal-green glow">
           Sign in to agentauri.ai
         </h1>
         <p className="mt-2 typo-ui text-terminal-dim">
-          Connect your wallet or use social login
+          Connect your wallet to sign in
         </p>
       </div>
 
@@ -69,18 +88,21 @@ export default function LoginPage() {
             </div>
 
             {/* Divider */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1 h-px bg-terminal-dim" />
-              <span className="typo-ui text-terminal-dim text-xs">OR</span>
-              <div className="flex-1 h-px bg-terminal-dim" />
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-terminal-dim" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-terminal px-2 typo-ui text-terminal-dim">OR</span>
+              </div>
             </div>
 
             {/* OAuth Options */}
             <div>
               <h2 className="typo-ui text-terminal-green text-sm mb-3 text-center">
-                [ SOCIAL LOGIN ]
+                [ CONTINUE WITH ]
               </h2>
-              <OAuthButtons redirectAfter="/dashboard" />
+              <OAuthButtons />
             </div>
           </div>
         ) : (
@@ -133,5 +155,33 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  )
+}
+
+function LoginFallback() {
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="typo-header text-terminal-green glow">
+          Sign in to agentauri.ai
+        </h1>
+        <p className="mt-2 typo-ui text-terminal-dim">
+          Connect your wallet to sign in
+        </p>
+      </div>
+      <div className="rounded-lg border-2 border-terminal-dim bg-terminal p-6">
+        <div className="flex justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-terminal-dim border-t-terminal-green" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginContent />
+    </Suspense>
   )
 }

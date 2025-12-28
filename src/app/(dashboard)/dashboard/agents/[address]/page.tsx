@@ -15,7 +15,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
   const { address } = use(params)
 
   const { data: orgData, isLoading: orgLoading } = useCurrentOrganization()
-  const organization = orgData?.organization
+  const organization = orgData
 
   const { data: agent, isLoading, error } = useAgent(
     organization?.id ?? null,

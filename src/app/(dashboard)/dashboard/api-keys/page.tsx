@@ -15,7 +15,7 @@ export default function ApiKeysPage() {
   const [keyCreatedDialogOpen, setKeyCreatedDialogOpen] = useState(false)
 
   const { data: orgData, isLoading } = useCurrentOrganization()
-  const organization = orgData?.organization
+  const organization = orgData
 
   const handleKeyCreated = (key: string) => {
     setNewKey(key)

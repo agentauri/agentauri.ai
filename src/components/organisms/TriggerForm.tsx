@@ -14,6 +14,7 @@ import { TESTNET_CHAINS } from '@/lib/constants'
 import {
   createTriggerRequestSchema,
   type CreateTriggerRequest,
+  type CreateTriggerFormValues,
   type Trigger,
 } from '@/lib/validations/trigger'
 import { JsonEditorToggle, type EditorMode } from './JsonEditorToggle'
@@ -41,7 +42,7 @@ export function TriggerForm({ organizationId, trigger, mode = 'create' }: Trigge
   const createMutation = useCreateTrigger(organizationId)
   const updateMutation = useUpdateTrigger(trigger?.id ?? '')
 
-  const form = useForm({
+  const form = useForm<CreateTriggerFormValues>({
     resolver: zodResolver(createTriggerRequestSchema),
     defaultValues: {
       name: trigger?.name ?? '',
@@ -65,13 +66,15 @@ export function TriggerForm({ organizationId, trigger, mode = 'create' }: Trigge
     },
   })
 
-  const onSubmit = async (data: CreateTriggerRequest) => {
+  const onSubmit = async (data: CreateTriggerFormValues) => {
     try {
+      // After Zod validation, the data conforms to CreateTriggerRequest
+      const validatedData = data as unknown as CreateTriggerRequest
       if (mode === 'create') {
-        const result = await createMutation.mutateAsync(data)
+        const result = await createMutation.mutateAsync(validatedData)
         router.push(`/dashboard/triggers/${result.id}`)
       } else {
-        await updateMutation.mutateAsync(data)
+        await updateMutation.mutateAsync(validatedData)
         router.push(`/dashboard/triggers/${trigger?.id}`)
       }
     } catch (error) {

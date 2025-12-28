@@ -43,3 +43,4 @@ export { OAuthButtons } from './OAuthButtons'
 
 // Organization molecules
 export { OrganizationSwitcher } from './OrganizationSwitcher'
+export { SidebarUserInfo } from './SidebarUserInfo'

@@ -38,7 +38,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     if (!currentOrganizationId && organizations.length > 0) {
       const firstOrg = organizations[0]
       if (firstOrg) {
-        switchOrg.mutate(firstOrg.organization.id)
+        switchOrg.mutate(firstOrg.id)
       }
     }
 

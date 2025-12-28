@@ -6,7 +6,7 @@ import { useCurrentOrganization } from '@/hooks'
 
 export default function NewTriggerPage() {
   const { data: orgData, isLoading } = useCurrentOrganization()
-  const organization = orgData?.organization
+  const organization = orgData
 
   if (isLoading) {
     return (

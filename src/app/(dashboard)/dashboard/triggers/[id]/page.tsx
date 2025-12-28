@@ -19,7 +19,7 @@ export default function TriggerDetailPage({ params }: TriggerDetailPageProps) {
   const [activeTab, setActiveTab] = useState<'view' | 'edit'>('view')
 
   const { data: orgData } = useCurrentOrganization()
-  const organization = orgData?.organization
+  const organization = orgData
 
   const { data: trigger, isLoading, error } = useTrigger(id)
 

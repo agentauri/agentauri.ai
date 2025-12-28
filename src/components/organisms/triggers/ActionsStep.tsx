@@ -6,10 +6,10 @@ import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
 import { FormField, FormItem, FormMessage } from '@/components/atoms/form'
 import { ActionBuilder } from '../ActionBuilder'
-// TODO: Replace 'any' with CreateTriggerRequest when form types are aligned
+import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
+
 interface ActionsStepProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Form types need alignment with Zod schema
-  form: UseFormReturn<any>
+  form: UseFormReturn<CreateTriggerFormValues>
 }
 
 export function ActionsStep({ form }: ActionsStepProps) {
