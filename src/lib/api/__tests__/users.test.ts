@@ -8,14 +8,22 @@ import { usersApi } from '../users'
 const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
 
 describe('usersApi', () => {
+  // Match userSchema (snake_case from backend)
   const mockUser = {
     id: '550e8400-e29b-41d4-a716-446655440000',
     email: 'test@example.com',
     username: 'testuser',
-    currentOrganizationId: '550e8400-e29b-41d4-a716-446655440001',
-    walletAddresses: ['0x1234567890123456789012345678901234567890'],
-    createdAt: '2025-01-01T00:00:00Z',
-    updatedAt: '2025-01-01T00:00:00Z',
+    name: 'Test User',
+    avatar: null,
+    wallets: [
+      { address: '0x1234567890123456789012345678901234567890', chain_id: 1 },
+    ],
+    providers: [],
+    organizations: [
+      { id: '550e8400-e29b-41d4-a716-446655440001', name: 'Test Org', slug: 'test-org', role: 'owner' },
+    ],
+    created_at: '2025-01-01T00:00:00Z',
+    is_active: true,
   }
 
   beforeEach(() => {
@@ -72,14 +80,13 @@ describe('usersApi', () => {
       expect(result.username).toBe('newusername')
     })
 
-    it('should update current organization', async () => {
-      const newOrgId = '550e8400-e29b-41d4-a716-446655440002'
-      const updatedUser = { ...mockUser, currentOrganizationId: newOrgId }
+    it('should update name', async () => {
+      const updatedUser = { ...mockUser, name: 'Updated Name' }
 
       server.use(
         http.patch(`${baseUrl}/users/me`, async ({ request }) => {
           const body = await request.json()
-          expect(body).toMatchObject({ currentOrganizationId: newOrgId })
+          expect(body).toMatchObject({ name: 'Updated Name' })
           return HttpResponse.json(updatedUser)
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -87,9 +94,9 @@ describe('usersApi', () => {
         })
       )
 
-      const result = await usersApi.updateMe({ currentOrganizationId: newOrgId })
+      const result = await usersApi.updateMe({ name: 'Updated Name' })
 
-      expect(result.currentOrganizationId).toBe(newOrgId)
+      expect(result.name).toBe('Updated Name')
     })
 
     it('should handle validation error', async () => {

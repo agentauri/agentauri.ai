@@ -10,27 +10,36 @@ const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
 describe('billingApi', () => {
   const mockOrgId = '550e8400-e29b-41d4-a716-446655440000'
 
+  // Match creditBalanceSchema
   const mockBalance = {
+    organizationId: mockOrgId,
     balance: 1000,
-    currency: 'USD',
+    lifetimePurchased: 5000,
+    lifetimeUsed: 4000,
     updatedAt: '2025-01-01T00:00:00Z',
   }
 
+  // Match creditTransactionSchema
   const mockTransaction = {
     id: '550e8400-e29b-41d4-a716-446655440001',
     organizationId: mockOrgId,
-    type: 'credit',
+    type: 'purchase' as const,
     amount: 100,
     description: 'Monthly credit allocation',
+    referenceId: null,
     createdAt: '2025-01-01T00:00:00Z',
   }
 
+  // Match subscriptionSchema
   const mockSubscription = {
     id: 'sub_123',
     organizationId: mockOrgId,
-    plan: 'pro',
-    status: 'active',
+    status: 'active' as const,
+    planName: 'Pro Plan',
+    priceId: 'price_123',
+    currentPeriodStart: '2025-01-01T00:00:00Z',
     currentPeriodEnd: '2025-02-01T00:00:00Z',
+    cancelAtPeriodEnd: false,
     createdAt: '2025-01-01T00:00:00Z',
   }
 
@@ -53,7 +62,7 @@ describe('billingApi', () => {
       const result = await billingApi.getBalance(mockOrgId)
 
       expect(result.balance).toBe(1000)
-      expect(result.currency).toBe('USD')
+      expect(result.organizationId).toBe(mockOrgId)
     })
 
     it('should handle error', async () => {
@@ -75,7 +84,7 @@ describe('billingApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 
@@ -99,7 +108,7 @@ describe('billingApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 50, offset: 10, hasMore: false },
+            pagination: { total: 0, limit: 50, offset: 10, has_more: false },
           })
         })
       )
@@ -114,55 +123,58 @@ describe('billingApi', () => {
   describe('createCheckout', () => {
     it('should create checkout session successfully', async () => {
       const checkoutUrl = 'https://checkout.stripe.com/test'
+      const sessionId = 'cs_test_123'
 
       server.use(
         http.post(`${baseUrl}/organizations/${mockOrgId}/checkout`, async ({ request }) => {
           const body = await request.json()
-          expect(body).toMatchObject({ amount: 100 })
-          return HttpResponse.json({ checkoutUrl })
+          expect(body).toMatchObject({ priceId: 'price_123' })
+          return HttpResponse.json({ checkoutUrl, sessionId })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
         })
       )
 
-      const result = await billingApi.createCheckout(mockOrgId, { amount: 100 })
+      const result = await billingApi.createCheckout(mockOrgId, { priceId: 'price_123' })
 
       expect(result.checkoutUrl).toBe(checkoutUrl)
+      expect(result.sessionId).toBe(sessionId)
     })
 
     it('should handle checkout error', async () => {
       server.use(
         http.post(`${baseUrl}/organizations/${mockOrgId}/checkout`, () => {
-          return HttpResponse.json({ message: 'Invalid amount' }, { status: 400 })
+          return HttpResponse.json({ message: 'Invalid price ID' }, { status: 400 })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
         })
       )
 
-      await expect(billingApi.createCheckout(mockOrgId, { amount: -100 })).rejects.toThrow()
+      await expect(billingApi.createCheckout(mockOrgId, { priceId: 'invalid' })).rejects.toThrow()
     })
   })
 
   describe('listSubscriptions', () => {
     it('should list subscriptions successfully', async () => {
+      // subscriptionListResponseSchema expects an array directly
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrgId}/subscriptions`, () => {
-          return HttpResponse.json({ data: [mockSubscription] })
+          return HttpResponse.json([mockSubscription])
         })
       )
 
       const result = await billingApi.listSubscriptions(mockOrgId)
 
       expect(result).toHaveLength(1)
-      expect(result[0].plan).toBe('pro')
+      expect(result[0].planName).toBe('Pro Plan')
     })
 
     it('should handle empty list', async () => {
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrgId}/subscriptions`, () => {
-          return HttpResponse.json({ data: [] })
+          return HttpResponse.json([])
         })
       )
 

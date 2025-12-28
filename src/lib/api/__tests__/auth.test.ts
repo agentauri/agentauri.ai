@@ -68,6 +68,8 @@ describe('authApi', () => {
     it('should login successfully', async () => {
       const mockResponse = {
         token: 'jwt-token-here',
+        refresh_token: 'refresh-token-here',
+        expires_in: 3600,
         user: {
           id: '550e8400-e29b-41d4-a716-446655440000',
           username: 'wallet_1234abcd',
