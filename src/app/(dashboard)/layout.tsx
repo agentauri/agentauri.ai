@@ -34,8 +34,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       return
     }
 
-    // User has organizations but none selected - select first one
-    if (!currentOrganizationId && organizations.length > 0) {
+    // Check if stored organization ID is still valid (user might have been removed or org deleted)
+    const isStoredOrgValid = currentOrganizationId
+      ? organizations.some((org) => org.id === currentOrganizationId)
+      : false
+
+    // User has organizations but none selected or stored org is invalid - select first one
+    if ((!currentOrganizationId || !isStoredOrgValid) && organizations.length > 0) {
       const firstOrg = organizations[0]
       if (firstOrg) {
         switchOrg.mutate(firstOrg.id)
