@@ -7,18 +7,20 @@ import { eventsApi } from '../events'
 const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
 
 describe('eventsApi', () => {
+  // Match blockchainEventSchema
   const mockEvent = {
     id: '550e8400-e29b-41d4-a716-446655440000',
     eventType: 'ReputationUpdated',
     agentId: 123,
     chainId: 1,
-    registry: 'reputation',
+    registry: 'reputation' as const,
     blockNumber: 12345678,
     transactionHash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
     data: {
       score: 95,
       previousScore: 90,
     },
+    timestamp: '2025-01-01T00:00:00Z',
     createdAt: '2025-01-01T00:00:00Z',
   }
 
@@ -30,7 +32,7 @@ describe('eventsApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 
@@ -54,7 +56,7 @@ describe('eventsApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )
@@ -100,7 +102,7 @@ describe('eventsApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 
@@ -110,7 +112,7 @@ describe('eventsApi', () => {
           if (url.searchParams.get('agentId') === '123') {
             return HttpResponse.json(mockResponse)
           }
-          return HttpResponse.json({ data: [], pagination: { total: 0 } })
+          return HttpResponse.json({ data: [], pagination: { total: 0, has_more: false } })
         })
       )
 
@@ -128,7 +130,7 @@ describe('eventsApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )
