@@ -69,7 +69,7 @@ describe('apiKeysApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 50, offset: 10, hasMore: false },
+            pagination: { total: 0, limit: 50, offset: 10, has_more: false },
           })
         })
       )
@@ -85,7 +85,7 @@ describe('apiKeysApi', () => {
         http.get(`${baseUrl}/organizations/${mockOrgId}/api-keys`, () => {
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )

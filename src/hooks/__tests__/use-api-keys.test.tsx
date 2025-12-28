@@ -35,17 +35,17 @@ describe('use-api-keys hooks', () => {
 
   const mockOrgId = '550e8400-e29b-41d4-a716-446655440000'
 
+  // Match apiKeySchema
   const mockApiKey = {
     id: '550e8400-e29b-41d4-a716-446655440001',
     organizationId: mockOrgId,
     name: 'Production API Key',
-    prefix: 'ak_prod',
-    tier: 'standard',
-    scopes: ['read', 'write'],
+    keyPrefix: '8004_prod123',
+    tier: 'basic' as const,
+    enabled: true,
     expiresAt: null,
     lastUsedAt: '2025-01-01T00:00:00Z',
     createdAt: '2025-01-01T00:00:00Z',
-    updatedAt: '2025-01-01T00:00:00Z',
   }
 
   beforeEach(() => {
@@ -133,9 +133,10 @@ describe('use-api-keys hooks', () => {
 
   describe('useCreateApiKey', () => {
     it('should create API key successfully', async () => {
+      // Match createApiKeyResponseSchema
       const createdKey = {
         apiKey: mockApiKey,
-        secret: 'sk_test_secret123',
+        key: '8004_prod123.secretkey456',
       }
 
       server.use(
@@ -151,17 +152,17 @@ describe('use-api-keys hooks', () => {
         wrapper: createWrapper(),
       })
 
+      // Match createApiKeyRequestSchema
       result.current.mutate({
         name: 'New API Key',
-        tier: 'standard',
-        scopes: ['read'],
+        tier: 'basic',
       })
 
       await waitFor(() => {
         expect(result.current.isSuccess).toBe(true)
       })
 
-      expect(result.current.data?.secret).toBe('sk_test_secret123')
+      expect(result.current.data?.key).toBe('8004_prod123.secretkey456')
     })
 
     it('should handle create error', async () => {
@@ -180,8 +181,7 @@ describe('use-api-keys hooks', () => {
 
       result.current.mutate({
         name: 'New API Key',
-        tier: 'standard',
-        scopes: ['read'],
+        tier: 'basic',
       })
 
       await waitFor(() => {
@@ -245,9 +245,10 @@ describe('use-api-keys hooks', () => {
 
   describe('useRegenerateApiKey', () => {
     it('should regenerate API key successfully', async () => {
+      // Match createApiKeyResponseSchema (same format)
       const regeneratedKey = {
         apiKey: mockApiKey,
-        secret: 'sk_test_new_secret456',
+        key: '8004_prod123.newkey789',
       }
 
       server.use(

@@ -41,27 +41,36 @@ describe('use-billing hooks', () => {
 
   const mockOrgId = '550e8400-e29b-41d4-a716-446655440000'
 
+  // Match creditBalanceSchema
   const mockBalance = {
+    organizationId: mockOrgId,
     balance: 1000,
-    currency: 'USD',
+    lifetimePurchased: 5000,
+    lifetimeUsed: 4000,
     updatedAt: '2025-01-01T00:00:00Z',
   }
 
+  // Match creditTransactionSchema
   const mockTransaction = {
     id: '550e8400-e29b-41d4-a716-446655440001',
     organizationId: mockOrgId,
-    type: 'credit',
+    type: 'purchase' as const,
     amount: 100,
     description: 'Monthly credit allocation',
+    referenceId: null,
     createdAt: '2025-01-01T00:00:00Z',
   }
 
+  // Match subscriptionSchema
   const mockSubscription = {
     id: 'sub_123',
     organizationId: mockOrgId,
-    plan: 'pro',
-    status: 'active',
+    status: 'active' as const,
+    planName: 'Pro Plan',
+    priceId: 'price_123',
+    currentPeriodStart: '2025-01-01T00:00:00Z',
     currentPeriodEnd: '2025-02-01T00:00:00Z',
+    cancelAtPeriodEnd: false,
     createdAt: '2025-01-01T00:00:00Z',
   }
 
@@ -152,10 +161,12 @@ describe('use-billing hooks', () => {
   describe('useCreateCheckout', () => {
     it('should create checkout and redirect', async () => {
       const checkoutUrl = 'https://checkout.stripe.com/test'
+      const sessionId = 'cs_test_123'
 
       server.use(
         http.post(`${baseUrl}/organizations/${mockOrgId}/checkout`, async () => {
-          return HttpResponse.json({ checkoutUrl })
+          // Match checkoutResponseSchema
+          return HttpResponse.json({ checkoutUrl, sessionId })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
@@ -166,9 +177,9 @@ describe('use-billing hooks', () => {
         wrapper: createWrapper(),
       })
 
+      // Match checkoutRequestSchema
       result.current.mutate({
-        amount: 100,
-        currency: 'USD',
+        priceId: 'price_123',
       })
 
       await waitFor(() => {
@@ -193,8 +204,7 @@ describe('use-billing hooks', () => {
       })
 
       result.current.mutate({
-        amount: 100,
-        currency: 'USD',
+        priceId: 'price_123',
       })
 
       await waitFor(() => {
@@ -205,13 +215,10 @@ describe('use-billing hooks', () => {
 
   describe('useSubscriptions', () => {
     it('should fetch subscriptions successfully', async () => {
-      const mockResponse = {
-        data: [mockSubscription],
-      }
-
+      // subscriptionListResponseSchema returns array directly
       server.use(
         http.get(`${baseUrl}/organizations/${mockOrgId}/subscriptions`, () => {
-          return HttpResponse.json(mockResponse)
+          return HttpResponse.json([mockSubscription])
         })
       )
 
@@ -223,8 +230,8 @@ describe('use-billing hooks', () => {
         expect(result.current.isSuccess).toBe(true)
       })
 
-      expect(result.current.data?.data).toHaveLength(1)
-      expect(result.current.data?.data[0].plan).toBe('pro')
+      expect(result.current.data).toHaveLength(1)
+      expect(result.current.data?.[0].planName).toBe('Pro Plan')
     })
 
     it('should not fetch when orgId is null', () => {

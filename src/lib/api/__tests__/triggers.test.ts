@@ -70,7 +70,7 @@ describe('triggersApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )
@@ -95,7 +95,7 @@ describe('triggersApi', () => {
         http.get(`${baseUrl}/organizations/${mockOrgId}/triggers`, () => {
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )

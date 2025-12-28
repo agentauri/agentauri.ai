@@ -28,14 +28,13 @@ describe('use-agents hooks', () => {
 
   const mockOrgId = '550e8400-e29b-41d4-a716-446655440000'
 
+  // Match linkedAgentSchema
   const mockAgent = {
     id: '550e8400-e29b-41d4-a716-446655440001',
     organizationId: mockOrgId,
     agentId: 123,
-    agentAddress: '0x1234567890123456789012345678901234567890',
+    walletAddress: '0x1234567890123456789012345678901234567890',
     chainId: 1,
-    registry: 'reputation',
-    alias: 'Test Agent',
     linkedAt: '2025-01-01T00:00:00Z',
   }
 
@@ -123,12 +122,12 @@ describe('use-agents hooks', () => {
   describe('useAgent', () => {
     it('should fetch single agent', async () => {
       server.use(
-        http.get(`${baseUrl}/organizations/${mockOrgId}/agents/${mockAgent.agentAddress}`, () => {
+        http.get(`${baseUrl}/organizations/${mockOrgId}/agents/${mockAgent.walletAddress}`, () => {
           return HttpResponse.json(mockAgent)
         })
       )
 
-      const { result } = renderHook(() => useAgent(mockOrgId, mockAgent.agentAddress), {
+      const { result } = renderHook(() => useAgent(mockOrgId, mockAgent.walletAddress), {
         wrapper: createWrapper(),
       })
 
@@ -140,7 +139,7 @@ describe('use-agents hooks', () => {
     })
 
     it('should not fetch when orgId is null', () => {
-      const { result } = renderHook(() => useAgent(null, mockAgent.agentAddress), {
+      const { result } = renderHook(() => useAgent(null, mockAgent.walletAddress), {
         wrapper: createWrapper(),
       })
 
@@ -171,10 +170,12 @@ describe('use-agents hooks', () => {
         wrapper: createWrapper(),
       })
 
+      // Match linkAgentRequestSchema
       result.current.mutate({
-        agentAddress: mockAgent.agentAddress,
+        agentId: 123,
         chainId: 1,
-        registry: 'reputation',
+        signature: '0x1234567890abcdef',
+        message: 'Link agent to organization',
       })
 
       await waitFor(() => {
@@ -197,9 +198,10 @@ describe('use-agents hooks', () => {
       })
 
       result.current.mutate({
-        agentAddress: mockAgent.agentAddress,
+        agentId: 123,
         chainId: 1,
-        registry: 'reputation',
+        signature: '0x1234567890abcdef',
+        message: 'Link agent to organization',
       })
 
       await waitFor(() => {
@@ -211,7 +213,7 @@ describe('use-agents hooks', () => {
   describe('useUnlinkAgent', () => {
     it('should unlink agent successfully', async () => {
       server.use(
-        http.delete(`${baseUrl}/organizations/${mockOrgId}/agents/${mockAgent.agentAddress}`, () => {
+        http.delete(`${baseUrl}/organizations/${mockOrgId}/agents/${mockAgent.walletAddress}`, () => {
           return HttpResponse.json({ success: true })
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -223,7 +225,7 @@ describe('use-agents hooks', () => {
         wrapper: createWrapper(),
       })
 
-      result.current.mutate(mockAgent.agentAddress)
+      result.current.mutate(mockAgent.walletAddress)
 
       await waitFor(() => {
         expect(result.current.isSuccess).toBe(true)

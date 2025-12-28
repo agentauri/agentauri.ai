@@ -18,18 +18,20 @@ describe('use-events hooks', () => {
     )
   }
 
+  // Match blockchainEventSchema
   const mockEvent = {
     id: '550e8400-e29b-41d4-a716-446655440000',
     eventType: 'ReputationUpdated',
     agentId: 123,
     chainId: 1,
-    registry: 'reputation',
+    registry: 'reputation' as const,
     blockNumber: 12345678,
     transactionHash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
     data: {
       score: 95,
       previousScore: 90,
     },
+    timestamp: '2025-01-01T00:00:00Z',
     createdAt: '2025-01-01T00:00:00Z',
   }
 
@@ -147,9 +149,14 @@ describe('use-events hooks', () => {
         },
       }
 
+      // listByAgent uses /events with agentId query param
       server.use(
-        http.get(`${baseUrl}/agents/123/events`, () => {
-          return HttpResponse.json(mockResponse)
+        http.get(`${baseUrl}/events`, ({ request }) => {
+          const url = new URL(request.url)
+          if (url.searchParams.get('agentId') === '123') {
+            return HttpResponse.json(mockResponse)
+          }
+          return HttpResponse.json({ data: [], pagination: { total: 0, has_more: false } })
         })
       )
 
