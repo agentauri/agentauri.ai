@@ -11,14 +11,13 @@ describe('agentsApi', () => {
   const mockOrgId = '550e8400-e29b-41d4-a716-446655440000'
   const mockAgentAddress = '0x1234567890123456789012345678901234567890'
 
+  // Match the linkedAgentSchema
   const mockAgent = {
     id: '550e8400-e29b-41d4-a716-446655440001',
     organizationId: mockOrgId,
     agentId: 123,
-    agentAddress: mockAgentAddress,
+    walletAddress: mockAgentAddress,
     chainId: 1,
-    registry: 'reputation' as const,
-    alias: 'Test Agent',
     linkedAt: '2025-01-01T00:00:00Z',
   }
 
@@ -38,7 +37,7 @@ describe('agentsApi', () => {
           total: 1,
           limit: 20,
           offset: 0,
-          hasMore: false,
+          has_more: false,
         },
       }
 
@@ -62,15 +61,14 @@ describe('agentsApi', () => {
           capturedUrl = new URL(request.url)
           return HttpResponse.json({
             data: [],
-            pagination: { total: 0, limit: 20, offset: 0, hasMore: false },
+            pagination: { total: 0, limit: 20, offset: 0, has_more: false },
           })
         })
       )
 
-      await agentsApi.list(mockOrgId, { chainId: 1, registry: 'reputation' })
+      await agentsApi.list(mockOrgId, { chainId: 1 })
 
       expect(capturedUrl?.searchParams.get('chainId')).toBe('1')
-      expect(capturedUrl?.searchParams.get('registry')).toBe('reputation')
     })
   })
 
@@ -85,7 +83,7 @@ describe('agentsApi', () => {
       const result = await agentsApi.get(mockOrgId, mockAgentAddress)
 
       expect(result.agentId).toBe(123)
-      expect(result.agentAddress).toBe(mockAgentAddress)
+      expect(result.walletAddress).toBe(mockAgentAddress)
     })
 
     it('should handle not found error', async () => {
@@ -102,9 +100,9 @@ describe('agentsApi', () => {
   describe('link', () => {
     it('should link agent successfully', async () => {
       const linkRequest = {
-        agentAddress: mockAgentAddress,
+        walletAddress: mockAgentAddress,
         chainId: 1,
-        registry: 'reputation' as const,
+        agentId: 123,
       }
 
       server.use(
@@ -135,9 +133,9 @@ describe('agentsApi', () => {
 
       await expect(
         agentsApi.link(mockOrgId, {
-          agentAddress: mockAgentAddress,
+          walletAddress: mockAgentAddress,
           chainId: 1,
-          registry: 'reputation',
+          agentId: 123,
         })
       ).rejects.toThrow()
     })
