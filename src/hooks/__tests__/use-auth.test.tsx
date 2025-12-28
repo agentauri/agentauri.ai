@@ -135,8 +135,8 @@ describe('use-auth hooks', () => {
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
         }),
-        // Mock the local Next.js API route for storing tokens
-        http.post('/api/auth/set-tokens', () => {
+        // Mock the local Next.js API route for storing tokens (absolute URL for Node.js)
+        http.post('http://localhost:3000/api/auth/set-tokens', () => {
           return HttpResponse.json({ success: true })
         })
       )
@@ -191,8 +191,8 @@ describe('use-auth hooks', () => {
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
         }),
-        // Mock the local Next.js API route for clearing cookies
-        http.post('/api/auth/logout', () => {
+        // Mock the local Next.js API route for clearing cookies (absolute URL for Node.js)
+        http.post('http://localhost:3000/api/auth/logout', () => {
           return HttpResponse.json({ success: true })
         })
       )
@@ -216,8 +216,8 @@ describe('use-auth hooks', () => {
         http.get(`${baseUrl}/csrf-token`, () => {
           return HttpResponse.json({ token: 'test-csrf' })
         }),
-        // Mock the local Next.js API route for clearing cookies
-        http.post('/api/auth/logout', () => {
+        // Mock the local Next.js API route for clearing cookies (absolute URL for Node.js)
+        http.post('http://localhost:3000/api/auth/logout', () => {
           return HttpResponse.json({ success: true })
         })
       )
