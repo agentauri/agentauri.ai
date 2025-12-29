@@ -82,8 +82,50 @@ export const apiKeyListResponseSchema = z.object({
   },
 }))
 
+// API key stats response - handles snake_case from backend
+export const apiKeyStatsSchema = z.object({
+  data: z.object({
+    // Key counts
+    total_keys: z.number(),
+    active_keys: z.number(),
+    expired_keys: z.number().optional().default(0),
+    revoked_keys: z.number().optional().default(0),
+    unused_keys: z.number().optional().default(0),
+    keys_expiring_soon: z.number().optional().default(0),
+
+    // Usage stats
+    api_calls_total: z.number().optional().default(0),
+    calls_24h: z.number().optional().default(0),
+    failed_auth_24h: z.number().optional().default(0),
+    rate_limited_24h: z.number().optional().default(0),
+
+    // Breakdowns
+    keys_by_environment: z.record(z.string(), z.number()).optional(),
+    keys_by_type: z.record(z.string(), z.number()).optional(),
+  }),
+}).transform((result) => ({
+  // Key counts
+  totalKeys: result.data.total_keys,
+  activeKeys: result.data.active_keys,
+  expiredKeys: result.data.expired_keys,
+  revokedKeys: result.data.revoked_keys,
+  unusedKeys: result.data.unused_keys,
+  keysExpiringSoon: result.data.keys_expiring_soon,
+
+  // Usage stats
+  apiCallsTotal: result.data.api_calls_total,
+  calls24h: result.data.calls_24h,
+  failedAuth24h: result.data.failed_auth_24h,
+  rateLimited24h: result.data.rate_limited_24h,
+
+  // Breakdowns
+  keysByEnvironment: result.data.keys_by_environment ?? {},
+  keysByType: result.data.keys_by_type ?? {},
+}))
+
 // Inferred types
 export type ApiKey = z.infer<typeof apiKeySchema>
 export type CreateApiKeyRequest = z.infer<typeof createApiKeyRequestSchema>
 export type CreateApiKeyResponse = z.infer<typeof createApiKeyResponseSchema>
 export type UpdateApiKeyRequest = z.infer<typeof updateApiKeyRequestSchema>
+export type ApiKeyStats = z.infer<typeof apiKeyStatsSchema>

@@ -20,6 +20,18 @@ export function useApiKeys(orgId: string | null, params?: PaginationParams) {
 }
 
 /**
+ * Hook for getting API key stats for an organization
+ */
+export function useApiKeyStats(orgId: string | null) {
+  return useQuery({
+    queryKey: queryKeys.apiKeys.stats(orgId ?? ''),
+    queryFn: () => apiKeysApi.getStats(orgId!),
+    enabled: !!orgId,
+    staleTime: 60 * 1000, // 1 minute
+  })
+}
+
+/**
  * Hook for getting a single API key
  */
 export function useApiKey(keyId: string | null) {

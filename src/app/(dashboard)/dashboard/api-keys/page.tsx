@@ -7,7 +7,7 @@ import {
   ApiKeysList,
   CreateApiKeyDialog,
 } from '@/components/organisms'
-import { useCurrentOrganization } from '@/hooks'
+import { useApiKeyStats, useCurrentOrganization } from '@/hooks'
 
 export default function ApiKeysPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
@@ -16,6 +16,16 @@ export default function ApiKeysPage() {
 
   const { data: orgData, isLoading } = useCurrentOrganization()
   const organization = orgData
+
+  // Fetch API key stats from dedicated endpoint
+  const { data: statsData } = useApiKeyStats(organization?.id ?? null)
+
+  // Stats from backend
+  const stats = {
+    totalKeys: statsData?.totalKeys ?? 0,
+    activeKeys: statsData?.activeKeys ?? 0,
+    apiCalls24h: statsData?.calls24h ?? 0,
+  }
 
   const handleKeyCreated = (key: string) => {
     setNewKey(key)
@@ -75,15 +85,17 @@ export default function ApiKeysPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Box variant="default" padding="md">
           <div className="typo-ui text-terminal-dim mb-1">&gt; TOTAL KEYS</div>
-          <div className="typo-header text-terminal-green">-</div>
+          <div className="typo-header text-terminal-green">{stats.totalKeys}</div>
         </Box>
         <Box variant="default" padding="md">
           <div className="typo-ui text-terminal-dim mb-1">&gt; ACTIVE KEYS</div>
-          <div className="typo-header text-terminal-green">-</div>
+          <div className="typo-header text-terminal-green">{stats.activeKeys}</div>
         </Box>
         <Box variant="default" padding="md">
           <div className="typo-ui text-terminal-dim mb-1">&gt; API CALLS (24H)</div>
-          <div className="typo-header text-terminal-green">-</div>
+          <div className="typo-header text-terminal-green">
+            {stats.apiCalls24h.toLocaleString()}
+          </div>
         </Box>
       </div>
 

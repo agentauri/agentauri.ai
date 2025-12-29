@@ -49,6 +49,7 @@ export const queryKeys = {
     all: ['apiKeys'] as const,
     list: (orgId: string) => [...queryKeys.apiKeys.all, 'list', orgId] as const,
     detail: (id: string) => [...queryKeys.apiKeys.all, 'detail', id] as const,
+    stats: (orgId: string) => [...queryKeys.apiKeys.all, 'stats', orgId] as const,
   },
 
   // Agent queries

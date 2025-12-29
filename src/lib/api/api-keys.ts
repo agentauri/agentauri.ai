@@ -1,8 +1,10 @@
 import { apiClient } from '@/lib/api-client'
 import {
   type ApiKey,
+  type ApiKeyStats,
   apiKeyListResponseSchema,
   apiKeySchema,
+  apiKeyStatsSchema,
   type CreateApiKeyRequest,
   type CreateApiKeyResponse,
   createApiKeyResponseSchema,
@@ -65,5 +67,13 @@ export const apiKeysApi = {
   async regenerate(keyId: string): Promise<CreateApiKeyResponse> {
     const data = await apiClient.post<CreateApiKeyResponse>(`/api-keys/${keyId}/regenerate`)
     return createApiKeyResponseSchema.parse(data)
+  },
+
+  /**
+   * Get API key stats for organization
+   */
+  async getStats(orgId: string): Promise<ApiKeyStats> {
+    const data = await apiClient.get(`/organizations/${orgId}/api-keys/stats`)
+    return apiKeyStatsSchema.parse(data)
   },
 }
