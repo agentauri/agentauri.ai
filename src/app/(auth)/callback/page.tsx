@@ -21,6 +21,7 @@ function OAuthCallbackContent() {
 
   const code = searchParams.get('code')
   const token = searchParams.get('token') // Legacy flow support
+  const refreshToken = searchParams.get('refresh_token')
   const error = searchParams.get('error')
   // Sanitize redirect URL to prevent open redirect attacks
   const redirectTo = sanitizeRedirectUrl(searchParams.get('redirect'), '/dashboard')
@@ -48,7 +49,7 @@ function OAuthCallbackContent() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             token,
-            refresh_token: searchParams.get('refresh_token') || token, // Fallback if no refresh token
+            refresh_token: refreshToken || token, // Fallback if no refresh token
             expires_in: 3600, // 1 hour default
           }),
           credentials: 'include',
@@ -158,7 +159,7 @@ function OAuthCallbackContent() {
         clearTimeout(redirectTimeout)
       }
     }
-  }, [code, token, error, router, setAuthenticated, queryClient, redirectTo])
+  }, [code, token, refreshToken, error, router, setAuthenticated, queryClient, redirectTo])
 
   return (
     <div className="space-y-6 text-center">

@@ -98,6 +98,7 @@ export const createConditionInputSchema = z.object({
 
 // Create trigger action input with size limits
 export const createActionInputSchema = z.object({
+  _key: z.string().optional(), // Internal key for React list rendering (stripped before API)
   actionType: actionTypeSchema,
   priority: z.number().int().min(0).max(100).default(0),
   config: z

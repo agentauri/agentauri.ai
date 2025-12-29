@@ -77,5 +77,20 @@
         }
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.stories.tsx"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ]
 }

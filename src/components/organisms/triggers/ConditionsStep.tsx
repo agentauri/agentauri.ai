@@ -106,17 +106,14 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
                     <SelectValue placeholder="Select event type..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {EVENT_TYPE_LIST.map((eventType) => {
-                      const info = EVENT_TYPE_INFO[eventType]
-                      return (
-                        <SelectItem key={eventType} value={eventType} className="typo-ui">
-                          <div className="flex items-center gap-2">
-                            <Icon name="lightning" size="sm" />
-                            <span>{eventType}</span>
-                          </div>
-                        </SelectItem>
-                      )
-                    })}
+                    {EVENT_TYPE_LIST.map((eventType) => (
+                      <SelectItem key={eventType} value={eventType} className="typo-ui">
+                        <div className="flex items-center gap-2">
+                          <Icon name="lightning" size="sm" />
+                          <span>{eventType}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
 

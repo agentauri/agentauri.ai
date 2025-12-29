@@ -128,6 +128,7 @@ export function WarpHomepage({
         {/* Skip hint (shown before nav appears) */}
         {!navVisible && (
           <button
+            type="button"
             onClick={handleSkip}
             className={cn(
               'absolute bottom-8 left-1/2 -translate-x-1/2',

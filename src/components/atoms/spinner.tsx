@@ -15,6 +15,7 @@ const sizeClasses = {
 
 export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
+    // biome-ignore lint/a11y/useSemanticElements: role="status" is correct for live regions (loading indicators)
     <div
       data-slot="spinner"
       className={cn(

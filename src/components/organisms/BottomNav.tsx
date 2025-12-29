@@ -53,7 +53,7 @@ export function BottomNav({ variant, onMoreClick, className }: BottomNavProps) {
         className
       )}
     >
-      <div className="flex items-center justify-around h-16" role="list">
+      <div className="flex items-center justify-around h-16">
         {items.map((item) => (
           <Link
             key={item.href}

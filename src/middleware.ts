@@ -70,7 +70,7 @@ function isExcludedPath(pathname: string): boolean {
 }
 
 export function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+  const { pathname } = request.nextUrl
   const normalizedPath = normalizePath(pathname)
 
   // Skip middleware for excluded paths

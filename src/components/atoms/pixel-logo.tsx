@@ -190,19 +190,31 @@ export function PixelLogo({
 
   const showAllPixels = animation === 'none' || phase === 'pulse' || phase === 'idle'
 
+  const isClickable = phase === 'pulse' || phase === 'idle'
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault()
+      startBoot()
+    }
+  }
+
   return (
     <div
       data-slot="pixel-logo"
       role="img"
       aria-label={text}
-      onClick={phase === 'pulse' || phase === 'idle' ? startBoot : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      onClick={isClickable ? startBoot : undefined}
+      onKeyDown={isClickable ? handleKeyDown : undefined}
       className={cn(
         'inline-block',
-        (phase === 'pulse' || phase === 'idle') && 'cursor-pointer',
+        isClickable && 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-terminal-green focus:ring-offset-2 focus:ring-offset-terminal',
         className
       )}
     >
       <svg
+        aria-hidden="true"
         viewBox={`0 0 ${width} ${height}`}
         className={cn(
           'w-full max-w-4xl h-auto',

@@ -30,12 +30,14 @@ export function ActionsStep({ form }: ActionsStepProps) {
             <div className="space-y-4">
               {field.value?.map((action: Record<string, unknown>, index: number) => (
                 <ActionBuilder
-                  key={index}
-                  action={{ ...action, tempId: `action-${index}` }}
+                  key={(action._key as string) ?? `action-${index}`}
+                  action={{ ...action, tempId: (action._key as string) ?? `action-${index}` }}
                   onChange={(updated) => {
                     const newActions = [...(field.value ?? [])]
                     const { tempId, id, triggerId, createdAt, ...actionData } = updated
+                    const existingKey = field.value?.[index]?._key
                     newActions[index] = {
+                      _key: existingKey ?? crypto.randomUUID(),
                       actionType: actionData.actionType ?? 'telegram',
                       priority: actionData.priority ?? 0,
                       config: actionData.config ?? {},
@@ -57,7 +59,7 @@ export function ActionsStep({ form }: ActionsStepProps) {
               onClick={() => {
                 field.onChange([
                   ...(field.value ?? []),
-                  { actionType: 'telegram', priority: 0, config: {} },
+                  { _key: crypto.randomUUID(), actionType: 'telegram', priority: 0, config: {} },
                 ])
               }}
               className="typo-ui mt-4"
