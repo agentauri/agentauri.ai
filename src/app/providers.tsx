@@ -1,8 +1,7 @@
 'use client'
 
 import { QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { type ReactNode, useEffect } from 'react'
+import { lazy, type ReactNode, Suspense, useEffect } from 'react'
 import { Toaster } from 'sonner'
 import { WagmiProvider } from 'wagmi'
 import { ErrorBoundary } from '@/components/organisms'
@@ -11,6 +10,13 @@ import { wagmiConfig } from '@/lib/wagmi-config'
 import { useAuthStore } from '@/stores/auth-store'
 import { useOrganizationStore } from '@/stores/organization-store'
 import { initThemeListener, useUIStore } from '@/stores/ui-store'
+
+// Lazy load devtools - only imported in development
+const ReactQueryDevtools = lazy(() =>
+  import('@tanstack/react-query-devtools').then((mod) => ({
+    default: mod.ReactQueryDevtools,
+  }))
+)
 
 interface ProvidersProps {
   children: ReactNode
@@ -41,7 +47,11 @@ export function Providers({ children }: ProvidersProps) {
           <StoreHydration />
           {children}
           <Toaster richColors position="top-right" />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {process.env.NODE_ENV === 'development' && (
+            <Suspense fallback={null}>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </Suspense>
+          )}
         </QueryClientProvider>
       </WagmiProvider>
     </ErrorBoundary>
