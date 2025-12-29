@@ -8,6 +8,7 @@ import { API_BASE_URL, API_VERSION } from '@/lib/constants'
 import {
   useApiKeys,
   useApiKey,
+  useApiKeyStats,
   useCreateApiKey,
   useUpdateApiKey,
   useDeleteApiKey,
@@ -128,6 +129,115 @@ describe('use-api-keys hooks', () => {
       })
 
       expect(result.current.fetchStatus).toBe('idle')
+    })
+  })
+
+  describe('useApiKeyStats', () => {
+    // Match apiKeyStatsSchema backend response
+    const mockStatsResponse = {
+      data: {
+        total_keys: 15,
+        active_keys: 10,
+        expired_keys: 2,
+        revoked_keys: 3,
+        unused_keys: 1,
+        keys_expiring_soon: 2,
+        api_calls_total: 125432,
+        calls_24h: 1523,
+        failed_auth_24h: 12,
+        rate_limited_24h: 3,
+        keys_by_environment: {
+          live: 8,
+          test: 7,
+        },
+        keys_by_type: {
+          standard: 12,
+          restricted: 2,
+          admin: 1,
+        },
+      },
+    }
+
+    it('should fetch API key stats successfully', async () => {
+      server.use(
+        http.get(`${baseUrl}/organizations/${mockOrgId}/api-keys/stats`, () => {
+          return HttpResponse.json(mockStatsResponse)
+        })
+      )
+
+      const { result } = renderHook(() => useApiKeyStats(mockOrgId), {
+        wrapper: createWrapper(),
+      })
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+
+      // Verify transformed camelCase response
+      expect(result.current.data?.totalKeys).toBe(15)
+      expect(result.current.data?.activeKeys).toBe(10)
+      expect(result.current.data?.expiredKeys).toBe(2)
+      expect(result.current.data?.revokedKeys).toBe(3)
+      expect(result.current.data?.calls24h).toBe(1523)
+      expect(result.current.data?.apiCallsTotal).toBe(125432)
+      expect(result.current.data?.keysByEnvironment).toEqual({ live: 8, test: 7 })
+      expect(result.current.data?.keysByType).toEqual({ standard: 12, restricted: 2, admin: 1 })
+    })
+
+    it('should not fetch when orgId is null', () => {
+      const { result } = renderHook(() => useApiKeyStats(null), {
+        wrapper: createWrapper(),
+      })
+
+      expect(result.current.fetchStatus).toBe('idle')
+    })
+
+    it('should handle stats fetch error', async () => {
+      server.use(
+        http.get(`${baseUrl}/organizations/${mockOrgId}/api-keys/stats`, () => {
+          return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+        })
+      )
+
+      const { result } = renderHook(() => useApiKeyStats(mockOrgId), {
+        wrapper: createWrapper(),
+      })
+
+      await waitFor(() => {
+        expect(result.current.isError).toBe(true)
+      })
+    })
+
+    it('should handle partial stats response with defaults', async () => {
+      // Minimal response with only required fields
+      const minimalResponse = {
+        data: {
+          total_keys: 5,
+          active_keys: 3,
+        },
+      }
+
+      server.use(
+        http.get(`${baseUrl}/organizations/${mockOrgId}/api-keys/stats`, () => {
+          return HttpResponse.json(minimalResponse)
+        })
+      )
+
+      const { result } = renderHook(() => useApiKeyStats(mockOrgId), {
+        wrapper: createWrapper(),
+      })
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true)
+      })
+
+      // Required fields
+      expect(result.current.data?.totalKeys).toBe(5)
+      expect(result.current.data?.activeKeys).toBe(3)
+      // Optional fields should default to 0 or empty object
+      expect(result.current.data?.expiredKeys).toBe(0)
+      expect(result.current.data?.calls24h).toBe(0)
+      expect(result.current.data?.keysByEnvironment).toEqual({})
     })
   })
 
