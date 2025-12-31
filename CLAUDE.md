@@ -39,18 +39,18 @@ pnpm build-storybook  # Build Storybook
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/            # Auth route group (login, register)
-│   ├── (dashboard)/       # Protected dashboard routes
-│   ├── (public)/          # Public pages
+│   ├── (auth)/            # Auth route group (login, register) with layout
+│   ├── (dashboard)/       # Protected dashboard routes with layout
+│   ├── (public)/          # Public pages with layout
 │   └── api/               # API routes
 ├── components/            # Atomic Design structure
-│   ├── atoms/             # Basic UI (Button, Input, Card, etc.)
-│   ├── molecules/         # Composite components (SearchInput, StatCard)
-│   ├── organisms/         # Complex components (TriggerForm, TriggersList)
-│   └── templates/         # Page layouts
-├── hooks/                 # Custom React hooks (use-auth, use-triggers)
+│   ├── atoms/             # Basic UI (Button, Input, Card, Icon, Checkbox, etc.)
+│   ├── molecules/         # Composite components (SearchInput, WalletOptions, PublicMobileNav)
+│   └── organisms/         # Complex components (TriggerForm, WarpHomepage, DashboardSidebar)
+├── hooks/                 # Custom React hooks (use-auth, use-triggers, use-warp-animation)
 ├── lib/                   # Utilities and API clients
 │   ├── api/               # API client modules (auth, triggers, organizations)
+│   ├── api-client.ts      # Central API client with auth handling
 │   └── validations/       # Zod schemas
 ├── stores/                # Zustand stores (auth, organization, ui)
 ├── test/                  # Test setup (MSW server)
@@ -61,14 +61,14 @@ src/
 
 **Path Alias**: Use `@/` for imports from `src/` directory.
 
-**Component Organization**: Components follow Atomic Design (atoms → molecules → organisms → templates). Each component can have a `.stories.tsx` file for Storybook.
+**Component Organization**: Components follow Atomic Design (atoms → molecules → organisms). Page layouts live in App Router route groups. Each component can have a `.stories.tsx` file for Storybook.
 
 **State Management**: Three persisted Zustand stores:
 - `auth-store`: Authentication state
 - `organization-store`: Current organization context
 - `ui-store`: Theme and UI preferences
 
-**API Layer**: API clients in `src/lib/api/` use a central `api-client.ts`. Backend handles all blockchain reads via Ponder indexers.
+**API Layer**: API clients in `src/lib/api/` use the central `src/lib/api-client.ts`. Backend handles all blockchain reads via Ponder indexers.
 
 **Authentication**: JWT-based auth with middleware protection. Token stored in cookie, validated via jose library. Supports:
 - OAuth (Google, GitHub) via `OAuthButtons` component
@@ -87,23 +87,57 @@ Key entities defined in `src/types/models.ts`:
 - ApiKey, LinkedAgent, BlockchainEvent
 - CreditBalance, CreditTransaction
 
-### Recent Components
+### Key Components
 
-**Auth Molecules** (`src/components/molecules/`):
-- `OAuthButtons` - Google/GitHub OAuth login buttons
-- `WalletOptions` - Wallet connection options (wagmi)
+**Design System** (`src/components/atoms/`):
+- Terminal-styled UI with pixel font ('Press Start 2P')
+- SVG pixel art wallet icons (`wallet-icons.tsx`)
+- `Checkbox` - Terminal-styled checkbox component
+- `Icon` - Centralized icon system
 
-**Sidebar Components**:
-- `SidebarUserInfo` - User/org info in sidebar footer
-- `DashboardSidebar` - Main navigation with ORGANIZATION link
+**Auth & Navigation** (`src/components/molecules/`):
+- `OAuthButtons` - Google/GitHub OAuth with pixel art icons
+- `WalletOptions` - Wallet connection with MetaMask, WalletConnect, Coinbase
+- `PublicMobileNav` - Command Prompt style mobile navigation
+
+**Dashboard** (`src/components/organisms/`):
+- `DashboardSidebar` - Main navigation with collapsible sections
+- `TriggerForm` - Multi-step trigger creation wizard
 
 **Warp Homepage** (`src/components/organisms/`):
-- `WarpHomepage` - Animated landing page
-- `WarpStarField` - Background star animation
+- `WarpHomepage` - Animated landing page with star field
+- `WarpStarField` - Canvas-based star animation (uses CSS variables)
 - `WarpLogoCenter`, `WarpNavMenu` - Homepage molecules
 
 ### Supported Chains
 Mainnet, Base, Sepolia, Base Sepolia, Linea Sepolia, Polygon Amoy
+
+## Design System
+
+Terminal/retro aesthetic with green phosphor CRT styling. See `docs/design-system.md` for details.
+
+**Typography Classes** (defined in `globals.css`):
+- `typo-header` - Section headers (13px pixel font)
+- `typo-ui` - UI text, buttons, labels (11px pixel font)
+- `typo-code` - Code blocks (21px VT323 monospace)
+- `typo-hero` - Large hero headings (responsive clamp)
+
+**Color Palette**:
+- `--terminal-green: #33FF33` - Primary text
+- `--terminal-green-dim: #1FA91F` - Secondary/muted (WCAG AA compliant)
+- `--terminal-green-bright: #66FF66` - Highlights
+- `--terminal-bg: #0A0A0A` - Background
+
+**Effects**:
+- `.glow`, `.glow-sm`, `.glow-lg` - Text glow effects
+- `.scanlines` - CRT scanline overlay
+- `.pixel-pulse` - Pulsing glow animation
+- `prefers-reduced-motion` respected for all animations
+
+**Styling Rules**:
+- No `rounded-*` classes (pixel-perfect edges, border-radius: 0)
+- Use CSS custom properties for colors
+- Mobile-first responsive typography
 
 ## Code Style (Biome)
 
