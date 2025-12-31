@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useConnect } from 'wagmi'
 import { Button } from '@/components/atoms/button'
 import { Spinner } from '@/components/atoms/spinner'
+import { getWalletIcon } from '@/components/atoms/wallet-icons'
 import { cn } from '@/lib/utils'
 
 interface WalletOptionsProps {
@@ -14,7 +15,7 @@ interface WalletOptionsProps {
 }
 
 /**
- * Get display name and icon for each connector type
+ * Get display name for each connector type
  */
 function getConnectorInfo(connectorId: string) {
   switch (connectorId) {
@@ -22,25 +23,21 @@ function getConnectorInfo(connectorId: string) {
       return {
         name: 'Browser Wallet',
         description: 'MetaMask or injected wallet',
-        icon: '🦊',
       }
     case 'walletConnect':
       return {
         name: 'WalletConnect',
         description: 'Scan with mobile wallet',
-        icon: '🔗',
       }
     case 'coinbaseWalletSDK':
       return {
         name: 'Coinbase Wallet',
         description: 'Connect with Coinbase',
-        icon: '💎',
       }
     default:
       return {
         name: connectorId,
         description: 'Connect wallet',
-        icon: '💳',
       }
   }
 }
@@ -69,6 +66,7 @@ export function WalletOptions({ onSelect, className }: WalletOptionsProps) {
       </p>
       {connectors.map((connector) => {
         const info = getConnectorInfo(connector.id)
+        const IconComponent = getWalletIcon(connector.id)
         const isLoading = isPending && connectingId === connector.id
 
         return (
@@ -83,9 +81,7 @@ export function WalletOptions({ onSelect, className }: WalletOptionsProps) {
             onClick={() => handleConnect(connector)}
             disabled={isPending}
           >
-            <span className="text-xl" aria-hidden>
-              {info.icon}
-            </span>
+            <IconComponent size={24} className="shrink-0" />
             <div className="flex-1 text-left">
               <div className="typo-ui text-terminal-green">
                 {isLoading ? 'Connecting...' : info.name}

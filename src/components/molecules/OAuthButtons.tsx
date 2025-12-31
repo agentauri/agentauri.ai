@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/atoms/button'
+import { getOAuthIcon } from '@/components/atoms/wallet-icons'
 import { authApi } from '@/lib/api/auth'
 import type { OAuthProvider } from '@/lib/validations'
 import { cn } from '@/lib/utils'
@@ -8,19 +9,16 @@ import { cn } from '@/lib/utils'
 interface OAuthProviderConfig {
   id: OAuthProvider
   name: string
-  icon: string
 }
 
 const OAUTH_PROVIDERS: OAuthProviderConfig[] = [
   {
     id: 'google',
     name: 'Google',
-    icon: 'G',
   },
   {
     id: 'github',
     name: 'GitHub',
-    icon: '🐙',
   },
 ]
 
@@ -58,35 +56,30 @@ export function OAuthButtons({
 
   return (
     <div className={cn('space-y-3', className)}>
-      {availableProviders.map((provider) => (
-        <Button
-          key={provider.id}
-          type="button"
-          variant="outline"
-          className={cn(
-            'w-full justify-between gap-2 h-auto py-3 px-4',
-            'border-terminal-dim',
-            'hover:border-terminal-green hover:bg-terminal-green/10 transition-all'
-          )}
-          onClick={() => handleClick(provider)}
-          disabled={isLoading}
-        >
-          <div className="flex items-center gap-3 min-w-0">
-            <span
-              className={cn(
-                'w-6 h-6 flex items-center justify-center text-lg shrink-0',
-                provider.id === 'google' && 'font-bold text-terminal-green'
-              )}
-              aria-hidden
-            >
-              {provider.icon}
-            </span>
-            <span className="typo-ui text-terminal-green truncate">
-              {provider.name}
-            </span>
-          </div>
-        </Button>
-      ))}
+      {availableProviders.map((provider) => {
+        const IconComponent = getOAuthIcon(provider.id)
+        return (
+          <Button
+            key={provider.id}
+            type="button"
+            variant="outline"
+            className={cn(
+              'w-full justify-between gap-2 h-auto py-3 px-4',
+              'border-terminal-dim',
+              'hover:border-terminal-green hover:bg-terminal-green/10 transition-all'
+            )}
+            onClick={() => handleClick(provider)}
+            disabled={isLoading}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <IconComponent size={24} className="shrink-0" />
+              <span className="typo-ui text-terminal-green truncate">
+                {provider.name}
+              </span>
+            </div>
+          </Button>
+        )
+      })}
     </div>
   )
 }

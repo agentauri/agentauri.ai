@@ -36,7 +36,7 @@ function LoginContent() {
 
     try {
       // 1. Get nonce and pre-formatted message from backend
-      const nonceData = await authApi.getNonce()
+      const nonceData = await authApi.getNonce(address)
       setIsLoadingNonce(false)
 
       // 2. Sign the pre-formatted message
@@ -60,8 +60,8 @@ function LoginContent() {
     <div className="space-y-6">
       {/* Session expired message */}
       {sessionExpired && (
-        <div className="rounded-lg border-2 border-amber-500/50 bg-amber-500/10 p-4 text-center">
-          <p className="typo-ui text-amber-400">
+        <div className="border-2 border-terminal-dim bg-terminal p-4 text-center">
+          <p className="typo-ui text-terminal-green">
             Your session has expired. Please sign in again.
           </p>
         </div>
@@ -76,7 +76,7 @@ function LoginContent() {
         </p>
       </div>
 
-      <div className="rounded-lg border-2 border-terminal-dim bg-terminal p-6">
+      <div className="border-2 border-terminal-dim bg-terminal p-6">
         {!isConnected ? (
           <div className="space-y-6">
             {/* Wallet Options */}
@@ -107,7 +107,7 @@ function LoginContent() {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-lg bg-terminal-green/10 border border-terminal-dim p-4">
+            <div className="bg-terminal-green/10 border-2 border-terminal-dim p-4">
               <p className="typo-ui text-terminal-dim text-sm">Connected as</p>
               <p className="typo-code text-terminal-green">
                 {address?.slice(0, 6)}...{address?.slice(-4)}
@@ -169,9 +169,9 @@ function LoginFallback() {
           Connect your wallet to sign in
         </p>
       </div>
-      <div className="rounded-lg border-2 border-terminal-dim bg-terminal p-6">
+      <div className="border-2 border-terminal-dim bg-terminal p-6">
         <div className="flex justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-terminal-dim border-t-terminal-green" />
+          <div className="h-8 w-8 animate-spin border-4 border-terminal-dim border-t-terminal-green" />
         </div>
       </div>
     </div>

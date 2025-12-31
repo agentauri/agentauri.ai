@@ -7,7 +7,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col scanlines bg-terminal">
       <header className="border-b">
         <div className="container flex h-16 items-center">
           <Link href="/" className="typo-header terminal-glow">
