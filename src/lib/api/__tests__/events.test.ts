@@ -6,6 +6,8 @@ import { eventsApi } from '../events'
 
 const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
 
+const TEST_ORG_ID = 'org-test-123'
+
 describe('eventsApi', () => {
   // Match blockchainEventSchema
   const mockEvent = {
@@ -42,7 +44,7 @@ describe('eventsApi', () => {
         })
       )
 
-      const result = await eventsApi.list()
+      const result = await eventsApi.list(TEST_ORG_ID)
 
       expect(result.data).toHaveLength(1)
       expect(result.data[0].eventType).toBe('ReputationUpdated')
@@ -61,7 +63,7 @@ describe('eventsApi', () => {
         })
       )
 
-      await eventsApi.list({ chainId: 1, eventType: 'ReputationUpdated', limit: 50 })
+      await eventsApi.list(TEST_ORG_ID, { chainId: 1, eventType: 'ReputationUpdated', limit: 50 })
 
       expect(capturedUrl?.searchParams.get('chainId')).toBe('1')
       expect(capturedUrl?.searchParams.get('eventType')).toBe('ReputationUpdated')
@@ -77,7 +79,7 @@ describe('eventsApi', () => {
         })
       )
 
-      const result = await eventsApi.get(mockEvent.id)
+      const result = await eventsApi.get(TEST_ORG_ID, mockEvent.id)
 
       expect(result.id).toBe(mockEvent.id)
       expect(result.eventType).toBe('ReputationUpdated')
@@ -90,7 +92,7 @@ describe('eventsApi', () => {
         })
       )
 
-      await expect(eventsApi.get(mockEvent.id)).rejects.toThrow()
+      await expect(eventsApi.get(TEST_ORG_ID, mockEvent.id)).rejects.toThrow()
     })
   })
 
@@ -116,7 +118,7 @@ describe('eventsApi', () => {
         })
       )
 
-      const result = await eventsApi.listByAgent(123, 1)
+      const result = await eventsApi.listByAgent(TEST_ORG_ID, 123, 1)
 
       expect(result.data).toHaveLength(1)
       expect(result.data[0].agentId).toBe(123)
@@ -135,7 +137,7 @@ describe('eventsApi', () => {
         })
       )
 
-      await eventsApi.listByAgent(123, 1, { limit: 10 })
+      await eventsApi.listByAgent(TEST_ORG_ID, 123, 1, { limit: 10 })
 
       expect(capturedUrl?.searchParams.get('agentId')).toBe('123')
       expect(capturedUrl?.searchParams.get('chainId')).toBe('1')

@@ -2,12 +2,21 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { HttpResponse, http } from 'msw'
 import type { ReactNode } from 'react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { server } from '@/test/setup'
 import { API_BASE_URL, API_VERSION } from '@/lib/constants'
 import { useEvents, useEvent, useAgentEvents } from '../use-events'
 
 const baseUrl = `${API_BASE_URL}/api/${API_VERSION}`
+const TEST_ORG_ID = 'org-test-123'
+
+// Mock the organization store
+vi.mock('@/stores/organization-store', () => ({
+  useOrganizationStore: () => ({
+    currentOrganizationId: TEST_ORG_ID,
+    isHydrated: true,
+  }),
+}))
 
 describe('use-events hooks', () => {
   let queryClient: QueryClient
