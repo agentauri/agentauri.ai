@@ -11,6 +11,7 @@ export { StatCard } from './StatCard'
 export { AlertBanner } from './AlertBanner'
 export { CodeBlock } from './CodeBlock'
 export { EmptyState } from './EmptyState'
+export { ApiErrorDisplay } from './ApiErrorDisplay'
 
 // Filter molecules
 export { FilterBar } from './FilterBar'
@@ -44,3 +45,6 @@ export { OAuthButtons } from './OAuthButtons'
 // Organization molecules
 export { OrganizationSwitcher } from './OrganizationSwitcher'
 export { SidebarUserInfo } from './SidebarUserInfo'
+
+// Navigation molecules
+export { PublicMobileNav } from './PublicMobileNav'

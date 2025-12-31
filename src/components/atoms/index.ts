@@ -5,6 +5,7 @@ export { Button, buttonVariants } from './button'
 export { Input } from './input'
 export { Textarea } from './textarea'
 export { Label } from './label'
+export { Checkbox } from './checkbox'
 export {
   Select,
   SelectContent,
@@ -125,3 +126,15 @@ export type { LogoBullProps, LogoVariant, LogoAnimation } from './BullLogo'
 
 // Warp effects
 export { WarpStarField } from './WarpStarField'
+
+// Wallet & OAuth icons (SVG pixel art)
+export {
+  MetaMaskIcon,
+  WalletConnectIcon,
+  CoinbaseIcon,
+  GoogleIcon,
+  GitHubIcon,
+  WalletIcon,
+  getWalletIcon,
+  getOAuthIcon,
+} from './wallet-icons'
