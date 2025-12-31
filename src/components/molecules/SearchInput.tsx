@@ -105,9 +105,10 @@ export function SearchInput({
           variant="ghost"
           size="sm"
           onClick={handleClear}
+          aria-label="Clear search"
           className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-2 text-terminal-dim hover:text-terminal-bright"
         >
-          <Icon name="close" size="sm" />
+          <Icon name="close" size="sm" aria-hidden="true" />
         </Button>
       )}
 

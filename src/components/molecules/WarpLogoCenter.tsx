@@ -69,7 +69,7 @@ export function WarpLogoCenter({
           phase === 'emerging' && 'animate-emerge',
           phase === 'visible' && 'pixel-pulse'
         )}
-        style={{ animationDuration: `${emergeDuration}ms` }}
+        style={{ '--animation-duration': `${emergeDuration}ms` } as React.CSSProperties}
       >
         <LogoBull size={80} glow={phase === 'visible'} />
       </div>
@@ -77,17 +77,12 @@ export function WarpLogoCenter({
       {/* Main logo text */}
       <h1
         className={cn(
-          'text-terminal-green text-center select-none tracking-wider',
+          'warp-logo-text text-terminal-green text-center select-none tracking-wider',
           phase === 'hidden' && 'opacity-0',
           phase === 'emerging' && 'animate-emerge',
           phase === 'visible' && 'glow-sm pixel-pulse'
         )}
-        style={{
-          fontFamily: 'var(--font-pixel), monospace',
-          fontSize: 'clamp(2rem, 7vw, 5rem)',
-          lineHeight: 1.2,
-          animationDuration: `${emergeDuration}ms`,
-        }}
+        style={{ '--animation-duration': `${emergeDuration}ms` } as React.CSSProperties}
         aria-label={text}
       >
         {text}

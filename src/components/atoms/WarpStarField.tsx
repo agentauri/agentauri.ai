@@ -4,11 +4,32 @@ import { useRef, useEffect, useCallback } from 'react'
 import type { Star } from '@/hooks/use-warp-animation'
 import { cn } from '@/lib/utils'
 
-// Terminal color palette
-const COLORS = {
+// Default terminal colors (fallback for SSR)
+const DEFAULT_COLORS = {
   green: '#33FF33',
-  greenDim: '#1a8c1a',
+  greenDim: '#1FA91F',
   greenBright: '#66FF66',
+  bg: '#0a0a0a',
+}
+
+/**
+ * Gets terminal colors from CSS custom properties
+ * Falls back to defaults if not available (SSR or pre-paint)
+ */
+function getTerminalColors() {
+  if (typeof window === 'undefined') {
+    return DEFAULT_COLORS
+  }
+
+  const root = document.documentElement
+  const style = getComputedStyle(root)
+
+  return {
+    green: style.getPropertyValue('--terminal-green').trim() || DEFAULT_COLORS.green,
+    greenDim: style.getPropertyValue('--terminal-green-dim').trim() || DEFAULT_COLORS.greenDim,
+    greenBright: style.getPropertyValue('--terminal-green-bright').trim() || DEFAULT_COLORS.greenBright,
+    bg: style.getPropertyValue('--terminal-bg').trim() || DEFAULT_COLORS.bg,
+  }
 }
 
 interface WarpStarFieldProps {
@@ -39,6 +60,9 @@ export function WarpStarField({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    // Get terminal colors from CSS variables
+    const colors = getTerminalColors()
+
     // Get actual size
     const rect = container.getBoundingClientRect()
     const width = rect.width
@@ -53,7 +77,7 @@ export function WarpStarField({
     ctx.scale(dpr, dpr)
 
     // Clear canvas
-    ctx.fillStyle = '#0a0a0a'
+    ctx.fillStyle = colors.bg
     ctx.fillRect(0, 0, width, height)
 
     // Calculate center with parallax offset
@@ -88,17 +112,17 @@ export function WarpStarField({
       // Color based on brightness
       let color: string
       if (star.brightness > 0.8) {
-        color = COLORS.greenBright
+        color = colors.greenBright
       } else if (star.brightness > 0.5) {
-        color = COLORS.green
+        color = colors.green
       } else {
-        color = COLORS.greenDim
+        color = colors.greenDim
       }
 
       ctx.save()
 
       // Set glow effect
-      ctx.shadowColor = COLORS.green
+      ctx.shadowColor = colors.green
       ctx.shadowBlur = star.z * 15
 
       if (star.z < 0.6) {
@@ -129,7 +153,7 @@ export function WarpStarField({
         // Add bright tip
         ctx.beginPath()
         ctx.arc(screenX, screenY, baseSize * 1.2, 0, Math.PI * 2)
-        ctx.fillStyle = COLORS.greenBright
+        ctx.fillStyle = colors.greenBright
         ctx.globalAlpha = alpha * 0.9
         ctx.fill()
       }

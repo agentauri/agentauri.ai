@@ -16,7 +16,7 @@
   /* Terminal color palette - direct values required */
   --color-terminal-bg: #0a0a0a;
   --color-terminal-green: #33FF33;
-  --color-terminal-green-dim: #1a8c1a;
+  --color-terminal-green-dim: #1FA91F;
   --color-terminal-green-bright: #66FF66;
 
   /* Map to standard Tailwind colors */
@@ -28,10 +28,10 @@
   --color-popover-foreground: #33FF33;
   --color-primary: #33FF33;
   --color-primary-foreground: #0a0a0a;
-  --color-secondary: #1a8c1a;
+  --color-secondary: #1FA91F;
   --color-secondary-foreground: #0a0a0a;
-  --color-muted: #1a8c1a;
-  --color-muted-foreground: #1a8c1a;
+  --color-muted: #1FA91F;
+  --color-muted-foreground: #1FA91F;
   --color-accent: #66FF66;
   --color-accent-foreground: #0a0a0a;
   --color-destructive: #ff3333;
@@ -50,7 +50,7 @@
   /* Terminal colors - Green phosphor */
   --terminal-bg: #0a0a0a;
   --terminal-green: #33FF33;
-  --terminal-green-dim: #1a8c1a;
+  --terminal-green-dim: #1FA91F;
   --terminal-green-bright: #66FF66;
   --terminal-scanline: rgba(0, 0, 0, 0.15);
 
@@ -312,6 +312,21 @@ kbd {
   font-size: 16px !important;
   line-height: 1 !important;
   letter-spacing: 0 !important;
+}
+
+/* 6. HERO - For large hero headings in landing pages */
+.typo-hero {
+  font-family: var(--font-pixel), monospace !important;
+  font-size: clamp(24px, 5vw, 40px) !important;
+  line-height: 1.3 !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* 7. WARP LOGO TEXT - For the main warp homepage logo */
+.warp-logo-text {
+  font-family: var(--font-pixel), monospace;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1.2;
 }
 
 /* =============================================================================
@@ -599,4 +614,42 @@ kbd {
   .warp-nav-delay-3 { animation-delay: 0.3s; }
   .warp-nav-delay-4 { animation-delay: 0.4s; }
   .warp-nav-delay-5 { animation-delay: 0.5s; }
+}
+
+/* =============================================================================
+   ACCESSIBILITY - REDUCED MOTION
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .pulse-glow,
+  .glow,
+  .glow-sm,
+  .glow-lg,
+  .crt-flicker,
+  .pixel-pulse,
+  .pixel-glitch,
+  .animate-emerge,
+  .animate-boot,
+  .animate-warp-nav,
+  .cursor-blink,
+  .typing {
+    animation: none !important;
+  }
+}
+
+/* =============================================================================
+   MOBILE RESPONSIVE TYPOGRAPHY
+   ============================================================================= */
+@media (max-width: 640px) {
+  .typo-ui {
+    font-size: 12px !important;
+  }
+  .typo-header {
+    font-size: 14px !important;
+  }
+  .typo-code {
+    font-size: 18px !important;
+  }
+  .typo-hero {
+    font-size: clamp(18px, 4vw, 28px) !important;
+  }
 }

@@ -12,7 +12,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   { label: 'FEATURES', href: '/features' },
   { label: 'PRICING', href: '/pricing' },
   { label: 'DOCS', href: '/docs' },
-  { label: 'CONNECT', href: '/login' },
+  { label: 'LOGIN', href: '/login' },
 ]
 
 interface WarpNavMenuProps {
