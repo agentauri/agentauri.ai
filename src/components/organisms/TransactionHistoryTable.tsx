@@ -1,10 +1,8 @@
 'use client'
 
 import { Badge } from '@/components/atoms/badge'
-import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
-import { Icon } from '@/components/atoms/icon'
-import { LoadingSkeleton } from '@/components/molecules'
+import { ApiErrorDisplay, LoadingSkeleton } from '@/components/molecules'
 import { EmptyListState } from '@/components/molecules/EmptyState'
 import { useCreditTransactions } from '@/hooks'
 import { cn } from '@/lib/utils'
@@ -53,15 +51,10 @@ export function TransactionHistoryTable({
 
   if (error) {
     return (
-      <Box variant="error" padding="md" className="text-center">
-        <p className="typo-ui text-destructive flex items-center justify-center gap-2">
-          <Icon name="warning" size="sm" />
-          ERROR LOADING TRANSACTIONS
-        </p>
-        <p className="typo-ui text-destructive/80 mt-2">
-          {error instanceof Error ? error.message : 'An unexpected error occurred'}
-        </p>
-      </Box>
+      <ApiErrorDisplay
+        error={error instanceof Error ? error : new Error('An unexpected error occurred')}
+        title="ERROR LOADING TRANSACTIONS"
+      />
     )
   }
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
 import {
@@ -11,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/atoms/select'
-import { LoadingSkeleton } from '@/components/molecules'
+import { ApiErrorDisplay, LoadingSkeleton } from '@/components/molecules'
 import { FilterBar, FilterGroup, FilterItem } from '@/components/molecules/FilterBar'
 import { SearchInput } from '@/components/molecules/SearchInput'
 import { EmptyListState, NoResultsState } from '@/components/molecules/EmptyState'
@@ -61,15 +60,10 @@ export function AgentsList({ organizationId, showLinkButton = true, onLinkAgent 
 
   if (error) {
     return (
-      <Box variant="error" padding="md" className="text-center">
-        <p className="typo-ui text-destructive flex items-center justify-center gap-2">
-          <Icon name="warning" size="sm" />
-          ERROR LOADING AGENTS
-        </p>
-        <p className="typo-ui text-destructive/80 mt-2">
-          {error instanceof Error ? error.message : 'An unexpected error occurred'}
-        </p>
-      </Box>
+      <ApiErrorDisplay
+        error={error instanceof Error ? error : new Error('An unexpected error occurred')}
+        title="ERROR LOADING AGENTS"
+      />
     )
   }
 

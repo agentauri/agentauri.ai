@@ -3,6 +3,7 @@
 import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
+import { ApiErrorDisplay } from '@/components/molecules'
 import { useCreditBalance } from '@/hooks'
 import { cn } from '@/lib/utils'
 
@@ -31,12 +32,11 @@ export function CreditBalanceCard({
 
   if (error) {
     return (
-      <Box variant="error" padding="lg" className={className}>
-        <p className="typo-ui text-destructive flex items-center gap-2">
-          <Icon name="warning" size="sm" />
-          FAILED TO LOAD BALANCE
-        </p>
-      </Box>
+      <ApiErrorDisplay
+        error={error instanceof Error ? error : new Error('An unexpected error occurred')}
+        title="FAILED TO LOAD BALANCE"
+        className={className}
+      />
     )
   }
 
