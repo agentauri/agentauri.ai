@@ -119,8 +119,9 @@ export function apiResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
 }
 
 // Paginated response schema factory
+// Handles both: array directly OR { data: [], pagination: {} } object
 export function paginatedResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
-  return z.object({
+  const paginatedObject = z.object({
     data: z.array(itemSchema),
     pagination: z.object({
       total: z.number(),
@@ -135,6 +136,17 @@ export function paginatedResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
       hasMore: data.pagination.has_more, // Map snake_case to camelCase for frontend
     },
   }))
+
+  const rawArray = z.array(itemSchema).transform((arr) => ({
+    data: arr,
+    pagination: {
+      total: arr.length,
+      hasMore: false,
+      has_more: false,
+    },
+  }))
+
+  return z.union([paginatedObject, rawArray])
 }
 
 // API error response schema

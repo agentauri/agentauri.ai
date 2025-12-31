@@ -17,7 +17,9 @@ describe('authApi', () => {
   })
 
   describe('getNonce', () => {
-    it('should fetch nonce', async () => {
+    const testAddress = '0x1234567890123456789012345678901234567890'
+
+    it('should fetch nonce with address', async () => {
       const mockResponse = {
         nonce: '550e8400-e29b-41d4-a716-446655440000',
         expires_at: '2025-01-01T00:05:00Z',
@@ -25,7 +27,9 @@ describe('authApi', () => {
       }
 
       server.use(
-        http.post(`${baseUrl}/auth/nonce`, () => {
+        http.post(`${baseUrl}/auth/nonce`, async ({ request }) => {
+          const body = await request.json() as { address: string }
+          expect(body.address).toBe(testAddress)
           return HttpResponse.json(mockResponse)
         }),
         http.get(`${baseUrl}/csrf-token`, () => {
@@ -33,7 +37,7 @@ describe('authApi', () => {
         })
       )
 
-      const result = await authApi.getNonce()
+      const result = await authApi.getNonce(testAddress)
 
       expect(result.nonce).toBe(mockResponse.nonce)
       expect(result.expires_at).toBe(mockResponse.expires_at)
@@ -54,7 +58,7 @@ describe('authApi', () => {
         })
       )
 
-      await expect(authApi.getNonce()).rejects.toThrow()
+      await expect(authApi.getNonce(testAddress)).rejects.toThrow()
     })
   })
 

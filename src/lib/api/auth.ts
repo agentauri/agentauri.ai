@@ -52,9 +52,10 @@ export const authApi = {
   /**
    * Get nonce for SIWE (wallet) authentication
    * Returns a pre-formatted message to sign
+   * @param address - The wallet address requesting the nonce
    */
-  async getNonce(): Promise<NonceResponse> {
-    const data = await apiClient.post<NonceResponse>('/auth/nonce')
+  async getNonce(address: string): Promise<NonceResponse> {
+    const data = await apiClient.post<NonceResponse>('/auth/nonce', { address })
     return nonceResponseSchema.parse(data)
   },
 
@@ -120,8 +121,8 @@ export const authApi = {
     return this.loginWithWallet(request)
   },
 
-  /** @deprecated Use getNonce instead (no address param needed) */
-  async getNonceForAddress(_address: string): Promise<NonceResponse> {
-    return this.getNonce()
+  /** @deprecated Use getNonce instead */
+  async getNonceForAddress(address: string): Promise<NonceResponse> {
+    return this.getNonce(address)
   },
 }

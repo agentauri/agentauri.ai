@@ -32,14 +32,14 @@ const authUserSchema = z.object({
   name: z.string().nullable(),
   avatar: z.string().url().nullable(),
   created_at: z.string().datetime(),
-  last_login_at: z.string().datetime().optional(),
+  last_login_at: z.string().datetime().nullish(), // Can be null or undefined
   is_active: z.boolean().optional(),
 })
 
 // Nonce response schema (for SIWE)
 export const nonceResponseSchema = z.object({
   nonce: z.string().uuid(),
-  expires_at: z.string().datetime(),
+  expires_at: z.string().datetime().optional(), // Optional: BE may not include this
   message: z.string(), // Pre-formatted message to sign
 })
 
@@ -105,7 +105,7 @@ export const exchangeCodeResponseSchema = z.object({
     name: z.string().nullable(),
     avatar: z.string().url().nullable(),
     created_at: z.string().datetime(),
-    last_login_at: z.string().datetime().optional(),
+    last_login_at: z.string().datetime().nullish(), // Can be null or undefined
     is_active: z.boolean().optional(),
   }),
 })

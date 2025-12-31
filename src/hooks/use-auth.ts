@@ -55,15 +55,16 @@ export function useSession() {
 /**
  * Hook for getting nonce for SIWE authentication
  * Returns a pre-formatted message to sign
+ * @param address - The wallet address to get nonce for (required to fetch)
  */
-export function useNonce() {
+export function useNonce(address?: string) {
   return useQuery({
-    queryKey: queryKeys.auth.nonce('wallet'),
-    queryFn: () => authApi.getNonce(),
+    queryKey: queryKeys.auth.nonce(address ?? 'wallet'),
+    queryFn: () => authApi.getNonce(address!),
     staleTime: 2 * 60 * 1000, // 2 minutes (nonce has short expiry)
     gcTime: 5 * 60 * 1000,
-    // Don't auto-fetch, only when needed
-    enabled: false,
+    // Only fetch when address is provided
+    enabled: !!address,
   })
 }
 
