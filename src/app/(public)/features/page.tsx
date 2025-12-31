@@ -84,7 +84,7 @@ export default function FeaturesPage() {
     <div className="min-h-screen bg-terminal">
       {/* Hero */}
       <section className="py-20 text-center border-b-2 border-terminal">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-4">
           <h1 className="typo-header text-terminal-green glow text-4xl md:text-5xl mb-4">
             THE COMPLETE ERC-8004
             <br />

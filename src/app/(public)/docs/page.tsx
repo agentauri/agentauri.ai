@@ -149,7 +149,7 @@ export default function DocsPage() {
     <div className="min-h-screen bg-terminal">
       {/* Hero */}
       <section className="py-20 text-center border-b-2 border-terminal">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-4">
           <div className="flex justify-center gap-2 mb-6">
             <span className="typo-ui text-[10px] border border-terminal-green text-terminal-green px-2 py-1">
               ERC-8004
@@ -464,7 +464,7 @@ export default function DocsPage() {
           Join the first wave of builders on ERC-8004 infrastructure
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
           <Box variant="default" padding="lg" className="text-center">
             <h3 className="typo-ui text-terminal-green glow mb-2">DEVELOPERS</h3>
             <p className="typo-ui text-terminal-dim text-xs mb-4">Start building in 15 minutes</p>

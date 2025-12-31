@@ -1,6 +1,7 @@
 'use client'
 
-import { PublicNav, BottomNav } from '@/components/templates'
+import { PublicNav } from '@/components/templates'
+import { PublicMobileNav } from '@/components/molecules'
 
 export default function PublicLayout({
   children,
@@ -10,8 +11,8 @@ export default function PublicLayout({
   return (
     <div className="min-h-screen bg-terminal">
       <PublicNav />
-      <main className="pb-16 md:pb-0">{children}</main>
-      <BottomNav variant="public" />
+      <main>{children}</main>
+      <PublicMobileNav />
     </div>
   )
 }

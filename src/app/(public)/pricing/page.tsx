@@ -90,7 +90,7 @@ export default function PricingPage() {
     <div className="min-h-screen bg-terminal">
       {/* Hero */}
       <section className="py-20 text-center border-b-2 border-terminal">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-4">
           <h1 className="typo-header text-terminal-green glow text-4xl md:text-5xl mb-4">
             TRANSPARENT. SCALABLE.
             <br />
@@ -155,10 +155,10 @@ export default function PricingPage() {
             <table className="w-full border-2 border-terminal">
               <thead>
                 <tr className="border-b-2 border-terminal">
-                  <th className="text-left p-4 typo-ui text-terminal-dim">FEATURE</th>
-                  <th className="text-center p-4 typo-ui text-terminal-dim">FREE</th>
-                  <th className="text-center p-4 typo-ui text-terminal-green">PRO</th>
-                  <th className="text-center p-4 typo-ui text-terminal-dim">ENTERPRISE</th>
+                  <th scope="col" className="text-left p-4 typo-ui text-terminal-dim">FEATURE</th>
+                  <th scope="col" className="text-center p-4 typo-ui text-terminal-dim">FREE</th>
+                  <th scope="col" className="text-center p-4 typo-ui text-terminal-green">PRO</th>
+                  <th scope="col" className="text-center p-4 typo-ui text-terminal-dim">ENTERPRISE</th>
                 </tr>
               </thead>
               <tbody>
@@ -207,7 +207,7 @@ export default function PricingPage() {
 
       {/* FAQ */}
       <section className="py-16 px-4 border-t-2 border-terminal">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <h2 className="typo-header text-terminal-green glow text-center mb-8">
             [#] FAQ
           </h2>
