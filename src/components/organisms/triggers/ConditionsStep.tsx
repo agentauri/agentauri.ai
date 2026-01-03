@@ -10,7 +10,7 @@ import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
-import { EVENT_TYPES, EVENT_TYPE_INFO, type EventType } from '@/lib/constants'
+import { EVENT_TYPES, EVENT_TYPE_INFO, type EventType, type Registry } from '@/lib/constants'
 import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
 
 interface ConditionsStepProps {
@@ -84,6 +84,12 @@ export function ConditionsStep({ form }: ConditionsStepProps) {
   const handleEventTypeChange = (value: EventType) => {
     setSelectedEventType(value)
     updateConditions(value, filters)
+
+    // Auto-set registry based on event type
+    const eventInfo = EVENT_TYPE_INFO[value]
+    if (eventInfo) {
+      form.setValue('registry', eventInfo.registry as Registry)
+    }
   }
 
   const selectedInfo = selectedEventType ? EVENT_TYPE_INFO[selectedEventType] : null

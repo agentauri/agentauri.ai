@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/atoms/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
-import { CHAIN_NAMES, REGISTRIES, TESTNET_CHAINS } from '@/lib/constants'
+import { CHAIN_NAMES, TESTNET_CHAINS } from '@/lib/constants'
 import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
 
 interface BasicInfoStepProps {
@@ -71,63 +71,36 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
         )}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField
-          control={form.control}
-          name="chainId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="typo-ui">BLOCKCHAIN</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number.parseInt(value, 10))}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger className="typo-ui">
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(TESTNET_CHAINS).map(([, id]) => (
-                    <SelectItem key={id} value={id.toString()} className="typo-ui">
-                      {CHAIN_NAMES[id] ?? `Chain ${id}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="registry"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="typo-ui">REGISTRY TYPE</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="typo-ui">
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {REGISTRIES.map((registry) => (
-                    <SelectItem key={registry} value={registry} className="typo-ui">
-                      {registry.toUpperCase()}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription className="typo-ui">
-                Which ERC-8004 registry to monitor
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+      <FormField
+        control={form.control}
+        name="chainId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="typo-ui">BLOCKCHAIN</FormLabel>
+            <Select
+              onValueChange={(value) => field.onChange(Number.parseInt(value, 10))}
+              value={field.value?.toString()}
+            >
+              <FormControl>
+                <SelectTrigger className="typo-ui">
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {Object.entries(TESTNET_CHAINS).map(([, id]) => (
+                  <SelectItem key={id} value={id.toString()} className="typo-ui">
+                    {CHAIN_NAMES[id] ?? `Chain ${id}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormDescription className="typo-ui">
+              Select which blockchain to monitor for events
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={form.control}
