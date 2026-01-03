@@ -26,19 +26,19 @@ const PUBLIC_PATHS = new Set([
 const AUTH_PATHS = new Set(['/login', '/register'])
 
 /**
- * Paths that should be completely excluded from middleware
+ * Paths that should be completely excluded from proxy
  */
 const EXCLUDED_PREFIXES = ['/_next', '/api', '/favicon.ico', '/robots.txt', '/sitemap.xml']
 
 /**
  * Check if token has valid JWT structure
  *
- * The middleware only checks token structure, NOT validity.
+ * The proxy only checks token structure, NOT validity.
  * The backend is the single source of truth for authentication.
  * This approach:
  * - Avoids JWT_SECRET sync issues between frontend/backend
  * - Backend validates tokens on every API call
- * - Middleware just manages cookie/redirect flow
+ * - Proxy just manages cookie/redirect flow
  */
 function hasValidTokenStructure(token: string): boolean {
   // JWT has 3 base64url parts separated by dots: header.payload.signature
@@ -63,17 +63,17 @@ function normalizePath(pathname: string): string {
 }
 
 /**
- * Check if path should be excluded from middleware
+ * Check if path should be excluded from proxy
  */
 function isExcludedPath(pathname: string): boolean {
   return EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const normalizedPath = normalizePath(pathname)
 
-  // Skip middleware for excluded paths
+  // Skip proxy for excluded paths
   if (isExcludedPath(pathname)) {
     const response = NextResponse.next()
     // Add security headers to all responses
@@ -87,7 +87,7 @@ export function middleware(request: NextRequest) {
   // OAuth now uses Authorization Code Flow:
   // Backend redirects to /callback?code=oac_xxx
   // The /callback page exchanges the code for tokens via /api/auth/exchange
-  // No token handling needed in middleware - the callback page handles everything
+  // No token handling needed in proxy - the callback page handles everything
 
   const token = request.cookies.get('auth-token')?.value
 
