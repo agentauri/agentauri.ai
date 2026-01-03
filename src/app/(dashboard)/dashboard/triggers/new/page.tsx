@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { DetailPageHeader } from '@/components/molecules'
 import { TriggerForm } from '@/components/organisms'
 import { useCurrentOrganization } from '@/hooks'
 
@@ -31,24 +31,11 @@ export default function NewTriggerPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="space-y-4">
-        <Link
-          href="/dashboard/triggers"
-          className="typo-ui text-terminal-dim hover:text-terminal-green transition-colors inline-flex items-center gap-1"
-        >
-          [&lt;] BACK
-        </Link>
-
-        <div className="border-t-2 border-terminal-dim pt-4">
-          <h1 className="typo-header text-terminal-green glow">
-            [+] CREATE NEW TRIGGER
-          </h1>
-          <p className="typo-ui text-terminal-dim mt-1">
-            Set up automated monitoring and actions for blockchain events
-          </p>
-        </div>
-      </div>
+      <DetailPageHeader
+        backHref="/dashboard/triggers"
+        title="[+] CREATE NEW TRIGGER"
+        subtitle="Set up automated monitoring and actions for blockchain events"
+      />
 
       {/* Form */}
       <TriggerForm organizationId={organization.id} mode="create" />

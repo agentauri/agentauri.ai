@@ -48,3 +48,6 @@ export { SidebarUserInfo } from './SidebarUserInfo'
 
 // Navigation molecules
 export { PublicMobileNav } from './PublicMobileNav'
+
+// Page header molecules
+export { DetailPageHeader } from './DetailPageHeader'

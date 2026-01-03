@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { use } from 'react'
 import { Button } from '@/components/atoms/button'
-import { LoadingSkeleton } from '@/components/molecules'
+import { DetailPageHeader, LoadingSkeleton } from '@/components/molecules'
 import { AgentDetail } from '@/components/organisms'
 import { useAgent, useCurrentOrganization } from '@/hooks'
 
@@ -58,23 +58,11 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4 border-b-2 border-terminal pb-6">
-        <Link
-          href="/dashboard/agents"
-          className="typo-ui text-terminal-dim hover:text-terminal-green transition-colors"
-        >
-          [&lt;] BACK
-        </Link>
-        <div className="flex-1">
-          <h1 className="typo-header text-terminal-green glow">
-            AGENT #{agent.agentId}
-          </h1>
-          <p className="typo-ui text-terminal-dim mt-1">
-            {agent.walletAddress.slice(0, 6)}...{agent.walletAddress.slice(-4)}
-          </p>
-        </div>
-      </div>
+      <DetailPageHeader
+        backHref="/dashboard/agents"
+        title={`AGENT #${agent.agentId}`}
+        subtitle={`${agent.walletAddress.slice(0, 6)}...${agent.walletAddress.slice(-4)}`}
+      />
 
       {/* Agent Detail */}
       <AgentDetail agent={agent} organizationId={organization.id} />

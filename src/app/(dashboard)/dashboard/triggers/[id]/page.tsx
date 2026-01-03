@@ -5,7 +5,7 @@ import { use, useState } from 'react'
 import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs'
-import { ChainBadge, LoadingSkeleton, RegistryBadge, StatusBadge } from '@/components/molecules'
+import { ChainBadge, DetailPageHeader, LoadingSkeleton, RegistryBadge, StatusBadge } from '@/components/molecules'
 import { TriggerForm } from '@/components/organisms'
 import { useCurrentOrganization, useTrigger } from '@/hooks'
 import { sanitizeHtml, sanitizeConfigValue } from '@/lib/sanitize'
@@ -48,26 +48,12 @@ export default function TriggerDetailPage({ params }: TriggerDetailPageProps) {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4 border-b-2 border-terminal pb-6">
-        <Link
-          href="/dashboard/triggers"
-          className="typo-ui text-terminal-dim hover:text-terminal-green transition-colors"
-        >
-          [&lt;] BACK
-        </Link>
-        <div className="flex-1">
-          <h1 className="typo-header text-terminal-green glow">
-            {sanitizeHtml(trigger.name)}
-          </h1>
-          {trigger.description && (
-            <p className="typo-ui text-terminal-dim mt-1">
-              {sanitizeHtml(trigger.description)}
-            </p>
-          )}
-        </div>
-        <StatusBadge enabled={trigger.enabled} />
-      </div>
+      <DetailPageHeader
+        backHref="/dashboard/triggers"
+        title={sanitizeHtml(trigger.name)}
+        subtitle={trigger.description ? sanitizeHtml(trigger.description) : undefined}
+        action={<StatusBadge enabled={trigger.enabled} />}
+      />
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'view' | 'edit')}>
