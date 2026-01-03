@@ -32,14 +32,15 @@ export default function NewTriggerPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4 border-b-2 border-terminal pb-6">
+      <div className="space-y-4">
         <Link
           href="/dashboard/triggers"
-          className="typo-ui text-terminal-dim hover:text-terminal-green transition-colors"
+          className="typo-ui text-terminal-dim hover:text-terminal-green transition-colors inline-flex items-center gap-1"
         >
           [&lt;] BACK
         </Link>
-        <div className="flex-1">
+
+        <div className="border-t-2 border-terminal-dim pt-4">
           <h1 className="typo-header text-terminal-green glow">
             [+] CREATE NEW TRIGGER
           </h1>
