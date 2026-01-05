@@ -39,17 +39,22 @@ pnpm build-storybook  # Build Storybook
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/            # Auth route group (login, register) with layout
-│   ├── (dashboard)/       # Protected dashboard routes with layout
-│   ├── (public)/          # Public pages with layout
-│   └── api/               # API routes
+│   ├── (auth)/            # Auth routes (login, register, callback)
+│   ├── (dashboard)/       # Protected routes (agents, triggers, events, api-keys, billing, etc.)
+│   ├── (public)/          # Public pages (docs, features, pricing, changelog)
+│   ├── api/               # API routes (auth token management)
+│   └── maintenance/       # Maintenance page
 ├── components/            # Atomic Design structure
-│   ├── atoms/             # Basic UI (Button, Input, Card, Icon, Checkbox, etc.)
-│   ├── molecules/         # Composite components (SearchInput, WalletOptions, PublicMobileNav)
-│   └── organisms/         # Complex components (TriggerForm, WarpHomepage, DashboardSidebar)
-├── hooks/                 # Custom React hooks (use-auth, use-triggers, use-warp-animation)
+│   ├── atoms/             # Basic UI (Button, Input, Card, Icon, Checkbox, WarpStarField, etc.)
+│   ├── molecules/         # Composite components (SearchInput, WalletOptions, OAuthButtons, etc.)
+│   ├── organisms/         # Complex components (TriggerForm, WarpHomepage, DashboardSidebar)
+│   └── templates/         # Layout re-exports (DashboardSidebar, PublicNav, BottomNav)
+├── hooks/                 # Custom React hooks
+│   ├── use-auth, use-organizations, use-agents, use-api-keys
+│   ├── use-billing, use-events, use-triggers, use-health
+│   └── Animation hooks (use-warp-animation, use-glitch-animation, etc.)
 ├── lib/                   # Utilities and API clients
-│   ├── api/               # API client modules (auth, triggers, organizations)
+│   ├── api/               # API client modules (auth, agents, api-keys, billing, events, health, organizations, triggers, users)
 │   ├── api-client.ts      # Central API client with auth handling
 │   └── validations/       # Zod schemas
 ├── stores/                # Zustand stores (auth, organization, ui)
@@ -70,15 +75,18 @@ src/
 
 **API Layer**: API clients in `src/lib/api/` use the central `src/lib/api-client.ts`. Backend handles all blockchain reads via Ponder indexers.
 
-**Authentication**: JWT-based auth with middleware protection. Token stored in cookie, validated via jose library. Supports:
+**Authentication**: JWT-based auth with proxy-based protection (Next.js 16+). Features:
+- httpOnly cookies for secure token storage (XSS protection)
+- Automatic token refresh before expiration via `/api/auth/refresh`
+- CSRF protection for state-changing requests
 - OAuth (Google, GitHub) via `OAuthButtons` component
-- Wallet connection via `WalletOptions` component
-- Legacy `?token=` callback for backward compatibility
+- Wallet connection via `WalletOptions` component (SIWE)
+- Token management via `/api/auth/*` routes (set-tokens, refresh, logout, exchange)
 
 **Route Groups**:
-- `(auth)` - login/register flows
-- `(dashboard)` - protected routes (agents, triggers, events, etc.)
-- `(public)` - landing and public pages
+- `(auth)` - login, register, OAuth callback
+- `(dashboard)` - protected routes (agents, triggers, events, api-keys, billing, organizations, settings)
+- `(public)` - landing, features, pricing, docs, changelog
 
 ### Domain Models
 Key entities defined in `src/types/models.ts`:
@@ -104,10 +112,10 @@ Key entities defined in `src/types/models.ts`:
 - `DashboardSidebar` - Main navigation with collapsible sections
 - `TriggerForm` - Multi-step trigger creation wizard
 
-**Warp Homepage** (`src/components/organisms/`):
-- `WarpHomepage` - Animated landing page with star field
-- `WarpStarField` - Canvas-based star animation (uses CSS variables)
-- `WarpLogoCenter`, `WarpNavMenu` - Homepage molecules
+**Warp Homepage**:
+- `WarpHomepage` - Animated landing page with star field (`organisms/`)
+- `WarpStarField` - Canvas-based star animation (`atoms/`)
+- `WarpLogoCenter`, `WarpNavMenu` - Homepage UI (`molecules/`)
 
 ### Supported Chains
 Mainnet, Base, Sepolia, Base Sepolia, Linea Sepolia, Polygon Amoy
@@ -141,7 +149,7 @@ Terminal/retro aesthetic with green phosphor CRT styling. See `docs/design-syste
 
 ## Code Style (Biome)
 
-- Single quotes, no semicolons
+- Single quotes, semicolons as needed (omitted where possible)
 - 2-space indentation, 100 char line width
 - Import type for type-only imports (`useImportType`, `useExportType`)
 - Node.js import protocol required (`node:fs` not `fs`)

@@ -6,8 +6,8 @@ ERC-8004 Reputation Dashboard - A Next.js application for monitoring blockchain 
 
 ### Prerequisites
 
-- Node.js 18.18.0 or higher
-- pnpm 8.0.0 or higher
+- Node.js 20.0.0 or higher
+- pnpm 10.0.0 or higher
 
 ### Installation
 
@@ -37,25 +37,18 @@ pnpm start
 ```
 agentauri.ai/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/            # Auth route group (login)
-│   │   ├── (dashboard)/       # Protected dashboard routes
-│   │   ├── (public)/          # Public pages
-│   │   └── api/               # API routes
-│   ├── components/            # Atomic Design structure
-│   │   ├── atoms/             # Basic UI (Button, Input, Card)
-│   │   ├── molecules/         # Composite (SearchInput, StatCard)
-│   │   ├── organisms/         # Complex (TriggerForm, DashboardSidebar)
-│   │   └── templates/         # Page layouts
+│   ├── app/                    # Next.js App Router (route groups)
+│   ├── components/            # Atomic Design (atoms/molecules/organisms)
 │   ├── hooks/                 # Custom React hooks
 │   ├── lib/                   # Utilities and API clients
 │   ├── stores/                # Zustand stores
 │   └── types/                 # TypeScript types
 ├── docs/                      # Documentation
-│   └── design-system.md       # Design system reference
 ├── .storybook/                # Storybook configuration
 └── public/                    # Static assets
 ```
+
+See [CLAUDE.md](CLAUDE.md) for detailed architecture documentation.
 
 ## Tech Stack
 
@@ -116,13 +109,14 @@ pnpm typecheck
 
 Retro/terminal-inspired design with:
 
-- Monospace fonts (JetBrains Mono)
+- Pixel font (Press Start 2P) and monospace (VT323)
 - Terminal green color palette (#33FF33)
 - Scanline and glow effects
 - Dark mode by default
 - Atomic Design methodology
 
-See [docs/design-system.md](docs/design-system.md) for details.
+See [docs/design-system.md](docs/design-system.md) for full reference.
+See [CLAUDE.md](CLAUDE.md) for architecture and development patterns.
 
 ## Supported Chains
 

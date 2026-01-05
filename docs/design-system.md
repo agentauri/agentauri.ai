@@ -147,17 +147,21 @@ src/components/organisms/
 
 ### Templates
 
-Layout di pagina che combinano organisms. Definiscono la struttura delle pagine.
+Il quarto livello dell'Atomic Design. In questo progetto i layout di pagina sono gestiti tramite Next.js App Router `layout.tsx` files nelle route groups.
 
 ```
 src/components/templates/
-├── DashboardLayout.tsx   # Sidebar + main + mobile nav
-├── PublicLayout.tsx      # Header + main + footer
-└── AuthLayout.tsx        # Centered card layout
+└── index.ts              # Re-exports layout organisms (DashboardSidebar, PublicNav, BottomNav)
+
+src/app/
+├── (auth)/layout.tsx     # Auth layout (centered card)
+├── (dashboard)/layout.tsx # Dashboard layout (sidebar + main)
+└── (public)/layout.tsx   # Public layout (header + footer)
 ```
 
 **Caratteristiche Templates:**
-- Definiscono la struttura della pagina
+- Layout definiti nei `layout.tsx` delle route groups
+- `templates/` contiene solo re-exports per comodita
 - Combinano organisms di navigazione
 - Gestiscono responsive layout (mobile vs desktop)
 - Non contengono business logic
