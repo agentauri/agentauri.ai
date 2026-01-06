@@ -306,7 +306,7 @@ export function LogoBullWithText({
     <div className={cn('flex items-center gap-3', className)}>
       <LogoBull size={size} variant={variant} glow={glow} />
       <span
-        className="typo-ui tracking-wider"
+        className="typo-ui tracking-wider translate-y-[3px]"
         style={{
           color: '#33FF33',
           textShadow: glow ? '0 0 10px #33FF33, 0 0 20px #33FF3380' : undefined,

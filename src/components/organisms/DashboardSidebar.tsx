@@ -74,7 +74,7 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
           )}
         >
           <LogoBull size={20} glow={true} />
-          {!sidebarCollapsed && <span className="typo-ui translate-y-[1px]">AGENTAURI.AI</span>}
+          {!sidebarCollapsed && <span className="typo-ui translate-y-[3px]">AGENTAURI.AI</span>}
         </Link>
         <button
           type="button"
