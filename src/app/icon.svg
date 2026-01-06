@@ -1,12 +1,20 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" fill="#0A0A0A"/>
-  <text
-    x="16"
-    y="24"
-    text-anchor="middle"
-    font-family="Space Grotesk, Inter, system-ui, sans-serif"
-    font-size="22"
-    font-weight="700"
-    fill="#CCFF00"
-  >8</text>
+<svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="16" height="16" fill="#0A0A0A"/>
+  <!-- Corna sinistra -->
+  <rect x="1" y="2" width="2" height="2" fill="#33FF33"/>
+  <rect x="3" y="4" width="2" height="2" fill="#33FF33"/>
+  <!-- Corna destra -->
+  <rect x="13" y="2" width="2" height="2" fill="#33FF33"/>
+  <rect x="11" y="4" width="2" height="2" fill="#33FF33"/>
+  <!-- Testa -->
+  <rect x="5" y="5" width="6" height="2" fill="#33FF33"/>
+  <rect x="4" y="7" width="8" height="4" fill="#33FF33"/>
+  <!-- Occhi -->
+  <rect x="5" y="8" width="2" height="2" fill="#0A0A0A"/>
+  <rect x="9" y="8" width="2" height="2" fill="#0A0A0A"/>
+  <!-- Muso -->
+  <rect x="6" y="11" width="4" height="3" fill="#33FF33"/>
+  <!-- Narici -->
+  <rect x="7" y="12" width="1" height="1" fill="#0A0A0A"/>
+  <rect x="8" y="12" width="1" height="1" fill="#0A0A0A"/>
 </svg>
