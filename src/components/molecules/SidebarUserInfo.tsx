@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { UserIcon, ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon } from 'lucide-react'
 import { Badge, Skeleton, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/atoms'
 import { useSession } from '@/hooks/use-auth'
 import { useCurrentOrganization } from '@/hooks/use-organizations'
@@ -36,9 +36,9 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
           <Skeleton className="w-7 h-7" />
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <Skeleton className="h-3 w-16 mb-2" />
-              <Skeleton className="h-4 w-24 mb-2" />
-              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-3 w-16 mb-1" />
+              <Skeleton className="h-4 w-20 mb-1" />
+              <Skeleton className="h-4 w-12" />
             </div>
           )}
         </div>
@@ -67,23 +67,19 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
           <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-0.5">
             Working in
           </div>
-          <div className="flex items-center gap-1 mb-1.5">
+          <div className="flex items-center gap-1 mb-1">
             <span className="typo-ui text-terminal-green truncate">
               {orgName}
             </span>
             <ChevronRightIcon className="w-3 h-3 text-terminal-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
           </div>
-          {/* User identity + role */}
-          <div className="flex items-center gap-1.5">
-            <UserIcon className="w-3 h-3 text-terminal-dim shrink-0" />
-            <span className="text-[10px] text-terminal-dim truncate">{username}</span>
-            <Badge
-              variant="outline"
-              className={cn('px-1 py-0 text-[8px] shrink-0 ml-auto', ROLE_COLORS[role])}
-            >
-              {role.toUpperCase()}
-            </Badge>
-          </div>
+          {/* Role badge */}
+          <Badge
+            variant="outline"
+            className={cn('px-1.5 py-0 text-[8px]', ROLE_COLORS[role])}
+          >
+            {role.toUpperCase()}
+          </Badge>
         </div>
       )}
     </Link>
@@ -100,19 +96,13 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
             <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-1">
               Working in
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-terminal-green typo-ui">{orgName}</span>
-              <Badge
-                variant="outline"
-                className={cn('text-[9px] px-1 py-0', ROLE_COLORS[role])}
-              >
-                {role.toUpperCase()}
-              </Badge>
-            </div>
-            <div className="flex items-center gap-1 text-terminal-dim mt-2">
-              <UserIcon className="w-3 h-3" />
-              <span className="text-[10px]">{username}</span>
-            </div>
+            <div className="text-terminal-green typo-ui mb-1">{orgName}</div>
+            <Badge
+              variant="outline"
+              className={cn('text-[8px] px-1.5 py-0', ROLE_COLORS[role])}
+            >
+              {role.toUpperCase()}
+            </Badge>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
