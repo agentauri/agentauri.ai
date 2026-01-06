@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { UserIcon } from 'lucide-react'
+import { UserIcon, ChevronRightIcon } from 'lucide-react'
 import { Badge, Skeleton, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/atoms'
 import { useSession } from '@/hooks/use-auth'
 import { useCurrentOrganization } from '@/hooks/use-organizations'
@@ -32,12 +32,13 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
   if (isLoading) {
     return (
       <div className={cn('px-4 py-3', className)}>
-        <div className="flex items-center gap-3">
-          <Skeleton className="w-6 h-6 rounded-full" />
+        <div className="flex items-start gap-2.5">
+          <Skeleton className="w-7 h-7" />
           {!collapsed && (
             <div className="min-w-0 flex-1">
+              <Skeleton className="h-3 w-16 mb-2" />
               <Skeleton className="h-4 w-24 mb-2" />
-              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-3 w-20" />
             </div>
           )}
         </div>
@@ -49,25 +50,36 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
     <Link
       href="/dashboard/organizations"
       className={cn(
-        'flex items-center gap-3 w-full',
+        'group flex items-start gap-2.5 w-full',
         'hover:bg-terminal-green/5 transition-colors',
         'px-4 py-3',
         className
       )}
     >
-      <UserIcon className="w-6 h-6 text-terminal-green shrink-0" />
+      <div className="w-7 h-7 border-2 border-terminal-green flex items-center justify-center shrink-0">
+        <span className="text-terminal-green text-[10px] font-bold">
+          {orgName.charAt(0).toUpperCase()}
+        </span>
+      </div>
       {!collapsed && (
-        <div className="min-w-0 flex-1 space-y-1">
-          <div className="typo-ui text-terminal-green truncate">
-            {username}
+        <div className="min-w-0 flex-1">
+          {/* Organization context */}
+          <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-0.5">
+            Working in
           </div>
-          <div className="flex items-center gap-2">
-            <span className="typo-ui text-terminal-dim truncate">
+          <div className="flex items-center gap-1 mb-1.5">
+            <span className="typo-ui text-terminal-green truncate">
               {orgName}
             </span>
+            <ChevronRightIcon className="w-3 h-3 text-terminal-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+          </div>
+          {/* User identity + role */}
+          <div className="flex items-center gap-1.5">
+            <UserIcon className="w-3 h-3 text-terminal-dim shrink-0" />
+            <span className="text-[10px] text-terminal-dim truncate">{username}</span>
             <Badge
               variant="outline"
-              className={cn('typo-ui px-1.5 py-0.5', ROLE_COLORS[role])}
+              className={cn('px-1 py-0 text-[8px] shrink-0 ml-auto', ROLE_COLORS[role])}
             >
               {role.toUpperCase()}
             </Badge>
@@ -85,15 +97,21 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
             {content}
           </TooltipTrigger>
           <TooltipContent side="right" className="bg-terminal border-terminal-dim">
-            <div className="text-terminal-green typo-ui text-sm">{username}</div>
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className="text-terminal-dim text-xs">{orgName}</span>
+            <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-1">
+              Working in
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-terminal-green typo-ui">{orgName}</span>
               <Badge
                 variant="outline"
-                className={cn('text-[10px] px-1 py-0 h-4', ROLE_COLORS[role])}
+                className={cn('text-[9px] px-1 py-0', ROLE_COLORS[role])}
               >
                 {role.toUpperCase()}
               </Badge>
+            </div>
+            <div className="flex items-center gap-1 text-terminal-dim mt-2">
+              <UserIcon className="w-3 h-3" />
+              <span className="text-[10px]">{username}</span>
             </div>
           </TooltipContent>
         </Tooltip>
