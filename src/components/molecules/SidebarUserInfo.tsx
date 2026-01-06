@@ -96,12 +96,12 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
           <TooltipTrigger asChild>
             {content}
           </TooltipTrigger>
-          <TooltipContent side="right" className="bg-terminal border-terminal-dim">
+          <TooltipContent side="right" sideOffset={8} showArrow={false} className="bg-terminal border-2 border-terminal-dim p-3">
             <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-1">
               Working in
             </div>
-            <div className="text-terminal-green typo-ui mb-0.5">{orgName}</div>
-            <div className="text-[9px] text-terminal-dim mb-1">{email}</div>
+            <div className="text-terminal-green typo-ui mb-1">{orgName}</div>
+            <div className="text-[10px] text-terminal-dim mb-2 font-mono">{email}</div>
             <Badge
               variant="outline"
               className={cn('text-[8px] px-1.5 py-0', ROLE_COLORS[role])}
