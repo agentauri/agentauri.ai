@@ -27,7 +27,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       </main>
       <footer className="border-t-2 border-terminal-dim py-6">
         <div className="container text-center typo-ui text-terminal-dim">
-          <p>&copy; {new Date().getFullYear()} AGENTAURI.AI // ALL RIGHTS RESERVED</p>
+          <p>&copy; {new Date().getFullYear()} AGENTAURI.AI {'//'} ALL RIGHTS RESERVED</p>
         </div>
       </footer>
     </div>

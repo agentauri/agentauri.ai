@@ -25,6 +25,7 @@ export function PageSkeleton() {
           <Skeleton className="mb-6 h-10 w-48" />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[...Array(4)].map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
               <Skeleton key={i} className="h-32" />
             ))}
           </div>
@@ -54,13 +55,16 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
       <div className="border-b p-4">
         <div className="flex items-center gap-4">
           {[...Array(4)].map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
             <Skeleton key={i} className="h-4 w-24" />
           ))}
         </div>
       </div>
       {[...Array(rows)].map((_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
         <div key={i} className="flex items-center gap-4 border-b p-4 last:border-b-0">
           {[...Array(4)].map((_, j) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
             <Skeleton key={j} className="h-4 w-24" />
           ))}
         </div>
@@ -93,6 +97,7 @@ export function LoadingSkeleton({ count = 3, height = 100 }: { count?: number; h
   return (
     <div className="space-y-4">
       {[...Array(count)].map((_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
         <Skeleton key={i} className={`h-[${height}px]`} />
       ))}
     </div>

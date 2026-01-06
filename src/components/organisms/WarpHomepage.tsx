@@ -147,7 +147,7 @@ export function WarpHomepage({
       {navVisible && (
         <div className="absolute bottom-4 left-0 right-0 z-20">
           <div className="flex justify-center typo-ui text-terminal-dim">
-            <span>AGENTAURI.AI // {new Date().getFullYear()}</span>
+            <span>AGENTAURI.AI {'//'} {new Date().getFullYear()}</span>
           </div>
         </div>
       )}

@@ -63,6 +63,7 @@ export function InfoCardList({ items, numbered = true, className }: InfoCardList
   return (
     <div className={cn('space-y-1', className)}>
       {items.map((item, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static list, no reorder
         <div key={index} className="typo-ui text-terminal-dim">
           {numbered && <span>[{index + 1}] </span>}
           {item}
