@@ -65,7 +65,10 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
       )}
     >
       {/* Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b-2 border-terminal-dim">
+      <div className={cn(
+        'border-b-2 border-terminal-dim',
+        sidebarCollapsed ? 'h-24 flex flex-col items-center justify-center gap-3 px-2' : 'h-16 flex items-center justify-between px-4'
+      )}>
         <Link
           href="/"
           className={cn(
