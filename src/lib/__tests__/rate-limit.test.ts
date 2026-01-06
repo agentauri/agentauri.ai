@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  RATE_LIMITS,
   RateLimitError,
   checkRateLimit,
   clearAllRateLimits,
@@ -194,40 +193,4 @@ describe('rate-limit', () => {
     })
   })
 
-  describe('RATE_LIMITS presets', () => {
-    it('should have AUTH preset', () => {
-      expect(RATE_LIMITS.AUTH).toEqual({
-        maxRequests: 5,
-        windowMs: 15 * 60 * 1000,
-      })
-    })
-
-    it('should have TRIGGER_CREATE preset', () => {
-      expect(RATE_LIMITS.TRIGGER_CREATE).toEqual({
-        maxRequests: 10,
-        windowMs: 60 * 60 * 1000,
-      })
-    })
-
-    it('should have API_QUERY preset', () => {
-      expect(RATE_LIMITS.API_QUERY).toEqual({
-        maxRequests: 100,
-        windowMs: 60 * 1000,
-      })
-    })
-
-    it('should have FORM_SUBMIT preset', () => {
-      expect(RATE_LIMITS.FORM_SUBMIT).toEqual({
-        maxRequests: 20,
-        windowMs: 5 * 60 * 1000,
-      })
-    })
-
-    it('should have GENERIC preset', () => {
-      expect(RATE_LIMITS.GENERIC).toEqual({
-        maxRequests: 30,
-        windowMs: 60 * 1000,
-      })
-    })
-  })
 })

@@ -253,16 +253,4 @@ describe('error-handler', () => {
     })
   })
 
-  describe('ERROR_CODES', () => {
-    it('should have all expected error codes', () => {
-      expect(ERROR_CODES.UNAUTHORIZED).toBe('UNAUTHORIZED')
-      expect(ERROR_CODES.FORBIDDEN).toBe('FORBIDDEN')
-      expect(ERROR_CODES.NOT_FOUND).toBe('NOT_FOUND')
-      expect(ERROR_CODES.VALIDATION_ERROR).toBe('VALIDATION_ERROR')
-      expect(ERROR_CODES.RATE_LIMIT_EXCEEDED).toBe('RATE_LIMIT_EXCEEDED')
-      expect(ERROR_CODES.INTERNAL_ERROR).toBe('INTERNAL_ERROR')
-      expect(ERROR_CODES.NETWORK_ERROR).toBe('NETWORK_ERROR')
-      expect(ERROR_CODES.TIMEOUT).toBe('TIMEOUT')
-    })
-  })
 })

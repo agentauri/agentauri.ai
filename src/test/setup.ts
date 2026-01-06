@@ -2,11 +2,20 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
-import { afterAll, afterEach, beforeAll } from 'vitest'
+import { afterAll, afterEach, beforeAll, vi } from 'vitest'
 
-// Clean up after each test
+// Only cleanup DOM if jsdom environment is active
 afterEach(() => {
-  cleanup()
+  if (typeof document !== 'undefined') {
+    cleanup()
+  }
+  // Clear mocks after each test (faster than restoreAllMocks)
+  vi.clearAllMocks()
+})
+
+// Restore all mocks at the end of test suite
+afterAll(() => {
+  vi.restoreAllMocks()
 })
 
 // Default handlers for local Next.js API routes

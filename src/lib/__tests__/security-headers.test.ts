@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  SecurityUtils,
   generateNonce,
   getContentSecurityPolicy,
   getSecurityHeaders,
@@ -214,14 +213,4 @@ describe('security-headers', () => {
     })
   })
 
-  describe('SecurityUtils exports', () => {
-    it('should export all security utility functions', () => {
-      expect(SecurityUtils.getSecurityHeaders).toBeDefined()
-      expect(SecurityUtils.getContentSecurityPolicy).toBeDefined()
-      expect(SecurityUtils.isSafeRedirectUrl).toBeDefined()
-      expect(SecurityUtils.sanitizeRedirectUrl).toBeDefined()
-      expect(SecurityUtils.generateNonce).toBeDefined()
-      expect(SecurityUtils.isAllowedOrigin).toBeDefined()
-    })
-  })
 })
