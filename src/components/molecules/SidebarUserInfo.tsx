@@ -25,7 +25,7 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
   const { data: currentOrg, isLoading: orgLoading } = useCurrentOrganization()
 
   const isLoading = sessionLoading || orgLoading
-  const username = session?.username ?? 'User'
+  const email = session?.email ?? ''
   const orgName = currentOrg?.name ?? 'No organization'
   const role = currentOrg?.my_role ?? 'member'
 
@@ -67,11 +67,15 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
           <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-0.5">
             Working in
           </div>
-          <div className="flex items-center gap-1 mb-1">
+          <div className="flex items-center gap-1 mb-0.5">
             <span className="typo-ui text-terminal-green truncate">
               {orgName}
             </span>
             <ChevronRightIcon className="w-3 h-3 text-terminal-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+          </div>
+          {/* Email */}
+          <div className="text-[9px] text-terminal-dim truncate mb-1">
+            {email}
           </div>
           {/* Role badge */}
           <Badge
@@ -96,7 +100,8 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
             <div className="text-[9px] text-terminal-dim uppercase tracking-wider mb-1">
               Working in
             </div>
-            <div className="text-terminal-green typo-ui mb-1">{orgName}</div>
+            <div className="text-terminal-green typo-ui mb-0.5">{orgName}</div>
+            <div className="text-[9px] text-terminal-dim mb-1">{email}</div>
             <Badge
               variant="outline"
               className={cn('text-[8px] px-1.5 py-0', ROLE_COLORS[role])}
