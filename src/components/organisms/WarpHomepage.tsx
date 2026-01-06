@@ -146,10 +146,8 @@ export function WarpHomepage({
       {/* Footer */}
       {navVisible && (
         <div className="absolute bottom-4 left-0 right-0 z-20">
-          <div className="flex justify-center gap-8 typo-ui text-terminal-dim">
-            <span>ERC-8004</span>
-            <span>PROTOCOL</span>
-            <span>{new Date().getFullYear()}</span>
+          <div className="flex justify-center typo-ui text-terminal-dim">
+            <span>AGENTAURI.AI // {new Date().getFullYear()}</span>
           </div>
         </div>
       )}

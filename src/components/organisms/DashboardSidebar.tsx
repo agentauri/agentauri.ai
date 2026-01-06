@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 import { useLogout } from '@/hooks/use-auth'
 import { Icon, type IconName } from '@/components/atoms/icon'
+import { LogoBull } from '@/components/atoms/BullLogo'
 import { SidebarUserInfo } from '@/components/molecules/SidebarUserInfo'
 
 type NavItem = {
@@ -72,8 +73,8 @@ export function DashboardSidebar({ className, activePath }: DashboardSidebarProp
             'flex items-center gap-2'
           )}
         >
-          <Icon name="logo" size="sm" />
-          {!sidebarCollapsed && <span className="typo-ui">AGENTAURI.AI</span>}
+          <LogoBull size={20} glow={true} />
+          {!sidebarCollapsed && <span className="typo-ui translate-y-[1px]">AGENTAURI.AI</span>}
         </Link>
         <button
           type="button"

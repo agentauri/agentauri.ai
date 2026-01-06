@@ -2,21 +2,21 @@
 
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/auth-store'
 
 interface NavItem {
   label: string
   href: string
 }
 
-const DEFAULT_NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS: NavItem[] = [
   { label: 'FEATURES', href: '/features' },
   { label: 'PRICING', href: '/pricing' },
   { label: 'DOCS', href: '/docs' },
-  { label: 'LOGIN', href: '/login' },
 ]
 
 interface WarpNavMenuProps {
-  /** Navigation items */
+  /** Navigation items (excluding auth button which is handled separately) */
   items?: NavItem[]
   /** Whether the menu is visible */
   visible?: boolean
@@ -25,10 +25,18 @@ interface WarpNavMenuProps {
 }
 
 export function WarpNavMenu({
-  items = DEFAULT_NAV_ITEMS,
+  items = NAV_ITEMS,
   visible = false,
   className,
 }: WarpNavMenuProps) {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+
+  // Build nav items with auth button first
+  const authItem: NavItem = isAuthenticated
+    ? { label: 'DASHBOARD', href: '/dashboard' }
+    : { label: 'LOGIN', href: '/login' }
+
+  const allItems = [authItem, ...items]
   return (
     <nav
       data-slot="warp-nav-menu"
@@ -40,7 +48,7 @@ export function WarpNavMenu({
       )}
       aria-label="Main navigation"
     >
-      {items.map((item, index) => (
+      {allItems.map((item, index) => (
         <Link
           key={item.href}
           href={item.href}

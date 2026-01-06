@@ -31,13 +31,13 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
 
   if (isLoading) {
     return (
-      <div className={cn('px-3 py-2', className)}>
-        <div className="flex items-center gap-2">
-          <Skeleton className="w-5 h-5 rounded-full" />
+      <div className={cn('px-4 py-3', className)}>
+        <div className="flex items-center gap-3">
+          <Skeleton className="w-6 h-6 rounded-full" />
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <Skeleton className="h-4 w-20 mb-1" />
-              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-4 w-24 mb-2" />
+              <Skeleton className="h-4 w-20" />
             </div>
           )}
         </div>
@@ -49,25 +49,25 @@ export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInf
     <Link
       href="/dashboard/organizations"
       className={cn(
-        'flex items-center gap-2 w-full',
-        'hover:bg-terminal-green/5 transition-colors rounded',
-        'px-3 py-2',
+        'flex items-center gap-3 w-full',
+        'hover:bg-terminal-green/5 transition-colors',
+        'px-4 py-3',
         className
       )}
     >
-      <UserIcon className="w-5 h-5 text-terminal-green shrink-0" />
+      <UserIcon className="w-6 h-6 text-terminal-green shrink-0" />
       {!collapsed && (
-        <div className="min-w-0 flex-1">
-          <div className="typo-ui text-terminal-green truncate text-sm">
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="typo-ui text-terminal-green truncate">
             {username}
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="typo-ui text-terminal-dim text-xs truncate">
+          <div className="flex items-center gap-2">
+            <span className="typo-ui text-terminal-dim truncate">
               {orgName}
             </span>
             <Badge
               variant="outline"
-              className={cn('text-[10px] px-1 py-0 h-4', ROLE_COLORS[role])}
+              className={cn('typo-ui px-1.5 py-0.5', ROLE_COLORS[role])}
             >
               {role.toUpperCase()}
             </Badge>
