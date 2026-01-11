@@ -73,7 +73,7 @@ src/
 - `organization-store`: Current organization context
 - `ui-store`: Theme and UI preferences
 
-**API Layer**: API clients in `src/lib/api/` use the central `src/lib/api-client.ts`. Backend handles all blockchain reads via Ponder indexers.
+**API Layer**: API clients in `src/lib/api/` use the central `src/lib/api-client.ts`. Backend handles all blockchain reads via Ponder indexers. API documentation is maintained externally at `https://docs.agentauri.ai`.
 
 **Authentication**: JWT-based auth with proxy-based protection (Next.js 16+). Features:
 - httpOnly cookies for secure token storage (XSS protection)
@@ -165,9 +165,11 @@ pnpm test src/lib/utils.test.ts
 
 ## CI Pipeline
 
-GitHub Actions runs on push/PR to main:
-1. Lint (Biome)
-2. Type check
-3. Unit tests with coverage
-4. Build (depends on lint + typecheck)
-5. Storybook build
+GitHub Actions runs on push/PR to main (skips for docs/markdown changes):
+1. **Setup** - Cache node_modules for all jobs
+2. **Quality Checks** - Lint + typecheck in parallel
+3. **Unit Tests** - With coverage (runs parallel with build)
+4. **Build** - Next.js production build
+5. **Storybook Build** - Component documentation
+
+Tests and Quality run in parallel after Setup. Build and Storybook depend on Quality passing.

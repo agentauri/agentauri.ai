@@ -64,6 +64,7 @@ src/components/atoms/
 ├── Select.tsx        # Dropdown select
 ├── Tabs.tsx          # Tab navigation
 ├── Table.tsx         # Tabella dati
+├── WarpStarField.tsx # Background animato stelle
 └── ...
 ```
 
@@ -128,7 +129,6 @@ src/components/organisms/
 ├── MobileMenu.tsx            # Fullscreen menu
 ├── ErrorBoundary.tsx         # Error handling
 ├── WarpHomepage.tsx          # Landing page animata
-├── WarpStarField.tsx         # Background stelle
 ├── EventTypeSelector.tsx     # Selettore tipo evento
 ├── CreateOrganizationDialog.tsx # Modal creazione org
 └── triggers/
@@ -173,16 +173,18 @@ src/app/
 ### File Naming
 
 ```
-✓ PascalCase per tutti i file componenti
+✓ kebab-case per atoms (shadcn/ui convention)
+  button.tsx
+  card.tsx
+  dialog.tsx
+
+✓ PascalCase per molecules e organisms
   AlertBanner.tsx
   TriggerForm.tsx
   SearchInput.tsx
 
 ✓ PascalCase per stories
   AlertBanner.stories.tsx
-
-✗ NON usare kebab-case
-  alert-banner.tsx (NO)
 ```
 
 ### Struttura File
@@ -405,11 +407,10 @@ Minimo **44x44px** per elementi interattivi su mobile:
 ### Terminal Colors
 
 ```css
---terminal:        hsl(120, 100%, 50%)     /* #00FF00 - Verde brillante */
---terminal-green:  hsl(120, 100%, 40%)     /* Verde principale */
---terminal-bright: hsl(120, 100%, 60%)     /* Verde chiaro (success) */
---terminal-dim:    hsl(120, 30%, 40%)      /* Verde scuro (muted) */
---terminal-bg:     hsl(0, 0%, 4%)          /* Nero profondo */
+--terminal-bg:          #0a0a0a    /* Sfondo nero profondo */
+--terminal-green:       #33FF33    /* Verde primario (testo principale) */
+--terminal-green-dim:   #1FA91F    /* Verde scuro (testo secondario, WCAG AA) */
+--terminal-green-bright: #66FF66   /* Verde chiaro (highlights, success) */
 ```
 
 ### Semantic Colors
@@ -449,8 +450,8 @@ Minimo **44x44px** per elementi interattivi su mobile:
 ### Font Families
 
 ```css
---font-sans:  'JetBrains Mono', monospace  /* UI text, headers, data */
---font-mono:  'JetBrains Mono', monospace  /* Code */
+--font-pixel: 'Press Start 2P', monospace  /* UI text, headers, labels */
+--font-mono:  'VT323', monospace            /* Code display, data */
 ```
 
 ### Typography Classes
