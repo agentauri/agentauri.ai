@@ -17,8 +17,8 @@ export default defineConfig({
     fileParallelism: true,
     // Faster test isolation (disable if tests have side effects)
     isolate: true,
-    // Reduce test output noise in CI
-    reporters: isCI ? ['basic'] : ['default'],
+    // Reduce test output noise in CI (dot reporter is minimal)
+    reporters: isCI ? ['dot'] : ['default'],
     coverage: {
       provider: 'v8',
       // Use minimal reporters in CI, full reporters locally
