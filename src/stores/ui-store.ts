@@ -1,3 +1,12 @@
+/**
+ * UI store
+ *
+ * Zustand store for managing UI state and preferences with localStorage persistence.
+ * Handles theme settings, sidebar state, and mobile navigation.
+ *
+ * @module stores/ui-store
+ */
+
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { createSafeStorage, createHydrationHook } from '@/lib/storage-utils'

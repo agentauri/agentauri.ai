@@ -1,3 +1,12 @@
+/**
+ * Organization store
+ *
+ * Zustand store for managing current organization context with localStorage persistence.
+ * Tracks the selected organization and user's role for permission checks.
+ *
+ * @module stores/organization-store
+ */
+
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { OrganizationRole } from '@/lib/constants'

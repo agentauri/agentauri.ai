@@ -1,3 +1,12 @@
+/**
+ * Authentication store
+ *
+ * Zustand store for managing authentication state with localStorage persistence.
+ * Uses httpOnly cookies for actual token storage (XSS protection).
+ *
+ * @module stores/auth-store
+ */
+
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { clearCsrfToken } from '@/lib/api-client'
