@@ -44,12 +44,17 @@ export function usePixelAnimation({
   const [glitchingPixels, setGlitchingPixels] = useState<Set<number>>(new Set())
 
   const animationRef = useRef<number | null>(null)
+  const glitchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const startTimeRef = useRef<number>(0)
 
   const reset = useCallback(() => {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current)
       animationRef.current = null
+    }
+    if (glitchTimeoutRef.current) {
+      clearTimeout(glitchTimeoutRef.current)
+      glitchTimeoutRef.current = null
     }
     setPhase('idle')
     setVisiblePixels(new Set())
@@ -95,6 +100,11 @@ export function usePixelAnimation({
   const triggerGlitch = useCallback(() => {
     if (phase !== 'pulse' && phase !== 'idle') return
 
+    // Clear any existing glitch timeout
+    if (glitchTimeoutRef.current) {
+      clearTimeout(glitchTimeoutRef.current)
+    }
+
     const prevPhase = phase
     setPhase('glitch')
 
@@ -107,9 +117,10 @@ export function usePixelAnimation({
     setGlitchingPixels(glitchIndices)
 
     // Clear glitch after duration
-    setTimeout(() => {
+    glitchTimeoutRef.current = setTimeout(() => {
       setGlitchingPixels(new Set())
       setPhase(prevPhase === 'idle' ? 'idle' : 'pulse')
+      glitchTimeoutRef.current = null
     }, glitchDuration)
   }, [phase, totalPixels, glitchDuration])
 
@@ -121,6 +132,9 @@ export function usePixelAnimation({
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
+      }
+      if (glitchTimeoutRef.current) {
+        clearTimeout(glitchTimeoutRef.current)
       }
     }
   }, [autoPlay, startBoot]) // eslint-disable-line react-hooks/exhaustive-deps

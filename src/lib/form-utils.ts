@@ -3,6 +3,8 @@
  * Reduces code duplication in complex forms
  */
 
+import { useState } from 'react'
+
 /**
  * Create array field handlers for React Hook Form
  * Handles add, update, remove operations with proper type safety
@@ -125,11 +127,6 @@ export function useFormSteps<T extends string>(steps: T[], initialStep?: T) {
     progress: ((currentIndex + 1) / steps.length) * 100,
   }
 }
-
-/**
- * Import useState for useFormSteps
- */
-import { useState } from 'react'
 
 /**
  * Transform form data by removing readonly fields

@@ -37,11 +37,15 @@ const securityHeaders = [
   {
     // Content Security Policy
     // Note: 'unsafe-inline' for styles is needed for CSS-in-JS/Tailwind
-    // Adjust script-src and connect-src based on your actual domains
+    // In production, consider using nonce-based CSP for scripts
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // unsafe-eval needed for dev, remove in strict prod
+      // Production: Remove unsafe-inline and use nonce-based approach
+      // Development may still need 'unsafe-inline' for HMR
+      process.env.NODE_ENV === 'production'
+        ? "script-src 'self'"
+        : "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
       "font-src 'self' data:",

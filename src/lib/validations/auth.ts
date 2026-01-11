@@ -44,13 +44,18 @@ export const nonceResponseSchema = z.object({
 })
 
 // Wallet login request schema
+// ECDSA signatures are 65 bytes (130 hex chars + 0x prefix = 132 chars)
+// We set a reasonable max to prevent abuse
+const MAX_SIGNATURE_LENGTH = 200 // Allow some buffer for different signature types
+
 export const walletLoginRequestSchema = z.object({
   address: ethereumAddressSchema,
   signature: z
     .string()
     .regex(/^0x[a-fA-F0-9]+$/, 'Invalid signature format')
-    .min(132, 'Invalid signature length'),
-  message: z.string().min(1, 'Message is required'),
+    .min(132, 'Signature too short (min 132 chars)')
+    .max(MAX_SIGNATURE_LENGTH, `Signature too long (max ${MAX_SIGNATURE_LENGTH} chars)`),
+  message: z.string().min(1, 'Message is required').max(1000, 'Message too long'),
 })
 
 // Wallet login response schema

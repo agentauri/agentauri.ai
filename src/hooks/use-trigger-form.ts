@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { SUPPORTED_CHAINS } from '@/lib/constants'
 import { handleError } from '@/lib/error-handler'
-import { useFormSteps } from '@/lib/form-utils'
+import { useFormSteps } from './use-form-steps'
 import {
   createTriggerRequestSchema,
   type CreateTriggerRequest,

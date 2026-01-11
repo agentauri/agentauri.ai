@@ -1,6 +1,37 @@
 /**
  * Client-side rate limiting utilities
  * Prevents abuse by limiting request frequency per endpoint/action
+ *
+ * IMPORTANT: Production Deployment Considerations
+ * ================================================
+ * This implementation uses in-memory storage, which has limitations:
+ *
+ * 1. NOT distributed: Each server instance has its own rate limit state.
+ *    In multi-instance deployments (Kubernetes, serverless), a user can
+ *    bypass limits by hitting different instances.
+ *
+ * 2. State lost on restart: Rate limit counters reset when the server restarts.
+ *
+ * For production deployments with multiple instances, consider:
+ *
+ * - Redis: Use `ioredis` with sliding window algorithm
+ *   ```ts
+ *   import Redis from 'ioredis'
+ *   const redis = new Redis(process.env.REDIS_URL)
+ *   // Implement sliding window with MULTI/EXEC
+ *   ```
+ *
+ * - Upstash: Serverless Redis with built-in rate limiting
+ *   ```ts
+ *   import { Ratelimit } from '@upstash/ratelimit'
+ *   import { Redis } from '@upstash/redis'
+ *   const ratelimit = new Ratelimit({
+ *     redis: Redis.fromEnv(),
+ *     limiter: Ratelimit.slidingWindow(10, '10 s'),
+ *   })
+ *   ```
+ *
+ * - Cloudflare Workers KV or D1 for edge deployments
  */
 
 interface RateLimitEntry {
@@ -10,7 +41,9 @@ interface RateLimitEntry {
 
 /**
  * In-memory storage for rate limit tracking
- * In production, consider using Redis or similar for distributed rate limiting
+ *
+ * WARNING: Not suitable for distributed deployments without modifications.
+ * See module documentation above for production alternatives.
  */
 const rateLimitStore = new Map<string, RateLimitEntry>()
 

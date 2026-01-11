@@ -54,9 +54,19 @@ export class ApiError extends Error {
  * Token is fetched from the server and cached in memory
  */
 let csrfToken: string | null = null
+let csrfFetchAttempts = 0
+const MAX_CSRF_FETCH_ATTEMPTS = 3
 
 async function fetchCsrfToken(): Promise<string | null> {
   if (csrfToken) return csrfToken
+
+  // Prevent excessive retry attempts
+  if (csrfFetchAttempts >= MAX_CSRF_FETCH_ATTEMPTS) {
+    console.warn('[CSRF] Max fetch attempts reached, skipping CSRF protection')
+    return null
+  }
+
+  csrfFetchAttempts++
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/${API_VERSION}/csrf-token`, {
@@ -67,14 +77,31 @@ async function fetchCsrfToken(): Promise<string | null> {
     if (response.ok) {
       const data = await response.json()
       csrfToken = data.token ?? null
+      csrfFetchAttempts = 0 // Reset on success
       return csrfToken
     }
-  } catch {
-    // CSRF token fetch failed, continue without it
-    console.warn('Failed to fetch CSRF token')
+
+    // Log specific failure reason
+    console.warn('[CSRF] Token fetch failed:', {
+      status: response.status,
+      attempt: csrfFetchAttempts,
+    })
+  } catch (error) {
+    // Network error during CSRF fetch
+    console.error('[CSRF] Token fetch error:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      attempt: csrfFetchAttempts,
+    })
   }
 
   return null
+}
+
+/**
+ * Reset CSRF fetch attempts (call after successful auth)
+ */
+export function resetCsrfFetchAttempts(): void {
+  csrfFetchAttempts = 0
 }
 
 /**
@@ -86,22 +113,30 @@ export function clearCsrfToken(): void {
 
 /**
  * Token refresh state to prevent concurrent refresh attempts
+ * Uses mutex pattern to ensure only one refresh happens at a time
  */
-let isRefreshing = false
 let refreshPromise: Promise<boolean> | null = null
 
 /**
  * Attempt to refresh the access token
  * Uses the refresh token stored in httpOnly cookie
  * Returns true if refresh succeeded, false otherwise
+ *
+ * This function implements a mutex pattern:
+ * - If a refresh is already in progress, all callers wait on the same promise
+ * - Only one actual refresh request is made regardless of concurrent calls
  */
 async function attemptTokenRefresh(): Promise<boolean> {
   // If already refreshing, wait for the existing refresh to complete
-  if (isRefreshing && refreshPromise) {
+  // This prevents race conditions when multiple requests fail simultaneously
+  if (refreshPromise) {
+    console.debug('[Auth] Token refresh already in progress, waiting...')
     return refreshPromise
   }
 
-  isRefreshing = true
+  console.debug('[Auth] Starting token refresh...')
+
+  // Create the refresh promise - all concurrent callers will share this
   refreshPromise = (async () => {
     try {
       const response = await fetch('/api/auth/refresh', {
@@ -110,20 +145,34 @@ async function attemptTokenRefresh(): Promise<boolean> {
       })
 
       if (response.ok) {
+        console.debug('[Auth] Token refresh successful')
         return true
       }
 
-      // Refresh failed - tokens are invalid
+      // Log the failure reason for debugging
+      const errorData = await response.json().catch(() => ({}))
+      console.warn('[Auth] Token refresh failed:', {
+        status: response.status,
+        code: errorData.code ?? 'UNKNOWN',
+        message: errorData.error ?? 'Token refresh rejected',
+      })
       return false
-    } catch {
+    } catch (error) {
+      // Network or other errors during refresh
+      console.error('[Auth] Token refresh error:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
       return false
-    } finally {
-      isRefreshing = false
-      refreshPromise = null
     }
   })()
 
-  return refreshPromise
+  try {
+    return await refreshPromise
+  } finally {
+    // Clear the promise after completion so future refreshes can proceed
+    // This is safe because all waiters have already received their result
+    refreshPromise = null
+  }
 }
 
 function buildUrl(endpoint: string, params?: ApiRequestOptions['params']): string {

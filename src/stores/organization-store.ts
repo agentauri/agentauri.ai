@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { OrganizationRole } from '@/lib/constants'
+import { createSafeStorage, createHydrationHook } from '@/lib/storage-utils'
 
 /**
  * Organization context store - only stores current selection.
@@ -31,20 +32,6 @@ interface OrganizationState {
   setCurrentOrganization: (orgId: string | null, role?: OrganizationRole | null) => void
   setHydrated: (hydrated: boolean) => void
   reset: () => void
-}
-
-/**
- * SSR-safe storage
- */
-const createSafeStorage = () => {
-  if (typeof window === 'undefined') {
-    return {
-      getItem: () => null,
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    }
-  }
-  return localStorage
 }
 
 export const useOrganizationStore = create<OrganizationState>()(
@@ -91,8 +78,4 @@ export const useOrganizationStore = create<OrganizationState>()(
 /**
  * Hook to manually trigger hydration on client mount
  */
-export const useOrganizationHydration = () => {
-  if (typeof window !== 'undefined') {
-    useOrganizationStore.persist.rehydrate()
-  }
-}
+export const useOrganizationHydration = createHydrationHook(useOrganizationStore)

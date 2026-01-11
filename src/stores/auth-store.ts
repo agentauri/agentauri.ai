@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { clearCsrfToken } from '@/lib/api-client'
+import { createSafeStorage, createHydrationHook } from '@/lib/storage-utils'
 
 /**
  * Minimal auth state - only authentication status.
@@ -22,20 +23,6 @@ interface AuthState {
   setLoading: (loading: boolean) => void
   setHydrated: (hydrated: boolean) => void
   logout: () => void
-}
-
-/**
- * SSR-safe storage that returns empty values on server
- */
-const createSafeStorage = () => {
-  if (typeof window === 'undefined') {
-    return {
-      getItem: () => null,
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    }
-  }
-  return localStorage
 }
 
 /**
@@ -97,8 +84,4 @@ export const useAuthStore = create<AuthState>()(
  * Hook to manually trigger hydration on client mount
  * Use this in your root provider or layout
  */
-export const useAuthHydration = () => {
-  if (typeof window !== 'undefined') {
-    useAuthStore.persist.rehydrate()
-  }
-}
+export const useAuthHydration = createHydrationHook(useAuthStore)

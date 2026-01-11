@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { createSafeStorage, createHydrationHook } from '@/lib/storage-utils'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -17,20 +18,6 @@ interface UIState {
   setMobileMenuOpen: (open: boolean) => void
   toggleMobileMenu: () => void
   setHydrated: (hydrated: boolean) => void
-}
-
-/**
- * SSR-safe storage
- */
-const createSafeStorage = () => {
-  if (typeof window === 'undefined') {
-    return {
-      getItem: () => null,
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    }
-  }
-  return localStorage
 }
 
 /**
@@ -101,11 +88,7 @@ export const useUIStore = create<UIState>()(
 /**
  * Hook to manually trigger hydration on client mount
  */
-export const useUIHydration = () => {
-  if (typeof window !== 'undefined') {
-    useUIStore.persist.rehydrate()
-  }
-}
+export const useUIHydration = createHydrationHook(useUIStore)
 
 /**
  * Listen for system theme changes

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { toast } from 'sonner'
 
 interface UseCopyToClipboardOptions {
@@ -43,18 +43,40 @@ export function useCopyToClipboard(
   } = options
 
   const [copied, setCopied] = useState(false)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const reset = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
     setCopied(false)
   }, [])
 
   const copy = useCallback(
     async (text: string): Promise<boolean> => {
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+
       try {
         await navigator.clipboard.writeText(text)
         setCopied(true)
         toast.success(successMessage)
-        setTimeout(() => setCopied(false), timeout)
+        timeoutRef.current = setTimeout(() => {
+          setCopied(false)
+          timeoutRef.current = null
+        }, timeout)
         return true
       } catch {
         toast.error(errorMessage)

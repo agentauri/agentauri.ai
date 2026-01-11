@@ -24,7 +24,8 @@ export function useAgents(orgId: string | null, params?: PaginationParams & Agen
  */
 export function useAgent(orgId: string | null, agentAddress: string | null) {
   return useQuery({
-    queryKey: queryKeys.agents.detail(orgId ?? '', 0, 0), // Using 0 as placeholder
+    // Use a custom query key that includes the actual address for proper caching
+    queryKey: ['agents', 'detail', orgId ?? '', agentAddress ?? ''] as const,
     queryFn: () => agentsApi.get(orgId!, agentAddress!),
     enabled: !!orgId && !!agentAddress,
     staleTime: 30 * 1000,

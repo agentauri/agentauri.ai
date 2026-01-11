@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { Box } from '@/components/atoms/box'
 import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
@@ -68,17 +69,32 @@ export function TriggerForm({ organizationId, trigger, mode = 'create' }: Trigge
 
   const onSubmit = async (data: CreateTriggerFormValues) => {
     try {
-      // After Zod validation, the data conforms to CreateTriggerRequest
-      const validatedData = data as unknown as CreateTriggerRequest
+      // Re-parse with schema to get properly transformed/validated data
+      // This ensures type safety and applies any Zod transforms
+      const parseResult = createTriggerRequestSchema.safeParse(data)
+      if (!parseResult.success) {
+        const errors = parseResult.error.flatten()
+        console.error('Form validation error:', errors)
+        // Show first field error to user
+        const firstFieldError = Object.values(errors.fieldErrors)[0]?.[0]
+        toast.error(firstFieldError ?? 'Please check the form for errors')
+        return
+      }
+
+      const validatedData = parseResult.data
       if (mode === 'create') {
         const result = await createMutation.mutateAsync(validatedData)
+        toast.success('Trigger created successfully')
         router.push(`/dashboard/triggers/${result.id}`)
       } else {
         await updateMutation.mutateAsync(validatedData)
+        toast.success('Trigger updated successfully')
         router.push(`/dashboard/triggers/${trigger?.id}`)
       }
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save trigger'
       console.error('Form submission error:', error)
+      toast.error(message)
     }
   }
 

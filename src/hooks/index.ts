@@ -15,6 +15,7 @@ export * from './use-user-profile'
 
 // Utility hooks
 export * from './use-copy-to-clipboard'
+export * from './use-form-steps'
 
 // Animation hooks
 export * from './use-pixel-animation'
