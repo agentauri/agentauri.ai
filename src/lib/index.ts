@@ -1,12 +1,48 @@
 /**
  * Lib utilities barrel export
- * Provides clean imports for commonly used utilities
+ *
+ * Central export point for all utility modules used throughout the application.
+ * Provides clean, organized imports for commonly used utilities.
+ *
+ * @module lib
+ *
+ * @example
+ * ```ts
+ * import {
+ *   // API
+ *   apiClient,
+ *   ApiError,
+ *
+ *   // Configuration
+ *   API_BASE_URL,
+ *   SUPPORTED_CHAINS,
+ *   type Registry,
+ *
+ *   // Helpers
+ *   getChainName,
+ *   formatDate,
+ *   formatNumber,
+ *
+ *   // Error handling
+ *   handleError,
+ *   normalizeError,
+ *
+ *   // Utils
+ *   cn,
+ * } from '@/lib'
+ * ```
  */
 
-// API
+// ============================================================================
+// API Client
+// ============================================================================
+
 export { apiClient, ApiError, clearCsrfToken } from './api-client'
 
-// Configuration
+// ============================================================================
+// Configuration & Constants
+// ============================================================================
+
 export {
   API_BASE_URL,
   API_VERSION,
@@ -26,7 +62,10 @@ export {
   type QueryTier,
 } from './constants'
 
-// Config helpers
+// ============================================================================
+// Config Helpers
+// ============================================================================
+
 export {
   getChainName,
   getChainOptions,
@@ -45,7 +84,10 @@ export {
   formatRelativeTime,
 } from './config-helpers'
 
-// Error handling
+// ============================================================================
+// Error Handling
+// ============================================================================
+
 export {
   AppError,
   ERROR_CODES,
@@ -57,7 +99,10 @@ export {
   type ErrorCode,
 } from './error-handler'
 
-// Form utilities
+// ============================================================================
+// Form Utilities
+// ============================================================================
+
 export {
   createArrayFieldHandlers,
   useFormSteps,
@@ -68,7 +113,10 @@ export {
   normalizeFormData,
 } from './form-utils'
 
-// Rate limiting
+// ============================================================================
+// Rate Limiting
+// ============================================================================
+
 export {
   checkRateLimit,
   resetRateLimit,
@@ -81,7 +129,10 @@ export {
   type RateLimitResult,
 } from './rate-limit'
 
+// ============================================================================
 // Sanitization
+// ============================================================================
+
 export {
   sanitizeHtml,
   sanitizeJson,
@@ -92,8 +143,14 @@ export {
   isValidJson,
 } from './sanitize'
 
+// ============================================================================
 // Security
+// ============================================================================
+
 export { SecurityUtils, getSecurityHeaders, sanitizeRedirectUrl, isSafeRedirectUrl } from './security-headers'
 
-// Utils
+// ============================================================================
+// Core Utils
+// ============================================================================
+
 export { cn } from './utils'

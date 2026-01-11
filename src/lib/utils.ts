@@ -1,3 +1,12 @@
+/**
+ * Tailwind CSS utilities
+ *
+ * Provides the core `cn` utility for merging class names
+ * with intelligent Tailwind conflict resolution.
+ *
+ * @module lib/utils
+ */
+
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
