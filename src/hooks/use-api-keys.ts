@@ -1,3 +1,12 @@
+/**
+ * API key hooks
+ *
+ * React hooks for managing API keys used for authentication.
+ * Provides CRUD operations and key regeneration functionality.
+ *
+ * @module hooks/use-api-keys
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

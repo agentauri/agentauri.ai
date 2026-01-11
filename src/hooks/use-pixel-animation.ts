@@ -1,3 +1,12 @@
+/**
+ * Pixel animation hooks
+ *
+ * Retro pixel-based boot and glitch animations for terminal aesthetics.
+ * Creates progressive pixel reveal and random flicker effects.
+ *
+ * @module hooks/use-pixel-animation
+ */
+
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'

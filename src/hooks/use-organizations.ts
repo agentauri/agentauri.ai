@@ -1,3 +1,12 @@
+/**
+ * Organization hooks
+ *
+ * React hooks for managing organizations, memberships, and team switching.
+ * Provides CRUD operations for organizations and member management.
+ *
+ * @module hooks/use-organizations
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

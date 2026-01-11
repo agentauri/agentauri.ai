@@ -1,3 +1,12 @@
+/**
+ * User profile hooks
+ *
+ * React hooks for fetching and updating the current user's profile.
+ * Handles profile data synchronization with session state.
+ *
+ * @module hooks/use-user-profile
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

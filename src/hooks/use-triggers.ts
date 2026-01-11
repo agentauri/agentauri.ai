@@ -1,3 +1,12 @@
+/**
+ * Trigger hooks
+ *
+ * React hooks for managing automation triggers.
+ * Provides CRUD operations, enable/disable toggles, and test execution.
+ *
+ * @module hooks/use-triggers
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

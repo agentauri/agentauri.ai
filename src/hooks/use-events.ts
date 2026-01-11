@@ -1,3 +1,12 @@
+/**
+ * Event hooks
+ *
+ * React hooks for querying blockchain events from linked agents.
+ * Supports filtering by event type, agent, and date range.
+ *
+ * @module hooks/use-events
+ */
+
 'use client'
 
 import { useQuery } from '@tanstack/react-query'

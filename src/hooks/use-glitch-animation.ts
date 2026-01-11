@@ -1,3 +1,12 @@
+/**
+ * Glitch animation hooks
+ *
+ * Matrix-style glitch text animation for terminal/cyberpunk aesthetics.
+ * Creates progressive text reveal with scrambled characters.
+ *
+ * @module hooks/use-glitch-animation
+ */
+
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'

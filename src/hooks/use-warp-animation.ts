@@ -1,3 +1,12 @@
+/**
+ * Warp animation hooks
+ *
+ * Star Wars-style hyperspace star field animation.
+ * Creates immersive warp speed effects with configurable star density.
+ *
+ * @module hooks/use-warp-animation
+ */
+
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'

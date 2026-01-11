@@ -1,8 +1,10 @@
 /**
- * Custom hook for managing trigger form state
+ * Trigger form hooks
  *
- * Encapsulates form logic and reduces component complexity.
- * Manages multi-step wizard flow with validation.
+ * Custom hook for managing trigger form state in a multi-step wizard.
+ * Encapsulates form logic, validation, and step navigation.
+ *
+ * @module hooks/use-trigger-form
  */
 
 import { zodResolver } from '@hookform/resolvers/zod'

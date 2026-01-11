@@ -1,3 +1,12 @@
+/**
+ * Mouse parallax hooks
+ *
+ * Smooth mouse-based parallax effects with lerp transitions.
+ * Creates depth and motion effects based on cursor position.
+ *
+ * @module hooks/use-mouse-parallax
+ */
+
 'use client'
 
 import { useState, useEffect, useRef, useCallback, type RefObject } from 'react'

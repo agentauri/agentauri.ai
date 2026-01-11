@@ -1,3 +1,12 @@
+/**
+ * Health check hooks
+ *
+ * React hooks for monitoring API and service health status.
+ * Polls periodically to keep status indicators up to date.
+ *
+ * @module hooks/use-health
+ */
+
 'use client'
 
 import { useQuery } from '@tanstack/react-query'

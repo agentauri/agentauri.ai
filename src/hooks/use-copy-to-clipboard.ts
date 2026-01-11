@@ -1,3 +1,12 @@
+/**
+ * Clipboard hooks
+ *
+ * React hook for copying text to clipboard with toast notifications.
+ * Includes automatic state reset and manual reset capability.
+ *
+ * @module hooks/use-copy-to-clipboard
+ */
+
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { toast } from 'sonner'
 

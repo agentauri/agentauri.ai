@@ -1,3 +1,12 @@
+/**
+ * Billing hooks
+ *
+ * React hooks for managing credits, transactions, and subscriptions.
+ * Handles Stripe checkout integration and subscription management.
+ *
+ * @module hooks/use-billing
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

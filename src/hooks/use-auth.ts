@@ -1,3 +1,13 @@
+/**
+ * Authentication hooks
+ *
+ * React hooks for managing user authentication state, login/logout flows,
+ * and automatic token refresh. Built on TanStack Query for server state
+ * and Zustand for client state.
+ *
+ * @module hooks/use-auth
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

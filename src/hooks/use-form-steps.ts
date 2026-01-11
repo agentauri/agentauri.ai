@@ -1,3 +1,12 @@
+/**
+ * Form steps hooks
+ *
+ * Generic multi-step form state management for wizards and stepped flows.
+ * Provides navigation controls and progress tracking.
+ *
+ * @module hooks/use-form-steps
+ */
+
 'use client'
 
 import { useState } from 'react'

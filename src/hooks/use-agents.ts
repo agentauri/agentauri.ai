@@ -1,3 +1,12 @@
+/**
+ * Agent hooks
+ *
+ * React hooks for managing linked ERC-8004 agents.
+ * Provides operations for listing, linking, and unlinking agents.
+ *
+ * @module hooks/use-agents
+ */
+
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
