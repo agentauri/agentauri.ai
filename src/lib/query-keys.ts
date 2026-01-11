@@ -1,10 +1,38 @@
 /**
  * Query key factories for TanStack Query
  *
- * Using factory pattern for type-safe, consistent query keys:
- * - All keys are arrays for proper invalidation
- * - Hierarchical structure for granular invalidation
- * - Type-safe with TypeScript inference
+ * Using factory pattern for type-safe, consistent query keys.
+ * All keys are arrays for proper invalidation with hierarchical
+ * structure enabling granular cache control.
+ *
+ * @module lib/query-keys
+ *
+ * **Key patterns:**
+ * - `resource.all` - Base key for invalidating all queries of a type
+ * - `resource.list(filters)` - List queries with optional filters
+ * - `resource.detail(id)` - Single item queries
+ *
+ * @example
+ * ```ts
+ * // In a hook
+ * useQuery({
+ *   queryKey: queryKeys.triggers.list(orgId, { status: 'active' }),
+ *   queryFn: () => fetchTriggers(orgId, { status: 'active' }),
+ * })
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Invalidate all triggers for an org
+ * queryClient.invalidateQueries({
+ *   queryKey: queryKeys.triggers.all,
+ * })
+ *
+ * // Invalidate specific trigger
+ * queryClient.invalidateQueries({
+ *   queryKey: queryKeys.triggers.detail(triggerId),
+ * })
+ * ```
  */
 
 export const queryKeys = {
@@ -91,5 +119,9 @@ export const queryKeys = {
   },
 } as const
 
-// Type helpers for query key inference
+/**
+ * Type helper for query key inference
+ *
+ * Provides full type information for all query key factories.
+ */
 export type QueryKeys = typeof queryKeys

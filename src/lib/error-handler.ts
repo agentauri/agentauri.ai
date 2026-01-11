@@ -1,6 +1,31 @@
 /**
  * Enhanced error handling utilities
+ *
  * Provides consistent error formatting, logging, and user-friendly messages
+ * across the application. Includes error normalization, retry logic, and
+ * structured logging.
+ *
+ * @module lib/error-handler
+ *
+ * @example
+ * ```ts
+ * // Basic error handling
+ * try {
+ *   await someOperation()
+ * } catch (error) {
+ *   const message = handleError(error, { log: true })
+ *   toast.error(message)
+ * }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // With retry logic
+ * const result = await retryWithBackoff(
+ *   () => fetchData(),
+ *   { maxRetries: 3, initialDelay: 1000 }
+ * )
+ * ```
  */
 
 import { ApiError } from './api-client'
@@ -9,6 +34,9 @@ import { sanitizeErrorMessage } from './sanitize'
 
 /**
  * Standard error codes for the application
+ *
+ * Use these codes for consistent error categorization across the app.
+ * Each code maps to a user-friendly message via `getUserFriendlyMessage`.
  */
 export const ERROR_CODES = {
   // Authentication & Authorization
@@ -44,10 +72,25 @@ export const ERROR_CODES = {
   INVALID_WEBHOOK_URL: 'INVALID_WEBHOOK_URL',
 } as const
 
+/** Type alias for error code string literals */
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES]
 
 /**
  * Application error with structured data
+ *
+ * Provides consistent error representation with error codes, HTTP status,
+ * and additional context. Use `normalizeError` to convert any error type
+ * to `AppError`.
+ *
+ * @example
+ * ```ts
+ * throw new AppError(
+ *   ERROR_CODES.NOT_FOUND,
+ *   'User not found',
+ *   404,
+ *   { userId: '123' }
+ * )
+ * ```
  */
 export class AppError extends Error {
   constructor(
@@ -102,6 +145,22 @@ export class AppError extends Error {
 
 /**
  * Convert various error types to AppError
+ *
+ * Normalizes errors from different sources (API, rate limiter, native)
+ * into a consistent `AppError` format with appropriate error codes.
+ *
+ * @param error - Any error type (Error, ApiError, RateLimitError, unknown)
+ * @returns Normalized AppError instance
+ *
+ * @example
+ * ```ts
+ * try {
+ *   await apiCall()
+ * } catch (error) {
+ *   const appError = normalizeError(error)
+ *   console.log(appError.code) // 'UNAUTHORIZED', 'NOT_FOUND', etc.
+ * }
+ * ```
  */
 export function normalizeError(error: unknown): AppError {
   // Already an AppError
@@ -156,6 +215,19 @@ export function normalizeError(error: unknown): AppError {
 
 /**
  * Get user-friendly error message based on error code
+ *
+ * Maps error codes to human-readable messages suitable for display
+ * to end users. Falls back to sanitized error message if code not found.
+ *
+ * @param error - AppError instance with error code
+ * @returns User-friendly message string
+ *
+ * @example
+ * ```ts
+ * const appError = new AppError(ERROR_CODES.UNAUTHORIZED, 'Token invalid')
+ * getUserFriendlyMessage(appError)
+ * // => 'Please log in to continue'
+ * ```
  */
 export function getUserFriendlyMessage(error: AppError): string {
   const messages: Record<ErrorCode, string> = {
@@ -184,7 +256,20 @@ export function getUserFriendlyMessage(error: AppError): string {
 
 /**
  * Log error to console with structured format
- * In production, this should send to error tracking service
+ *
+ * In development, logs full error details including stack trace.
+ * In production, logs minimal info (should integrate with error tracking).
+ *
+ * @param error - AppError to log
+ * @param context - Additional context for debugging
+ *
+ * @example
+ * ```ts
+ * logError(appError, {
+ *   userId: currentUser.id,
+ *   action: 'createTrigger',
+ * })
+ * ```
  */
 export function logError(error: AppError, context?: Record<string, unknown>): void {
   if (process.env.NODE_ENV === 'development') {
@@ -204,7 +289,25 @@ export function logError(error: AppError, context?: Record<string, unknown>): vo
 
 /**
  * Handle error and return user-friendly message
- * Optionally logs the error
+ *
+ * Convenience function that normalizes, optionally logs, and returns
+ * a user-friendly message. Common pattern for catch blocks.
+ *
+ * @param error - Any error type
+ * @param options - Handler options
+ * @param options.log - Whether to log the error (default: true)
+ * @param options.context - Additional context for logging
+ * @returns User-friendly error message
+ *
+ * @example
+ * ```ts
+ * try {
+ *   await createTrigger(data)
+ * } catch (error) {
+ *   const message = handleError(error, { log: true })
+ *   toast.error(message)
+ * }
+ * ```
  */
 export function handleError(
   error: unknown,
@@ -226,6 +329,36 @@ export function handleError(
 
 /**
  * Retry function with exponential backoff
+ *
+ * Automatically retries failed operations with increasing delays.
+ * Only retries "retryable" errors (network, timeout, 5xx).
+ * Includes jitter to prevent thundering herd problems.
+ *
+ * @typeParam T - Return type of the function
+ * @param fn - Async function to retry
+ * @param options - Retry configuration
+ * @param options.maxRetries - Maximum retry attempts (default: 3)
+ * @param options.initialDelay - Initial delay in ms (default: 1000)
+ * @param options.maxDelay - Maximum delay cap in ms (default: 10000)
+ * @param options.shouldRetry - Custom retry predicate
+ * @returns Promise resolving to function result
+ * @throws Last error if all retries exhausted
+ *
+ * @example
+ * ```ts
+ * // Basic retry
+ * const data = await retryWithBackoff(() => fetchData())
+ *
+ * // With custom options
+ * const result = await retryWithBackoff(
+ *   () => unstableApiCall(),
+ *   {
+ *     maxRetries: 5,
+ *     initialDelay: 500,
+ *     shouldRetry: (error) => error.code !== 'VALIDATION_ERROR',
+ *   }
+ * )
+ * ```
  */
 export async function retryWithBackoff<T>(
   fn: () => Promise<T>,

@@ -1,6 +1,38 @@
+/**
+ * Central API client for backend communication
+ *
+ * Provides a type-safe HTTP client with:
+ * - Automatic CSRF token handling for state-changing requests
+ * - Token refresh with mutex pattern (prevents race conditions)
+ * - Session expiration handling with redirect
+ * - Timeout support and structured error handling
+ *
+ * @module lib/api-client
+ *
+ * @example
+ * ```ts
+ * // GET request
+ * const triggers = await apiClient.get<Trigger[]>('/triggers')
+ *
+ * // POST with body
+ * const newTrigger = await apiClient.post<Trigger>('/triggers', {
+ *   name: 'My Trigger',
+ *   conditions: [...],
+ * })
+ *
+ * // With query params
+ * const events = await apiClient.get<Event[]>('/events', {
+ *   params: { page: 1, limit: 20 },
+ * })
+ * ```
+ */
+
 import { API_BASE_URL, API_VERSION } from './constants'
 import { handleSessionExpired } from './auth-utils'
 
+/**
+ * API request options extending fetch options
+ */
 interface ApiRequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined>
   body?: unknown
@@ -8,12 +40,39 @@ interface ApiRequestOptions extends Omit<RequestInit, 'body'> {
   skipRefresh?: boolean // Flag to prevent infinite refresh loops
 }
 
+/**
+ * Structured error data from API responses
+ */
 interface ApiErrorData {
+  /** Human-readable error message */
   message: string
+  /** Machine-readable error code */
   code?: string
+  /** Additional error details */
   details?: unknown
 }
 
+/**
+ * API error class for HTTP errors
+ *
+ * Provides helper properties for common error type checks
+ * and structured error data from the API response.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   await apiClient.get('/resource')
+ * } catch (error) {
+ *   if (error instanceof ApiError) {
+ *     if (error.isUnauthorized) {
+ *       // Handle 401
+ *     } else if (error.isNotFound) {
+ *       // Handle 404
+ *     }
+ *   }
+ * }
+ * ```
+ */
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -333,23 +392,67 @@ async function request<T>(endpoint: string, options: ApiRequestOptions = {}): Pr
   }
 }
 
+/**
+ * API client with typed HTTP methods
+ *
+ * All methods automatically handle:
+ * - Authentication via httpOnly cookies
+ * - CSRF tokens for state-changing requests
+ * - Token refresh on 401 responses
+ * - JSON serialization/deserialization
+ *
+ * @example
+ * ```ts
+ * // Fetch a list
+ * const triggers = await apiClient.get<Trigger[]>('/triggers')
+ *
+ * // Create a resource
+ * const trigger = await apiClient.post<Trigger>('/triggers', data)
+ *
+ * // Update a resource
+ * await apiClient.patch<Trigger>(`/triggers/${id}`, updates)
+ *
+ * // Delete a resource
+ * await apiClient.delete(`/triggers/${id}`)
+ * ```
+ */
 export const apiClient = {
+  /**
+   * GET request
+   * @typeParam T - Expected response type
+   */
   get<T>(endpoint: string, options?: Omit<ApiRequestOptions, 'body'>) {
     return request<T>(endpoint, { ...options, method: 'GET' })
   },
 
+  /**
+   * POST request
+   * @typeParam T - Expected response type
+   */
   post<T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'body'>) {
     return request<T>(endpoint, { ...options, method: 'POST', body })
   },
 
+  /**
+   * PUT request
+   * @typeParam T - Expected response type
+   */
   put<T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'body'>) {
     return request<T>(endpoint, { ...options, method: 'PUT', body })
   },
 
+  /**
+   * PATCH request
+   * @typeParam T - Expected response type
+   */
   patch<T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'body'>) {
     return request<T>(endpoint, { ...options, method: 'PATCH', body })
   },
 
+  /**
+   * DELETE request
+   * @typeParam T - Expected response type
+   */
   delete<T>(endpoint: string, options?: Omit<ApiRequestOptions, 'body'>) {
     return request<T>(endpoint, { ...options, method: 'DELETE' })
   },

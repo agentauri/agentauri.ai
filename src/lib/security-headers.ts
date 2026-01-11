@@ -1,11 +1,29 @@
 /**
  * Security headers configuration
- * Implements defense-in-depth security headers
+ *
+ * Implements defense-in-depth security headers for the application:
+ * - Content Security Policy (CSP) for XSS protection
+ * - CORS validation for cross-origin requests
+ * - Safe redirect URL validation
+ * - Cryptographic nonce generation
+ *
+ * @module lib/security-headers
  */
 
 /**
  * Content Security Policy (CSP) configuration
+ *
  * Prevents XSS, clickjacking, and other code injection attacks
+ * by restricting resource loading to trusted sources.
+ *
+ * @param nonce - Optional cryptographic nonce for inline scripts
+ * @returns CSP header value string
+ *
+ * @example
+ * ```ts
+ * const csp = getContentSecurityPolicy(nonce)
+ * response.headers.set('Content-Security-Policy', csp)
+ * ```
  */
 export function getContentSecurityPolicy(nonce?: string): string {
   const directives = {
@@ -63,6 +81,27 @@ export function getContentSecurityPolicy(nonce?: string): string {
 
 /**
  * Get all security headers for Next.js configuration
+ *
+ * Returns a complete set of security headers including:
+ * - Content-Security-Policy
+ * - X-Content-Type-Options
+ * - X-Frame-Options
+ * - X-XSS-Protection
+ * - Referrer-Policy
+ * - Permissions-Policy
+ * - Strict-Transport-Security (production only)
+ *
+ * @param nonce - Optional cryptographic nonce for CSP
+ * @returns Object of header name to value pairs
+ *
+ * @example
+ * ```ts
+ * // In Next.js middleware
+ * const headers = getSecurityHeaders(nonce)
+ * Object.entries(headers).forEach(([key, value]) => {
+ *   response.headers.set(key, value)
+ * })
+ * ```
  */
 export function getSecurityHeaders(nonce?: string): Record<string, string> {
   return {
@@ -94,7 +133,23 @@ export function getSecurityHeaders(nonce?: string): Record<string, string> {
 
 /**
  * Validate if a URL is safe for redirect
- * Prevents open redirect vulnerabilities
+ *
+ * Prevents open redirect vulnerabilities by checking:
+ * - Same-origin by default
+ * - Optional allowlist for external domains
+ * - Blocks javascript: and data: protocols
+ *
+ * @param url - URL to validate
+ * @param allowedDomains - Optional array of allowed external domains
+ * @returns True if URL is safe for redirect
+ *
+ * @example
+ * ```ts
+ * isSafeRedirectUrl('/dashboard')                    // => true
+ * isSafeRedirectUrl('https://evil.com')              // => false
+ * isSafeRedirectUrl('https://partner.com', ['partner.com']) // => true
+ * isSafeRedirectUrl('javascript:alert(1)')           // => false
+ * ```
  */
 export function isSafeRedirectUrl(url: string, allowedDomains?: string[]): boolean {
   try {
@@ -129,8 +184,23 @@ export function isSafeRedirectUrl(url: string, allowedDomains?: string[]): boole
 }
 
 /**
- * Sanitize redirect URL
- * Returns safe URL or fallback
+ * Sanitize redirect URL with fallback
+ *
+ * Validates and normalizes redirect URLs, returning a safe
+ * fallback if the URL is invalid or potentially malicious.
+ *
+ * @param url - URL to sanitize (can be null/undefined)
+ * @param fallback - Fallback URL if invalid (default: '/')
+ * @param allowedDomains - Optional array of allowed external domains
+ * @returns Safe URL string
+ *
+ * @example
+ * ```ts
+ * sanitizeRedirectUrl('/dashboard')           // => '/dashboard'
+ * sanitizeRedirectUrl('https://evil.com')     // => '/'
+ * sanitizeRedirectUrl(null, '/home')          // => '/home'
+ * sanitizeRedirectUrl('//evil.com')           // => '/'
+ * ```
  */
 export function sanitizeRedirectUrl(
   url: string | null | undefined,
@@ -163,6 +233,21 @@ export function sanitizeRedirectUrl(
 
 /**
  * Generate cryptographically secure random nonce
+ *
+ * Creates a random hex string suitable for CSP nonces
+ * or other security tokens. Works in both browser and Node.js.
+ *
+ * @param length - Number of random bytes (default: 32)
+ * @returns Hex-encoded random string (2x length characters)
+ *
+ * @example
+ * ```ts
+ * const nonce = generateNonce()
+ * // => 'a1b2c3d4e5f6...' (64 characters)
+ *
+ * const shortNonce = generateNonce(16)
+ * // => 'a1b2c3d4...' (32 characters)
+ * ```
  */
 export function generateNonce(length = 32): string {
   if (typeof window !== 'undefined' && window.crypto) {
@@ -178,6 +263,25 @@ export function generateNonce(length = 32): string {
 
 /**
  * Check if request origin is allowed (CORS validation)
+ *
+ * Validates origin against an allowlist, supporting both
+ * exact matches and wildcard patterns.
+ *
+ * @param origin - Request origin header value
+ * @param allowedOrigins - Array of allowed origins (supports * wildcards)
+ * @returns True if origin is allowed
+ *
+ * @example
+ * ```ts
+ * isAllowedOrigin('https://app.example.com', ['https://app.example.com'])
+ * // => true
+ *
+ * isAllowedOrigin('https://sub.example.com', ['https://*.example.com'])
+ * // => true
+ *
+ * isAllowedOrigin(null, ['https://example.com'])
+ * // => false
+ * ```
  */
 export function isAllowedOrigin(origin: string | null, allowedOrigins: string[]): boolean {
   if (!origin) return false
@@ -199,7 +303,9 @@ export function isAllowedOrigin(origin: string | null, allowedOrigins: string[])
 }
 
 /**
- * Security utilities for request validation
+ * Security utilities namespace
+ *
+ * Exports all security functions for convenient access.
  */
 export const SecurityUtils = {
   getSecurityHeaders,

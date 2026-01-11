@@ -1,9 +1,15 @@
+/**
+ * Wagmi configuration for Web3 wallet connections
+ *
+ * @module lib/wagmi-config
+ */
+
 import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
 import { base, baseSepolia, lineaSepolia, mainnet, polygonAmoy, sepolia } from 'wagmi/chains'
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
 
 /**
- * Wagmi configuration for Web3 wallet connections.
+ * Wagmi configuration for Web3 wallet connections
  *
  * This config is intentionally minimal - we only need:
  * - Wallet connection (get user address)

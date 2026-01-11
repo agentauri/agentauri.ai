@@ -1,12 +1,24 @@
 /**
  * Application-wide constants
+ *
+ * Centralized configuration for the application including:
+ * - App metadata
+ * - API configuration
+ * - Blockchain network definitions
+ * - Domain-specific constants (registries, roles, actions)
+ *
+ * @module lib/constants
  */
 
+/** Application name */
 export const APP_NAME = 'agentauri.ai' as const
+/** Application description for metadata */
 export const APP_DESCRIPTION = 'ERC-8004 Reputation Dashboard' as const
 
 /**
  * API Configuration
+ *
+ * @remarks
  * In development, use empty string to make API calls through Next.js proxy (same origin).
  * This avoids cross-origin cookie issues when backend runs on different port.
  * In production, set NEXT_PUBLIC_API_BASE_URL to the actual API domain.
@@ -22,10 +34,14 @@ export const OAUTH_BASE_URL = process.env.NEXT_PUBLIC_OAUTH_BASE_URL
   || process.env.NEXT_PUBLIC_API_BASE_URL
   || 'http://localhost:8080'
 
+/** API version prefix for all endpoints */
 export const API_VERSION = 'v1' as const
 
 /**
  * Supported blockchain networks
+ *
+ * Map of chain names to their EIP-155 chain IDs.
+ * Includes both mainnet and testnet networks.
  */
 export const SUPPORTED_CHAINS = {
   MAINNET: 1,
@@ -36,29 +52,53 @@ export const SUPPORTED_CHAINS = {
   POLYGON_AMOY: 80002,
 } as const
 
+/** Type for supported chain IDs */
 export type SupportedChainId = (typeof SUPPORTED_CHAINS)[keyof typeof SUPPORTED_CHAINS]
 
 /**
- * Registry types
+ * ERC-8004 registry types
+ *
+ * - `identity`: Agent identity and metadata
+ * - `reputation`: Agent reputation scores
+ * - `validation`: Agent validation status
  */
 export const REGISTRIES = ['identity', 'reputation', 'validation'] as const
+/** Type for registry names */
 export type Registry = (typeof REGISTRIES)[number]
 
 /**
- * Organization roles
+ * Organization member roles
+ *
+ * Permissions hierarchy (highest to lowest):
+ * - `owner`: Full access, can delete organization
+ * - `admin`: Manage members, settings, and all resources
+ * - `member`: Create and manage own resources
+ * - `viewer`: Read-only access
  */
 export const ORGANIZATION_ROLES = ['owner', 'admin', 'member', 'viewer'] as const
+/** Type for organization roles */
 export type OrganizationRole = (typeof ORGANIZATION_ROLES)[number]
 
 /**
  * Trigger action types
+ *
+ * Actions that can be executed when a trigger fires:
+ * - `telegram`: Send message to Telegram bot
+ * - `rest`: HTTP webhook call
+ * - `mcp`: Model Context Protocol action
  */
 export const ACTION_TYPES = ['telegram', 'rest', 'mcp'] as const
+/** Type for action types */
 export type ActionType = (typeof ACTION_TYPES)[number]
 
 /**
- * Event types supported by the backend
- * These are the blockchain events that can trigger automations
+ * Blockchain event types supported by the backend
+ *
+ * These events are indexed by Ponder and can trigger automations:
+ * - `AgentRegistered`: New agent registered on-chain
+ * - `AgentUpdated`: Agent metadata updated
+ * - `ReputationUpdated`: Agent reputation score changed
+ * - `ValidationCompleted`: Agent validation finished
  */
 export const EVENT_TYPES = {
   AGENT_REGISTERED: 'AgentRegistered',

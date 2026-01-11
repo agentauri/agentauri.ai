@@ -1,13 +1,46 @@
 /**
  * Form utilities for common patterns
- * Reduces code duplication in complex forms
+ *
+ * Provides reusable utilities for complex form handling:
+ * - Array field management (add, update, remove operations)
+ * - Multi-step form navigation
+ * - Form data transformation and normalization
+ * - Field error extraction from nested structures
+ *
+ * @module lib/form-utils
  */
 
 import { useState } from 'react'
 
 /**
  * Create array field handlers for React Hook Form
- * Handles add, update, remove operations with proper type safety
+ *
+ * Provides a complete set of CRUD operations for managing array fields
+ * in forms with proper type safety and immutable updates.
+ *
+ * @typeParam T - The type of items in the array
+ * @param getValue - Function to get current array value from form state
+ * @param onChange - Function to update the array value in form state
+ * @param defaultItem - Default item to use when adding new entries
+ * @returns Object with array manipulation methods
+ *
+ * @example
+ * ```tsx
+ * const conditions = createArrayFieldHandlers(
+ *   () => form.getValues('conditions'),
+ *   (value) => form.setValue('conditions', value),
+ *   { field: '', operator: 'eq', value: '' }
+ * )
+ *
+ * // Add new condition
+ * conditions.add()
+ *
+ * // Update condition at index
+ * conditions.update(0, { value: 'newValue' })
+ *
+ * // Remove condition
+ * if (conditions.canRemove) conditions.remove(0)
+ * ```
  */
 export function createArrayFieldHandlers<T extends Record<string, unknown>>(
   getValue: () => T[] | undefined,
@@ -69,7 +102,37 @@ export function createArrayFieldHandlers<T extends Record<string, unknown>>(
 }
 
 /**
- * Multi-step form state management
+ * Multi-step form state management hook
+ *
+ * Manages navigation through a series of form steps with
+ * progress tracking and boundary checking.
+ *
+ * @typeParam T - Union type of step names (typically string literals)
+ * @param steps - Array of step identifiers in order
+ * @param initialStep - Optional starting step (defaults to first)
+ * @returns Object with navigation methods and state
+ *
+ * @example
+ * ```tsx
+ * type Step = 'basics' | 'conditions' | 'actions' | 'review'
+ *
+ * function TriggerWizard() {
+ *   const { currentStep, next, previous, isLast, progress } = useFormSteps<Step>(
+ *     ['basics', 'conditions', 'actions', 'review']
+ *   )
+ *
+ *   return (
+ *     <>
+ *       <ProgressBar value={progress} />
+ *       {currentStep === 'basics' && <BasicsForm />}
+ *       <Button onClick={previous} disabled={isFirst}>Back</Button>
+ *       <Button onClick={isLast ? handleSubmit : next}>
+ *         {isLast ? 'Submit' : 'Next'}
+ *       </Button>
+ *     </>
+ *   )
+ * }
+ * ```
  */
 export function useFormSteps<T extends string>(steps: T[], initialStep?: T) {
   const [currentStep, setCurrentStep] = useState<T>(initialStep ?? (steps[0] as T))
@@ -130,7 +193,21 @@ export function useFormSteps<T extends string>(steps: T[], initialStep?: T) {
 
 /**
  * Transform form data by removing readonly fields
- * Useful for converting full models to creation/update payloads
+ *
+ * Useful for converting full model objects to create/update payloads
+ * by stripping server-managed fields like id, createdAt, updatedAt.
+ *
+ * @typeParam T - The data type
+ * @param data - Object to transform
+ * @param readonlyFields - Array of field names to remove
+ * @returns New object without the specified fields
+ *
+ * @example
+ * ```ts
+ * const fullTrigger = { id: '123', name: 'Test', createdAt: '...' }
+ * const payload = omitReadonlyFields(fullTrigger, ['id', 'createdAt'])
+ * // => { name: 'Test' }
+ * ```
  */
 export function omitReadonlyFields<T extends Record<string, unknown>>(
   data: Partial<T>,
@@ -145,6 +222,23 @@ export function omitReadonlyFields<T extends Record<string, unknown>>(
 
 /**
  * Get validation error message from form state
+ *
+ * Traverses nested error objects using dot notation to extract
+ * error messages from React Hook Form's error structure.
+ *
+ * @param errors - Form errors object from React Hook Form
+ * @param fieldPath - Dot-notation path to the field (e.g., 'conditions.0.value')
+ * @returns Error message string or undefined if no error
+ *
+ * @example
+ * ```ts
+ * const errors = { conditions: [{ value: { message: 'Required' } }] }
+ * getFieldError(errors, 'conditions.0.value')
+ * // => 'Required'
+ *
+ * getFieldError(errors, 'conditions.0.field')
+ * // => undefined
+ * ```
  */
 export function getFieldError(
   errors: Record<string, unknown>,
@@ -170,6 +264,20 @@ export function getFieldError(
 
 /**
  * Check if form has unsaved changes
+ *
+ * Performs deep comparison of current values against initial/default values
+ * using JSON serialization.
+ *
+ * @typeParam T - The form values type
+ * @param currentValues - Current form values
+ * @param defaultValues - Original/default form values
+ * @returns True if values differ
+ *
+ * @example
+ * ```tsx
+ * const isDirty = hasUnsavedChanges(form.getValues(), initialData)
+ * if (isDirty && !confirm('Discard changes?')) return
+ * ```
  */
 export function hasUnsavedChanges<T extends Record<string, unknown>>(
   currentValues: T,
@@ -180,6 +288,20 @@ export function hasUnsavedChanges<T extends Record<string, unknown>>(
 
 /**
  * Format form values for display in review step
+ *
+ * Converts various value types to human-readable strings
+ * for displaying in form review/confirmation steps.
+ *
+ * @param value - Any form value to format
+ * @returns Human-readable string representation
+ *
+ * @example
+ * ```ts
+ * formatReviewValue(null)         // => 'Not set'
+ * formatReviewValue(true)         // => 'Yes'
+ * formatReviewValue(['a', 'b'])   // => '2 item(s)'
+ * formatReviewValue({ x: 1 })     // => '{\n  "x": 1\n}'
+ * ```
  */
 export function formatReviewValue(value: unknown): string {
   if (value === null || value === undefined) {
@@ -210,7 +332,25 @@ export function formatReviewValue(value: unknown): string {
 }
 
 /**
- * Normalize form data by trimming strings and removing empty values
+ * Normalize form data by trimming strings and converting empty values
+ *
+ * Recursively processes form data to:
+ * - Trim whitespace from strings
+ * - Convert empty strings to null
+ * - Apply normalization to nested objects
+ *
+ * @typeParam T - The form data type
+ * @param data - Form data to normalize
+ * @returns Normalized copy of the data
+ *
+ * @example
+ * ```ts
+ * normalizeFormData({ name: '  Test  ', email: '' })
+ * // => { name: 'Test', email: null }
+ *
+ * normalizeFormData({ user: { name: '  John  ' } })
+ * // => { user: { name: 'John' } }
+ * ```
  */
 export function normalizeFormData<T extends Record<string, unknown>>(data: T): T {
   const normalized = { ...data }

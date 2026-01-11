@@ -1,12 +1,34 @@
 import DOMPurify from 'dompurify'
 
 /**
- * Security utilities for sanitizing user input and preventing XSS attacks
+ * Security utilities for sanitizing user input
+ *
+ * Provides comprehensive input sanitization to prevent:
+ * - XSS (Cross-Site Scripting) attacks
+ * - SSRF (Server-Side Request Forgery) attacks
+ * - Prototype pollution attacks
+ * - Template injection attacks
+ *
+ * @module lib/sanitize
  */
 
 /**
  * Sanitize HTML string to prevent XSS attacks
- * Removes all HTML tags and returns plain text only
+ *
+ * Removes all HTML tags and returns plain text only.
+ * Uses DOMPurify with strict configuration.
+ *
+ * @param dirty - Potentially unsafe HTML string
+ * @returns Sanitized plain text
+ *
+ * @example
+ * ```ts
+ * sanitizeHtml('<script>alert("xss")</script>Hello')
+ * // => 'Hello'
+ *
+ * sanitizeHtml('<b>Bold</b> text')
+ * // => 'Bold text'
+ * ```
  */
 export function sanitizeHtml(dirty: string): string {
   if (!dirty) return ''
@@ -20,6 +42,14 @@ export function sanitizeHtml(dirty: string): string {
 
 /**
  * Check if an object contains prototype pollution attempts
+ *
+ * Recursively scans objects for dangerous keys that could
+ * modify Object.prototype or other builtin prototypes.
+ *
+ * @param obj - Object to check
+ * @param depth - Current recursion depth (internal)
+ * @returns True if pollution attempt detected
+ * @internal
  */
 function hasPrototypePollution(obj: unknown, depth = 0): boolean {
   // Prevent infinite recursion
@@ -49,7 +79,24 @@ function hasPrototypePollution(obj: unknown, depth = 0): boolean {
 
 /**
  * Validate and sanitize JSON string
- * Returns null if JSON is invalid or contains dangerous patterns
+ *
+ * Parses JSON and checks for prototype pollution attacks.
+ * Returns normalized JSON string or null if invalid/dangerous.
+ *
+ * @param input - JSON string to validate
+ * @returns Sanitized JSON string or null if invalid
+ *
+ * @example
+ * ```ts
+ * sanitizeJson('{"name": "test"}')
+ * // => '{"name":"test"}'
+ *
+ * sanitizeJson('{"__proto__": {"admin": true}}')
+ * // => null (prototype pollution detected)
+ *
+ * sanitizeJson('invalid json')
+ * // => null
+ * ```
  */
 export function sanitizeJson(input: string): string | null {
   if (!input || !input.trim()) {
@@ -75,7 +122,21 @@ export function sanitizeJson(input: string): string | null {
 
 /**
  * Validate JSON syntax without parsing
- * Returns true if valid, false otherwise
+ *
+ * Quick check for valid JSON syntax. Does not check for
+ * prototype pollution - use `sanitizeJson` for full validation.
+ *
+ * @param input - String to validate
+ * @returns True if valid JSON syntax
+ *
+ * @example
+ * ```ts
+ * isValidJson('{"valid": true}')
+ * // => true
+ *
+ * isValidJson('{invalid}')
+ * // => false
+ * ```
  */
 export function isValidJson(input: string): boolean {
   if (!input || !input.trim()) return false
@@ -90,7 +151,27 @@ export function isValidJson(input: string): boolean {
 
 /**
  * Sanitize webhook URL to prevent SSRF attacks
- * Blocks private IPs, localhost, and metadata endpoints
+ *
+ * Blocks dangerous URLs that could allow server-side request forgery:
+ * - Localhost and loopback addresses
+ * - Private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
+ * - Cloud metadata endpoints (169.254.169.254)
+ * - Non-HTTPS URLs in production
+ *
+ * @param url - Webhook URL to validate
+ * @returns Validated URL or null if unsafe
+ *
+ * @example
+ * ```ts
+ * sanitizeWebhookUrl('https://api.example.com/webhook')
+ * // => 'https://api.example.com/webhook'
+ *
+ * sanitizeWebhookUrl('http://localhost:3000/hook')
+ * // => null (localhost blocked)
+ *
+ * sanitizeWebhookUrl('http://169.254.169.254/metadata')
+ * // => null (metadata endpoint blocked)
+ * ```
  */
 export function sanitizeWebhookUrl(url: string): string | null {
   if (!url || !url.trim()) return null
@@ -172,7 +253,24 @@ export function sanitizeWebhookUrl(url: string): string | null {
 
 /**
  * Sanitize config value for safe display
- * Handles strings, objects, and special cases
+ *
+ * Converts various value types to safe display strings.
+ * Applies HTML sanitization to prevent XSS.
+ *
+ * @param value - Any value to sanitize
+ * @returns Safe string representation
+ *
+ * @example
+ * ```ts
+ * sanitizeConfigValue('<script>alert(1)</script>')
+ * // => '' (script tag removed)
+ *
+ * sanitizeConfigValue({ key: 'value' })
+ * // => '{\n  "key": "value"\n}'
+ *
+ * sanitizeConfigValue(null)
+ * // => ''
+ * ```
  */
 export function sanitizeConfigValue(value: unknown): string {
   if (value === null || value === undefined) {
@@ -197,7 +295,21 @@ export function sanitizeConfigValue(value: unknown): string {
 
 /**
  * Validate template variable syntax
- * Returns true if template uses only allowed variables
+ *
+ * Checks that template only uses allowed `{{variable}}` patterns.
+ * Prevents template injection by restricting variable names.
+ *
+ * @param template - Template string with `{{variables}}`
+ * @returns Validation result with any invalid variables found
+ *
+ * @example
+ * ```ts
+ * validateTemplateVariables('Event: {{eventType}} for agent {{agentId}}')
+ * // => { isValid: true, invalidVars: [] }
+ *
+ * validateTemplateVariables('{{malicious}} payload')
+ * // => { isValid: false, invalidVars: ['malicious'] }
+ * ```
  */
 export function validateTemplateVariables(template: string): {
   isValid: boolean
@@ -231,7 +343,21 @@ export function validateTemplateVariables(template: string): {
 
 /**
  * Sanitize error message for display to user
- * Removes sensitive information like stack traces, paths, etc.
+ *
+ * Removes sensitive information that could leak implementation details:
+ * - Stack traces
+ * - File paths
+ * - Line numbers
+ *
+ * @param error - Error instance, string, or unknown value
+ * @returns Safe error message for user display
+ *
+ * @example
+ * ```ts
+ * const err = new Error('Failed at /app/src/lib/api.ts:42:10')
+ * sanitizeErrorMessage(err)
+ * // => 'Failed'
+ * ```
  */
 export function sanitizeErrorMessage(error: unknown): string {
   if (!error) {

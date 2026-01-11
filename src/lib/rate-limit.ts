@@ -1,6 +1,10 @@
 /**
  * Client-side rate limiting utilities
- * Prevents abuse by limiting request frequency per endpoint/action
+ *
+ * Prevents abuse by limiting request frequency per endpoint/action.
+ * Provides both checking functions and decorators for rate limiting.
+ *
+ * @module lib/rate-limit
  *
  * IMPORTANT: Production Deployment Considerations
  * ================================================
@@ -69,7 +73,18 @@ export interface RateLimitResult {
 
 /**
  * Check if a request is within rate limit
- * Returns information about limit status
+ *
+ * @param key - Unique key for the rate limit (e.g., 'login', 'api-query')
+ * @param config - Rate limit configuration
+ * @returns Rate limit status with remaining count and reset time
+ *
+ * @example
+ * ```ts
+ * const result = checkRateLimit('login', RATE_LIMITS.AUTH)
+ * if (!result.allowed) {
+ *   throw new Error(`Rate limited. Try again in ${result.resetIn}ms`)
+ * }
+ * ```
  */
 export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
   const now = Date.now()
@@ -108,7 +123,17 @@ export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitR
 
 /**
  * Reset rate limit for a specific key
- * Useful for testing or manual override
+ *
+ * Useful for testing or manual override scenarios.
+ *
+ * @param key - Rate limit key to reset
+ * @param identifier - Optional identifier (user ID, IP, etc.)
+ *
+ * @example
+ * ```ts
+ * // Reset after successful login
+ * resetRateLimit('login', userId)
+ * ```
  */
 export function resetRateLimit(key: string, identifier?: string): void {
   const storageKey = identifier ? `${key}:${identifier}` : key
@@ -117,6 +142,8 @@ export function resetRateLimit(key: string, identifier?: string): void {
 
 /**
  * Clear all rate limit entries
+ *
+ * Resets all rate limits. Primarily useful for testing.
  */
 export function clearAllRateLimits(): void {
   rateLimitStore.clear()
@@ -182,7 +209,20 @@ export const AUTH_RATE_LIMITS = {
 } as const
 
 /**
- * Get client IP from request headers (for server-side rate limiting)
+ * Get client IP from request headers
+ *
+ * Extracts client IP for server-side rate limiting, checking
+ * common proxy headers in order: x-forwarded-for, x-real-ip.
+ * Falls back to user agent fingerprint if no IP available.
+ *
+ * @param headers - Request Headers object
+ * @returns Client identifier string
+ *
+ * @example
+ * ```ts
+ * const clientIp = getClientIp(request.headers)
+ * const result = checkRateLimit('api', { ...RATE_LIMITS.API_QUERY, identifier: clientIp })
+ * ```
  */
 export function getClientIp(headers: Headers): string {
   // Check common proxy headers
@@ -203,7 +243,24 @@ export function getClientIp(headers: Headers): string {
 
 /**
  * Decorator for rate-limited async functions
- * Throws error if rate limit exceeded
+ *
+ * Wraps an async function to automatically check rate limits
+ * before execution. Throws RateLimitError if limit exceeded.
+ *
+ * @typeParam T - Function type
+ * @param fn - Async function to wrap
+ * @param key - Rate limit key
+ * @param config - Rate limit configuration
+ * @returns Wrapped function with rate limiting
+ *
+ * @example
+ * ```ts
+ * const rateLimitedFetch = withRateLimit(
+ *   fetchData,
+ *   'api-query',
+ *   RATE_LIMITS.API_QUERY
+ * )
+ * ```
  */
 // biome-ignore lint/suspicious/noExplicitAny: Generic function wrapper requires any for type inference
 export function withRateLimit<T extends (...args: any[]) => Promise<any>>(
@@ -230,6 +287,19 @@ export function withRateLimit<T extends (...args: any[]) => Promise<any>>(
 
 /**
  * Custom error type for rate limit violations
+ *
+ * Provides additional context about when the rate limit resets.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   await rateLimitedFetch()
+ * } catch (error) {
+ *   if (error instanceof RateLimitError) {
+ *     toast.error(`Too many requests. Try again in ${error.resetInSeconds}s`)
+ *   }
+ * }
+ * ```
  */
 export class RateLimitError extends Error {
   constructor(
@@ -251,7 +321,20 @@ export class RateLimitError extends Error {
 }
 
 /**
- * Check rate limit and throw if exceeded
+ * Check rate limit and throw RateLimitError if exceeded
+ *
+ * Convenience function that combines checkRateLimit with error throwing.
+ *
+ * @param key - Rate limit key
+ * @param config - Rate limit configuration
+ * @throws {RateLimitError} If rate limit is exceeded
+ *
+ * @example
+ * ```ts
+ * // At start of handler
+ * enforceRateLimit('trigger-create', RATE_LIMITS.TRIGGER_CREATE)
+ * // If we get here, request is allowed
+ * ```
  */
 export function enforceRateLimit(key: string, config: RateLimitConfig): void {
   const result = checkRateLimit(key, config)
