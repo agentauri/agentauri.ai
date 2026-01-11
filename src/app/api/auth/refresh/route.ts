@@ -1,3 +1,37 @@
+/**
+ * Token refresh API route
+ *
+ * Refreshes expired access tokens using the refresh token.
+ * Called automatically by the API client when receiving 401 responses.
+ *
+ * @module app/api/auth/refresh
+ *
+ * @remarks
+ * Security features:
+ * - Rate limiting per IP address
+ * - Refresh token read from httpOnly cookie (not exposed to JS)
+ * - New tokens stored in httpOnly cookies
+ * - Cookies cleared on refresh failure (forces re-login)
+ *
+ * The API client implements a mutex pattern to prevent multiple
+ * concurrent refresh attempts when several requests fail simultaneously.
+ *
+ * @example
+ * ```ts
+ * // Called automatically by apiClient on 401
+ * const response = await fetch('/api/auth/refresh', {
+ *   method: 'POST',
+ *   credentials: 'include', // Sends httpOnly cookies
+ * })
+ *
+ * if (response.ok) {
+ *   // Retry original request - new tokens are in cookies
+ * } else {
+ *   // Redirect to login
+ * }
+ * ```
+ */
+
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { clearAuthCookies, setAuthCookies } from '@/lib/auth-cookies'
@@ -8,8 +42,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8
 
 /**
  * POST /api/auth/refresh
- * Refreshes the access token using the refresh token stored in httpOnly cookie
- * Called automatically by the API client when receiving a 401 response
+ *
+ * Refreshes the access token using the refresh token from httpOnly cookie.
+ *
+ * @param request - Next.js request object (refresh token in cookies)
+ * @returns JSON response with success status, new tokens in cookies
  */
 export async function POST(request: NextRequest) {
   // Rate limiting

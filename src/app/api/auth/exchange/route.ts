@@ -1,3 +1,30 @@
+/**
+ * OAuth code exchange API route
+ *
+ * Exchanges OAuth authorization codes for access and refresh tokens.
+ * This is a secure server-side route that communicates with the backend.
+ *
+ * @module app/api/auth/exchange
+ *
+ * @remarks
+ * Security features:
+ * - Rate limiting per IP address
+ * - Authorization code format validation
+ * - Tokens stored in httpOnly cookies (XSS protection)
+ * - Generic error messages (prevents information disclosure)
+ *
+ * @example
+ * ```ts
+ * // Frontend calls this after OAuth redirect
+ * const response = await fetch('/api/auth/exchange', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify({ code: 'oac_xxx...' }),
+ * })
+ * const { success, user } = await response.json()
+ * ```
+ */
+
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { setAuthCookies } from '@/lib/auth-cookies'
@@ -8,15 +35,18 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8
 
 /**
  * POST /api/auth/exchange
- * Exchanges OAuth authorization code for tokens
- * Called after OAuth callback redirects with ?code=oac_xxx
+ *
+ * Exchanges OAuth authorization code for tokens.
  *
  * Flow:
- * 1. Frontend receives ?code=oac_xxx from OAuth callback
+ * 1. Frontend receives `?code=oac_xxx` from OAuth callback
  * 2. Frontend calls this route with the code
  * 3. This route exchanges code with backend for tokens
  * 4. Tokens stored in httpOnly cookies
  * 5. Returns success + user data to frontend
+ *
+ * @param request - Next.js request object
+ * @returns JSON response with success status and user data
  */
 export async function POST(request: NextRequest) {
   // Rate limiting

@@ -1,3 +1,34 @@
+/**
+ * Token storage API route
+ *
+ * Securely stores authentication tokens in httpOnly cookies.
+ * Called after successful wallet-based login (SIWE).
+ *
+ * @module app/api/auth/set-tokens
+ *
+ * @remarks
+ * Security features:
+ * - Rate limiting per IP address
+ * - CSRF protection via origin validation
+ * - Tokens stored in httpOnly cookies (XSS protection)
+ * - Input validation for token presence
+ *
+ * @example
+ * ```ts
+ * // After successful backend authentication
+ * await fetch('/api/auth/set-tokens', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   credentials: 'include',
+ *   body: JSON.stringify({
+ *     token: 'access_token_here',
+ *     refresh_token: 'refresh_token_here',
+ *     expires_in: 3600,
+ *   }),
+ * })
+ * ```
+ */
+
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { setAuthCookies, validateRequestOrigin } from '@/lib/auth-cookies'
@@ -5,8 +36,11 @@ import { AUTH_RATE_LIMITS, checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 /**
  * POST /api/auth/set-tokens
- * Securely stores access and refresh tokens in httpOnly cookies
- * Called after successful login (wallet or OAuth)
+ *
+ * Securely stores access and refresh tokens in httpOnly cookies.
+ *
+ * @param request - Next.js request object with token data in body
+ * @returns JSON response with success status
  */
 export async function POST(request: NextRequest) {
   // Rate limiting
