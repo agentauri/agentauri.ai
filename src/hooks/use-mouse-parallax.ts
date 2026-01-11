@@ -26,6 +26,88 @@ function lerp(start: number, end: number, factor: number): number {
   return start + (end - start) * factor
 }
 
+/**
+ * Hook for mouse-based parallax effects
+ *
+ * Tracks mouse position and provides smoothed offset values for creating
+ * parallax motion effects. Uses linear interpolation (lerp) for smooth
+ * transitions and automatically returns to center when mouse leaves.
+ *
+ * Features:
+ * - Smooth offset transitions via lerp
+ * - Normalized values (-1 to 1) for easy calculations
+ * - Optional container-relative positioning
+ * - Automatic cleanup of animation frames
+ *
+ * @param options - Parallax configuration options
+ * @returns Offset values and container ref
+ *
+ * @example
+ * ```tsx
+ * function ParallaxCard() {
+ *   const { offsetX, offsetY, containerRef } = useMouseParallax({
+ *     sensitivity: 0.3,
+ *     smoothing: 0.05,
+ *   })
+ *
+ *   return (
+ *     <div ref={containerRef as React.RefObject<HTMLDivElement>}>
+ *       <div
+ *         style={{
+ *           transform: `translate(${offsetX * 20}px, ${offsetY * 20}px)`,
+ *         }}
+ *       >
+ *         Floating Content
+ *       </div>
+ *     </div>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // 3D tilt effect
+ * function TiltCard({ children }: { children: React.ReactNode }) {
+ *   const { offsetX, offsetY, containerRef } = useMouseParallax({
+ *     sensitivity: 0.5,
+ *   })
+ *
+ *   return (
+ *     <div
+ *       ref={containerRef as React.RefObject<HTMLDivElement>}
+ *       style={{
+ *         transform: `perspective(1000px) rotateX(${offsetY * -10}deg) rotateY(${offsetX * 10}deg)`,
+ *         transition: 'transform 0.1s ease-out',
+ *       }}
+ *     >
+ *       {children}
+ *     </div>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Layered parallax with different depths
+ * function ParallaxScene() {
+ *   const { offset, containerRef } = useMouseParallax({ sensitivity: 0.4 })
+ *
+ *   return (
+ *     <div ref={containerRef as React.RefObject<HTMLDivElement>} className="relative">
+ *       <div style={{ transform: `translate(${offset.x * 5}px, ${offset.y * 5}px)` }}>
+ *         Background Layer
+ *       </div>
+ *       <div style={{ transform: `translate(${offset.x * 15}px, ${offset.y * 15}px)` }}>
+ *         Midground Layer
+ *       </div>
+ *       <div style={{ transform: `translate(${offset.x * 30}px, ${offset.y * 30}px)` }}>
+ *         Foreground Layer
+ *       </div>
+ *     </div>
+ *   )
+ * }
+ * ```
+ */
 export function useMouseParallax({
   sensitivity = 0.5,
   smoothing = 0.1,

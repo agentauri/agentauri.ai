@@ -1,6 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { toast } from 'sonner'
 
+/**
+ * Options for useCopyToClipboard hook
+ */
 interface UseCopyToClipboardOptions {
   /** Toast message on success (default: 'Copied to clipboard') */
   successMessage?: string
@@ -10,27 +13,75 @@ interface UseCopyToClipboardOptions {
   timeout?: number
 }
 
+/**
+ * Return type for useCopyToClipboard hook
+ */
 interface UseCopyToClipboardReturn {
   /** Whether the copy operation was recently successful */
   copied: boolean
   /** Function to copy text to clipboard */
   copy: (text: string) => Promise<boolean>
-  /** Reset the copied state */
+  /** Reset the copied state manually */
   reset: () => void
 }
 
 /**
  * Hook for copying text to clipboard with toast notifications
  *
+ * Provides clipboard functionality with:
+ * - Toast notifications on success/error
+ * - Automatic state reset after timeout
+ * - Manual reset capability
+ *
+ * @param options - Configuration options
+ * @returns Clipboard state and copy function
+ *
  * @example
  * ```tsx
- * const { copied, copy } = useCopyToClipboard({ successMessage: 'Address copied!' })
+ * function CopyButton({ text }: { text: string }) {
+ *   const { copied, copy } = useCopyToClipboard()
  *
- * return (
- *   <button onClick={() => copy(address)}>
- *     <Icon name={copied ? 'check' : 'copy'} />
- *   </button>
- * )
+ *   return (
+ *     <Button onClick={() => copy(text)}>
+ *       <Icon name={copied ? 'check' : 'copy'} />
+ *       {copied ? 'Copied!' : 'Copy'}
+ *     </Button>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Custom messages
+ * function AddressCopy({ address }: { address: string }) {
+ *   const { copied, copy } = useCopyToClipboard({
+ *     successMessage: 'Address copied!',
+ *     errorMessage: 'Could not copy address',
+ *     timeout: 3000,
+ *   })
+ *
+ *   return (
+ *     <button onClick={() => copy(address)}>
+ *       {address.slice(0, 6)}...{address.slice(-4)}
+ *       <Icon name={copied ? 'check' : 'copy'} />
+ *     </button>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Manual reset
+ * function ApiKeyDisplay({ apiKey }: { apiKey: string }) {
+ *   const { copied, copy, reset } = useCopyToClipboard()
+ *
+ *   // Reset when key changes
+ *   useEffect(() => {
+ *     reset()
+ *   }, [apiKey, reset])
+ *
+ *   return <Button onClick={() => copy(apiKey)}>Copy Key</Button>
+ * }
  * ```
  */
 export function useCopyToClipboard(

@@ -64,6 +64,88 @@ function initializeStars(count: number): Star[] {
   return Array.from({ length: count }, () => createStar())
 }
 
+/**
+ * Hook for Star Wars-style warp speed star field animation
+ *
+ * Creates a dynamic star field with stars flying toward the viewer,
+ * simulating hyperspace/warp speed travel. Stars spawn in the center
+ * and accelerate outward with increasing brightness and size.
+ *
+ * Features:
+ * - Configurable star count and speed
+ * - Variable warp factor for speed control
+ * - Visibility-aware (pauses when tab hidden)
+ * - Auto-restarts on window focus
+ * - Cycle completion callbacks
+ *
+ * @param options - Animation configuration options
+ * @returns Star array and animation controls
+ *
+ * @example
+ * ```tsx
+ * function StarField() {
+ *   const { stars, isWarping } = useWarpAnimation({
+ *     starCount: 300,
+ *     baseSpeed: 0.02,
+ *   })
+ *
+ *   return (
+ *     <canvas ref={canvasRef}>
+ *       {stars.map((star, i) => (
+ *         // Render star with size/brightness based on z depth
+ *       ))}
+ *     </canvas>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Interactive warp speed control
+ * function WarpDrive() {
+ *   const { stars, setWarpFactor, isWarping, start, stop } = useWarpAnimation({
+ *     starCount: 500,
+ *     autoPlay: false,
+ *   })
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={isWarping ? stop : start}>
+ *         {isWarping ? 'Disengage' : 'Engage'} Warp Drive
+ *       </button>
+ *       <input
+ *         type="range"
+ *         min={0.5}
+ *         max={3}
+ *         step={0.1}
+ *         onChange={(e) => setWarpFactor(Number(e.target.value))}
+ *       />
+ *       <StarFieldCanvas stars={stars} />
+ *     </div>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Canvas rendering with star properties
+ * function renderStars(ctx: CanvasRenderingContext2D, stars: Star[]) {
+ *   const centerX = ctx.canvas.width / 2
+ *   const centerY = ctx.canvas.height / 2
+ *
+ *   stars.forEach(star => {
+ *     const screenX = centerX + star.x * centerX * (1 + star.z * 2)
+ *     const screenY = centerY + star.y * centerY * (1 + star.z * 2)
+ *     const size = 1 + star.z * 3
+ *
+ *     ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`
+ *     ctx.beginPath()
+ *     ctx.arc(screenX, screenY, size, 0, Math.PI * 2)
+ *     ctx.fill()
+ *   })
+ * }
+ * ```
+ */
 export function useWarpAnimation({
   starCount = 400,
   baseSpeed = 0.015,

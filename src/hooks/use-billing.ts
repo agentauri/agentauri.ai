@@ -9,6 +9,26 @@ import type { PaginationParams } from '@/types/api'
 
 /**
  * Hook for getting credit balance
+ *
+ * Returns current credit balance and usage limits for the organization.
+ * Data is cached for 1 minute.
+ *
+ * @param orgId - Organization UUID. Query disabled if null.
+ * @returns TanStack Query result with credit balance
+ *
+ * @example
+ * ```tsx
+ * function CreditDisplay({ orgId }: { orgId: string }) {
+ *   const { data: balance } = useCreditBalance(orgId)
+ *
+ *   return (
+ *     <div>
+ *       <p>Available: {balance?.available} credits</p>
+ *       <p>Used: {balance?.used} credits</p>
+ *     </div>
+ *   )
+ * }
+ * ```
  */
 export function useCreditBalance(orgId: string | null) {
   return useQuery({
@@ -21,6 +41,28 @@ export function useCreditBalance(orgId: string | null) {
 
 /**
  * Hook for listing credit transactions
+ *
+ * Returns paginated history of credit additions and deductions.
+ * Data is cached for 30 seconds.
+ *
+ * @param orgId - Organization UUID. Query disabled if null.
+ * @param params - Optional pagination parameters
+ * @returns TanStack Query result with transactions list
+ *
+ * @example
+ * ```tsx
+ * function TransactionHistory({ orgId }: { orgId: string }) {
+ *   const { data } = useCreditTransactions(orgId, { limit: 20 })
+ *
+ *   return (
+ *     <ul>
+ *       {data?.data.map(tx => (
+ *         <li key={tx.id}>{tx.type}: {tx.amount} credits</li>
+ *       ))}
+ *     </ul>
+ *   )
+ * }
+ * ```
  */
 export function useCreditTransactions(orgId: string | null, params?: PaginationParams) {
   return useQuery({
@@ -33,6 +75,29 @@ export function useCreditTransactions(orgId: string | null, params?: PaginationP
 
 /**
  * Hook for creating a checkout session
+ *
+ * Creates a Stripe checkout session and redirects to Stripe's
+ * hosted checkout page for payment.
+ *
+ * @param orgId - Organization UUID
+ * @returns TanStack Mutation for checkout creation
+ *
+ * @example
+ * ```tsx
+ * function BuyCreditsButton({ orgId, priceId }: Props) {
+ *   const createCheckout = useCreateCheckout(orgId)
+ *
+ *   const handleBuy = () => {
+ *     createCheckout.mutate({
+ *       priceId,
+ *       quantity: 1,
+ *       successUrl: window.location.href + '?success=true',
+ *       cancelUrl: window.location.href,
+ *     })
+ *     // Will redirect to Stripe checkout
+ *   }
+ * }
+ * ```
  */
 export function useCreateCheckout(orgId: string) {
   return useMutation({
@@ -49,6 +114,28 @@ export function useCreateCheckout(orgId: string) {
 
 /**
  * Hook for listing subscriptions
+ *
+ * Returns all active and past subscriptions for the organization.
+ * Data is cached for 1 minute.
+ *
+ * @param orgId - Organization UUID. Query disabled if null.
+ * @returns TanStack Query result with subscriptions list
+ *
+ * @example
+ * ```tsx
+ * function SubscriptionList({ orgId }: { orgId: string }) {
+ *   const { data: subscriptions } = useSubscriptions(orgId)
+ *
+ *   const active = subscriptions?.filter(s => s.status === 'active')
+ *   return (
+ *     <ul>
+ *       {active?.map(sub => (
+ *         <li key={sub.id}>{sub.planName}</li>
+ *       ))}
+ *     </ul>
+ *   )
+ * }
+ * ```
  */
 export function useSubscriptions(orgId: string | null) {
   return useQuery({
@@ -61,6 +148,28 @@ export function useSubscriptions(orgId: string | null) {
 
 /**
  * Hook for canceling a subscription
+ *
+ * Cancels a subscription at the end of the current billing period.
+ * Credits remain available until expiration.
+ *
+ * @returns TanStack Mutation for subscription cancellation
+ *
+ * @example
+ * ```tsx
+ * function CancelButton({ subscriptionId }: { subscriptionId: string }) {
+ *   const cancelSubscription = useCancelSubscription()
+ *
+ *   return (
+ *     <Button
+ *       variant="danger"
+ *       onClick={() => cancelSubscription.mutate(subscriptionId)}
+ *       disabled={cancelSubscription.isPending}
+ *     >
+ *       Cancel Subscription
+ *     </Button>
+ *   )
+ * }
+ * ```
  */
 export function useCancelSubscription() {
   const queryClient = useQueryClient()

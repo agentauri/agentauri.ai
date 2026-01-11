@@ -10,10 +10,42 @@ const healthQueryKey = ['health', 'status'] as const
 
 /**
  * Hook for checking API health status
- * Polls every 30 seconds to keep status updated
  *
+ * Polls every 30 seconds to keep status updated.
  * Uses getStatusSafe() which returns unhealthy status on error
- * instead of throwing, making it safe for UI display
+ * instead of throwing, making it safe for UI display.
+ *
+ * @returns TanStack Query result with health status
+ *
+ * @example
+ * ```tsx
+ * function StatusIndicator() {
+ *   const { data: health, isLoading } = useHealthStatus()
+ *
+ *   if (isLoading) return <Spinner />
+ *
+ *   return (
+ *     <Badge variant={health?.status === 'healthy' ? 'success' : 'error'}>
+ *       {health?.status}
+ *     </Badge>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * function ServiceStatus() {
+ *   const { data: health } = useHealthStatus()
+ *
+ *   return (
+ *     <div>
+ *       <p>Database: {health?.services?.database ?? 'unknown'}</p>
+ *       <p>Indexer: {health?.services?.indexer ?? 'unknown'}</p>
+ *       <p>Cache: {health?.services?.cache ?? 'unknown'}</p>
+ *     </div>
+ *   )
+ * }
+ * ```
  */
 export function useHealthStatus() {
   return useQuery<HealthStatus>({

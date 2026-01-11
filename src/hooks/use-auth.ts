@@ -19,7 +19,21 @@ const TOKEN_REFRESH_ON_FOCUS_THRESHOLD = 5 * 60 * 1000 // 5 minutes since last r
 
 /**
  * Hook for fetching current user session
- * Uses TanStack Query for server state, Zustand only for auth status
+ *
+ * Uses TanStack Query for server state management.
+ * Updates Zustand auth store on success/failure.
+ *
+ * @returns TanStack Query result with session data
+ *
+ * @example
+ * ```tsx
+ * function UserInfo() {
+ *   const { data: session, isLoading } = useSession()
+ *
+ *   if (isLoading) return <Spinner />
+ *   return <span>Welcome, {session?.user.email}</span>
+ * }
+ * ```
  */
 export function useSession() {
   const { setAuthenticated, isHydrated } = useAuthStore()
@@ -53,9 +67,26 @@ export function useSession() {
 }
 
 /**
- * Hook for getting nonce for SIWE authentication
- * Returns a pre-formatted message to sign
- * @param address - The wallet address to get nonce for (required to fetch)
+ * Hook for getting SIWE nonce for wallet authentication
+ *
+ * Returns a pre-formatted EIP-4361 message to sign with the wallet.
+ * Nonce expires after 5 minutes on the server.
+ *
+ * @param address - Ethereum wallet address (0x...). Query disabled if undefined.
+ * @returns TanStack Query result with nonce and message to sign
+ *
+ * @example
+ * ```tsx
+ * function WalletLogin() {
+ *   const { address } = useAccount()
+ *   const { data: nonceData } = useNonce(address)
+ *
+ *   const handleSign = async () => {
+ *     const signature = await signMessage(nonceData.message)
+ *     // Use signature for login
+ *   }
+ * }
+ * ```
  */
 export function useNonce(address?: string) {
   return useQuery({
@@ -70,6 +101,32 @@ export function useNonce(address?: string) {
 
 /**
  * Hook for wallet login mutation (SIWE)
+ *
+ * Handles the complete login flow:
+ * 1. Verifies signature with backend
+ * 2. Stores tokens in httpOnly cookies
+ * 3. Updates auth state
+ * 4. Redirects to dashboard
+ *
+ * @returns TanStack Mutation for wallet login
+ *
+ * @example
+ * ```tsx
+ * function WalletLoginButton() {
+ *   const login = useLogin()
+ *
+ *   const handleLogin = async (signature: string, message: string) => {
+ *     await login.mutateAsync({ signature, message })
+ *     // Automatically redirects to /dashboard on success
+ *   }
+ *
+ *   return (
+ *     <Button onClick={handleLogin} disabled={login.isPending}>
+ *       {login.isPending ? 'Signing in...' : 'Sign In'}
+ *     </Button>
+ *   )
+ * }
+ * ```
  */
 export function useLogin() {
   const queryClient = useQueryClient()
@@ -115,6 +172,28 @@ export function useLogin() {
 
 /**
  * Hook for logout mutation
+ *
+ * Handles the complete logout flow:
+ * 1. Invalidates session on server
+ * 2. Clears httpOnly cookies
+ * 3. Resets all auth and org state
+ * 4. Clears query cache
+ * 5. Redirects to login page
+ *
+ * @returns TanStack Mutation for logout
+ *
+ * @example
+ * ```tsx
+ * function LogoutButton() {
+ *   const logout = useLogout()
+ *
+ *   return (
+ *     <Button onClick={() => logout.mutate()} disabled={logout.isPending}>
+ *       Sign Out
+ *     </Button>
+ *   )
+ * }
+ * ```
  */
 export function useLogout() {
   const queryClient = useQueryClient()
@@ -158,7 +237,25 @@ export function useLogout() {
 
 /**
  * Hook for proactive token refresh
- * Refreshes the access token before it expires to maintain seamless session
+ *
+ * Automatically refreshes the access token before it expires
+ * to maintain a seamless session experience. Handles:
+ * - Periodic refresh every 55 minutes
+ * - Refresh on window focus (if 5+ minutes since last refresh)
+ * - Refresh on tab visibility change
+ *
+ * @returns Object with refreshToken function and lastRefresh timestamp
+ *
+ * @example
+ * ```tsx
+ * // Usually used internally by useAuth, but can be used directly
+ * function App() {
+ *   const { refreshToken, lastRefresh } = useTokenRefresh()
+ *
+ *   // Token refresh is automatic, but can force refresh if needed
+ *   const handleForceRefresh = () => refreshToken()
+ * }
+ * ```
  */
 export function useTokenRefresh() {
   const { isAuthenticated } = useAuthStore()
@@ -257,6 +354,31 @@ export function useTokenRefresh() {
 
 /**
  * Combined auth hook for convenience
+ *
+ * Provides a unified interface for all authentication operations:
+ * - Session data and loading state
+ * - Authentication status
+ * - Login and logout mutations
+ * - Automatic token refresh
+ *
+ * @returns Combined auth state and mutations
+ *
+ * @example
+ * ```tsx
+ * function ProtectedPage() {
+ *   const { session, isLoading, isAuthenticated, logout } = useAuth()
+ *
+ *   if (isLoading) return <LoadingSpinner />
+ *   if (!isAuthenticated) return <Redirect to="/login" />
+ *
+ *   return (
+ *     <div>
+ *       <h1>Welcome, {session?.user.email}</h1>
+ *       <Button onClick={() => logout.mutate()}>Sign Out</Button>
+ *     </div>
+ *   )
+ * }
+ * ```
  */
 export function useAuth(): {
   session: UserSession | undefined

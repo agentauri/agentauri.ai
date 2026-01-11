@@ -32,8 +32,72 @@ export interface UseGlitchAnimationReturn {
 }
 
 /**
- * Hook for Matrix-style glitch text animation.
- * Characters start scrambled and progressively resolve to the target text.
+ * Hook for Matrix-style glitch text animation
+ *
+ * Creates a text scramble/reveal effect where characters start as random
+ * symbols and progressively resolve to the target text. Perfect for
+ * terminal-styled UIs, cyberpunk aesthetics, and dramatic text reveals.
+ *
+ * Features:
+ * - Preserves whitespace during animation
+ * - Configurable character set for scramble effect
+ * - Progressive reveal with randomized timing
+ * - Auto-play or manual trigger support
+ *
+ * @param options - Animation configuration options
+ * @returns Animation state and control functions
+ *
+ * @example
+ * ```tsx
+ * function HeroTitle() {
+ *   const { displayText, isAnimating } = useGlitchAnimation({
+ *     targetText: 'WELCOME TO THE MATRIX',
+ *     duration: 2000,
+ *   })
+ *
+ *   return (
+ *     <h1 className="font-mono text-green-500">
+ *       {displayText}
+ *       {isAnimating && <span className="animate-pulse">_</span>}
+ *     </h1>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Manual trigger with callback
+ * function TypewriterMessage({ message }: { message: string }) {
+ *   const { displayText, start, isAnimating } = useGlitchAnimation({
+ *     targetText: message,
+ *     autoPlay: false,
+ *     onComplete: () => console.log('Animation finished'),
+ *   })
+ *
+ *   return (
+ *     <div>
+ *       <p>{displayText}</p>
+ *       <button onClick={start} disabled={isAnimating}>
+ *         Reveal Message
+ *       </button>
+ *     </div>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Custom character set for different aesthetics
+ * function BinaryReveal({ text }: { text: string }) {
+ *   const { displayText } = useGlitchAnimation({
+ *     targetText: text,
+ *     charSet: '01', // Binary only
+ *     duration: 3000,
+ *   })
+ *
+ *   return <code>{displayText}</code>
+ * }
+ * ```
  */
 export function useGlitchAnimation({
   targetText,
