@@ -1,10 +1,29 @@
 /**
- * Reusable step indicator for multi-step forms
+ * FormStepIndicator
+ *
+ * Displays a horizontal step indicator for multi-step forms with clickable navigation.
+ * Shows completed, current, and pending states with terminal styling.
+ *
+ * @module components/molecules/FormStepIndicator
+ *
+ * @example
+ * ```tsx
+ * <FormStepIndicator
+ *   steps={[
+ *     { value: 'basics', label: 'Basics' },
+ *     { value: 'conditions', label: 'Conditions' },
+ *     { value: 'actions', label: 'Actions' },
+ *   ]}
+ *   currentStep="conditions"
+ *   onStepClick={setStep}
+ * />
+ * ```
  */
 
 import { Box } from '@/components/atoms/box'
 import { Icon } from '@/components/atoms/icon'
 
+/** Props for the FormStepIndicator component */
 interface FormStepIndicatorProps<T extends string> {
   steps: { value: T; label: string }[]
   currentStep: T
@@ -12,6 +31,9 @@ interface FormStepIndicatorProps<T extends string> {
   className?: string
 }
 
+/**
+ * Renders a horizontal step indicator with completed/current/pending states.
+ */
 export function FormStepIndicator<T extends string>({
   steps,
   currentStep,

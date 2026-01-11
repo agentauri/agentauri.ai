@@ -1,3 +1,20 @@
+/**
+ * ConditionTypeSelector
+ *
+ * A dropdown selector for choosing condition types in trigger configuration.
+ * Displays available condition types with icons, descriptions, and usage examples.
+ *
+ * @module components/organisms/ConditionTypeSelector
+ *
+ * @example
+ * ```tsx
+ * <ConditionTypeSelector
+ *   value="reputation_threshold"
+ *   onChange={(type) => console.log('Selected:', type)}
+ *   showPreview={true}
+ * />
+ * ```
+ */
 'use client'
 
 import { Box } from '@/components/atoms/box'
@@ -5,8 +22,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Icon, type IconName } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
+/** Available condition types for trigger configuration */
 export type ConditionType = 'event_filter' | 'agent_filter' | 'reputation_threshold' | 'field_comparison' | 'time_condition'
 
+/**
+ * Information about a condition type including label, description, and example.
+ */
 interface ConditionTypeInfo {
   value: ConditionType
   label: string
@@ -65,10 +86,17 @@ const CONDITION_TYPES: ConditionTypeInfo[] = [
   },
 ]
 
+/**
+ * Props for the ConditionTypeSelector component.
+ */
 interface ConditionTypeSelectorProps {
+  /** Currently selected condition type value */
   value: string
+  /** Callback when a condition type is selected */
   onChange: (value: ConditionType) => void
+  /** Additional CSS classes */
   className?: string
+  /** Whether to show the preview/help box below the selector */
   showPreview?: boolean
 }
 
@@ -129,7 +157,11 @@ export function ConditionTypeSelector({
   )
 }
 
-// Helper function to get type info
+/**
+ * Helper function to get condition type information by type value.
+ * @param type - The condition type to look up
+ * @returns The condition type info or undefined if not found
+ */
 export function getConditionTypeInfo(type: ConditionType): ConditionTypeInfo | undefined {
   return CONDITION_TYPES.find((t) => t.value === type)
 }

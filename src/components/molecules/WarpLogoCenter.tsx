@@ -1,11 +1,31 @@
+/**
+ * WarpLogoCenter
+ *
+ * Animated logo display for the Warp homepage with emergence animation and subtitle.
+ * Shows the bull logo icon and AGENTAURI.AI text with optional pulsing glow effect.
+ *
+ * @module components/molecules/WarpLogoCenter
+ *
+ * @example
+ * ```tsx
+ * <WarpLogoCenter
+ *   animation="emerge"
+ *   emergeDuration={2000}
+ *   onEmergenceComplete={() => setShowNav(true)}
+ * />
+ * ```
+ */
+
 'use client'
 
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { LogoBull } from '@/components/atoms/BullLogo'
 
+/** Animation type for the logo emergence */
 type WarpLogoAnimation = 'emerge' | 'pulse' | 'none'
 
+/** Props for the WarpLogoCenter component */
 interface WarpLogoCenterProps {
   /** Text to display (default: "AGENTAURI.AI") */
   text?: string
@@ -19,6 +39,9 @@ interface WarpLogoCenterProps {
   className?: string
 }
 
+/**
+ * Renders the animated homepage logo with bull icon and text.
+ */
 export function WarpLogoCenter({
   text = 'AGENTAURI.AI',
   animation = 'emerge',

@@ -1,12 +1,30 @@
 /**
- * Generic array field builder component
- * Reduces duplication in ConditionBuilder and ActionBuilder patterns
+ * ArrayFieldBuilder
+ *
+ * Generic component for building dynamic arrays of form fields with add/remove functionality.
+ * Reduces duplication in ConditionBuilder and ActionBuilder patterns.
+ *
+ * @module components/molecules/ArrayFieldBuilder
+ *
+ * @example
+ * ```tsx
+ * <ArrayFieldBuilder
+ *   items={conditions}
+ *   onAdd={addCondition}
+ *   onUpdate={updateCondition}
+ *   onRemove={removeCondition}
+ *   canRemove={conditions.length > 1}
+ *   addButtonLabel="+ ADD CONDITION"
+ *   renderItem={(item, index) => <ConditionRow {...item} />}
+ * />
+ * ```
  */
 
 import { ActionLabel } from '@/components/atoms/action-label'
 import { Button } from '@/components/atoms/button'
 import type { ReactNode } from 'react'
 
+/** Props for the ArrayFieldBuilder component */
 interface ArrayFieldBuilderProps<T> {
   items: T[]
   onAdd: () => void
@@ -19,6 +37,9 @@ interface ArrayFieldBuilderProps<T> {
   emptyMessage?: string
 }
 
+/**
+ * Renders a dynamic list of items with add/remove controls.
+ */
 export function ArrayFieldBuilder<T>({
   items,
   onAdd,
@@ -71,14 +92,21 @@ export function ArrayFieldBuilder<T>({
 }
 
 /**
- * Wrapper for form field arrays with validation messages
+ * FormArrayFieldBuilder
+ *
+ * Wrapper for ArrayFieldBuilder with form validation error display and minimum items constraint.
  */
+
+/** Props for the FormArrayFieldBuilder component */
 interface FormArrayFieldBuilderProps<T> extends Omit<ArrayFieldBuilderProps<T>, 'items' | 'canRemove'> {
   value: T[] | undefined
   error?: string
   minItems?: number
 }
 
+/**
+ * Renders an ArrayFieldBuilder with validation error display.
+ */
 export function FormArrayFieldBuilder<T>({
   value = [],
   error,

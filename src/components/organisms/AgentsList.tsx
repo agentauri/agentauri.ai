@@ -1,3 +1,20 @@
+/**
+ * AgentsList
+ *
+ * Displays a filterable grid of linked agent cards with search and chain filters.
+ * Handles loading states, errors, and empty states with optional link agent button.
+ *
+ * @module components/organisms/AgentsList
+ *
+ * @example
+ * ```tsx
+ * <AgentsList
+ *   organizationId="org_123"
+ *   showLinkButton={true}
+ *   onLinkAgent={() => setDialogOpen(true)}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -19,9 +36,15 @@ import { SUPPORTED_CHAINS, type SupportedChainId } from '@/lib/constants'
 import type { AgentFilters } from '@/lib/validations/agent'
 import { AgentCard } from './AgentCard'
 
+/**
+ * Props for the AgentsList component.
+ */
 interface AgentsListProps {
+  /** The organization ID to fetch agents for */
   organizationId: string
+  /** Whether to show the link agent button */
   showLinkButton?: boolean
+  /** Callback when link agent button is clicked */
   onLinkAgent?: () => void
 }
 

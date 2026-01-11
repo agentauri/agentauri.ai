@@ -1,3 +1,19 @@
+/**
+ * ApiKeysList
+ *
+ * Displays a grid of API key cards with a create button.
+ * Handles loading states, errors, and empty states.
+ *
+ * @module components/organisms/ApiKeysList
+ *
+ * @example
+ * ```tsx
+ * <ApiKeysList
+ *   organizationId="org_123"
+ *   onCreateKey={() => setCreateDialogOpen(true)}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -9,8 +25,13 @@ import { useApiKeys } from '@/hooks'
 import { ApiKeyCard } from './ApiKeyCard'
 import { ApiKeyCreatedDialog } from './ApiKeyCreatedDialog'
 
+/**
+ * Props for the ApiKeysList component.
+ */
 interface ApiKeysListProps {
+  /** The organization ID to fetch API keys for */
   organizationId: string
+  /** Callback when create key button is clicked */
   onCreateKey?: () => void
 }
 

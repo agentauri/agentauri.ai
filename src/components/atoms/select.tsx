@@ -1,3 +1,28 @@
+/**
+ * Select components
+ *
+ * Accessible select/dropdown input built on Radix UI Select primitives.
+ * Supports single selection with customizable trigger, items, groups, and labels.
+ *
+ * @module components/atoms/select
+ *
+ * @example
+ * ```tsx
+ * <Select value={value} onValueChange={setValue}>
+ *   <SelectTrigger>
+ *     <SelectValue placeholder="Select option" />
+ *   </SelectTrigger>
+ *   <SelectContent>
+ *     <SelectGroup>
+ *       <SelectLabel>Fruits</SelectLabel>
+ *       <SelectItem value="apple">Apple</SelectItem>
+ *       <SelectItem value="banana">Banana</SelectItem>
+ *     </SelectGroup>
+ *   </SelectContent>
+ * </Select>
+ * ```
+ */
+
 'use client'
 
 import * as SelectPrimitive from '@radix-ui/react-select'
@@ -6,18 +31,25 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Root select container managing selection state */
 function Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
+/** Container for grouping related select items */
 function SelectGroup({ ...props }: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
 
+/** Displays the currently selected value or placeholder */
 function SelectValue({ ...props }: React.ComponentProps<typeof SelectPrimitive.Value>) {
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
+/**
+ * Button that opens the select dropdown
+ * @param size - Size preset: 'default' or 'sm'
+ */
 function SelectTrigger({
   className,
   size = 'default',
@@ -44,6 +76,11 @@ function SelectTrigger({
   )
 }
 
+/**
+ * Select dropdown content panel
+ * @param position - Positioning strategy: 'popper' or 'item-aligned'
+ * @param align - Horizontal alignment (default: 'center')
+ */
 function SelectContent({
   className,
   children,
@@ -81,6 +118,7 @@ function SelectContent({
   )
 }
 
+/** Non-interactive label for select groups */
 function SelectLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>) {
   return (
     <SelectPrimitive.Label
@@ -91,6 +129,7 @@ function SelectLabel({ className, ...props }: React.ComponentProps<typeof Select
   )
 }
 
+/** Selectable item within the dropdown */
 function SelectItem({
   className,
   children,
@@ -115,6 +154,7 @@ function SelectItem({
   )
 }
 
+/** Visual divider between select sections */
 function SelectSeparator({
   className,
   ...props
@@ -128,6 +168,7 @@ function SelectSeparator({
   )
 }
 
+/** Scroll indicator button for top overflow */
 function SelectScrollUpButton({
   className,
   ...props
@@ -143,6 +184,7 @@ function SelectScrollUpButton({
   )
 }
 
+/** Scroll indicator button for bottom overflow */
 function SelectScrollDownButton({
   className,
   ...props

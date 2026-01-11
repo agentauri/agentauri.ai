@@ -1,3 +1,21 @@
+/**
+ * ApiKeyCreatedDialog
+ *
+ * A dialog displayed after creating or regenerating an API key.
+ * Shows the full key value with copy and reveal functionality.
+ * Warns users to save the key as it cannot be viewed again.
+ *
+ * @module components/organisms/ApiKeyCreatedDialog
+ *
+ * @example
+ * ```tsx
+ * <ApiKeyCreatedDialog
+ *   apiKey="8004_abcdefghijklmnop..."
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -14,9 +32,15 @@ import { Icon } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
+/**
+ * Props for the ApiKeyCreatedDialog component.
+ */
 interface ApiKeyCreatedDialogProps {
+  /** The newly created API key value */
   apiKey: string | null
+  /** Whether the dialog is open */
   open: boolean
+  /** Callback to control dialog open state */
   onOpenChange: (open: boolean) => void
 }
 

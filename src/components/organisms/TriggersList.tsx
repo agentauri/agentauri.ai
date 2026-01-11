@@ -1,3 +1,16 @@
+/**
+ * TriggersList
+ *
+ * Displays a filterable grid of trigger cards with search, chain, registry, and status filters.
+ * Handles loading states, errors, and empty states.
+ *
+ * @module components/organisms/TriggersList
+ *
+ * @example
+ * ```tsx
+ * <TriggersList organizationId="org_123" />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -12,7 +25,11 @@ import { REGISTRIES, SUPPORTED_CHAINS, type Registry, type SupportedChainId } fr
 import type { TriggerFilters } from '@/lib/validations'
 import { TriggerCard } from './TriggerCard'
 
+/**
+ * Props for the TriggersList component.
+ */
 interface TriggersListProps {
+  /** The organization ID to fetch triggers for */
   organizationId: string
 }
 

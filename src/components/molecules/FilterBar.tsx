@@ -1,6 +1,24 @@
 /**
- * Generic filter bar component with search, filters, and clear functionality
- * Designed for terminal/brutalist aesthetic
+ * FilterBar
+ *
+ * Container component for filter controls with clear functionality and results count display.
+ * Designed for terminal/brutalist aesthetic with support for grouped filters.
+ *
+ * @module components/molecules/FilterBar
+ *
+ * @example
+ * ```tsx
+ * <FilterBar
+ *   onClearFilters={handleClear}
+ *   hasActiveFilters={hasFilters}
+ *   resultsCount={25}
+ *   totalCount={100}
+ * >
+ *   <FilterGroup columns={3}>
+ *     <FilterItem label="STATUS">...</FilterItem>
+ *   </FilterGroup>
+ * </FilterBar>
+ * ```
  */
 
 import type { ReactNode } from 'react'
@@ -9,6 +27,7 @@ import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
+/** Props for the FilterBar component */
 interface FilterBarProps {
   children: ReactNode
   onClearFilters?: () => void
@@ -19,6 +38,9 @@ interface FilterBarProps {
   className?: string
 }
 
+/**
+ * Renders a filter bar container with filter controls and optional results summary.
+ */
 export function FilterBar({
   children,
   onClearFilters,
@@ -62,14 +84,21 @@ export function FilterBar({
 }
 
 /**
- * Filter group for organizing related filters
+ * FilterGroup
+ *
+ * Grid container for organizing related filter controls in responsive columns.
  */
+
+/** Props for the FilterGroup component */
 interface FilterGroupProps {
   children: ReactNode
   columns?: 1 | 2 | 3 | 4
   className?: string
 }
 
+/**
+ * Renders a responsive grid for filter controls.
+ */
 export function FilterGroup({ children, columns = 4, className }: FilterGroupProps) {
   const gridCols = {
     1: 'grid-cols-1',
@@ -82,14 +111,21 @@ export function FilterGroup({ children, columns = 4, className }: FilterGroupPro
 }
 
 /**
- * Individual filter item wrapper
+ * FilterItem
+ *
+ * Wrapper for individual filter controls with optional label.
  */
+
+/** Props for the FilterItem component */
 interface FilterItemProps {
   label?: string
   children: ReactNode
   className?: string
 }
 
+/**
+ * Renders a labeled container for a filter control.
+ */
 export function FilterItem({ label, children, className }: FilterItemProps) {
   return (
     <div className={cn('space-y-2', className)}>

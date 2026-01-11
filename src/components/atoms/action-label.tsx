@@ -1,8 +1,24 @@
+/**
+ * ActionLabel component
+ *
+ * Clickable text button with optional icon.
+ * Used for secondary actions like "Add", "Remove", "Edit".
+ *
+ * @module components/atoms/action-label
+ *
+ * @example
+ * ```tsx
+ * <ActionLabel icon="add">Add Item</ActionLabel>
+ * <ActionLabel variant="destructive" icon="remove">Remove</ActionLabel>
+ * ```
+ */
+
 import { cva, type VariantProps } from 'class-variance-authority'
 import type * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Icon, type IconName } from './icon'
 
+/** ActionLabel style variants */
 const actionLabelVariants = cva(
   'inline-flex items-center gap-1 cursor-pointer transition-colors disabled:pointer-events-none disabled:opacity-50 font-pixel tracking-wide',
   {
@@ -25,12 +41,20 @@ const actionLabelVariants = cva(
   }
 )
 
+/**
+ * ActionLabel props
+ *
+ * @param variant - Visual style: default, destructive, warning, muted
+ * @param size - Size preset: sm, lg
+ * @param icon - Optional icon name from Icon component
+ */
 interface ActionLabelProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof actionLabelVariants> {
   icon?: IconName
 }
 
+/** Clickable text button with optional icon */
 function ActionLabel({
   className,
   variant,

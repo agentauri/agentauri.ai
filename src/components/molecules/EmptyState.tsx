@@ -1,6 +1,20 @@
 /**
- * Generic empty state component with terminal/brutalist aesthetic
- * Used for displaying empty lists, no search results, etc.
+ * EmptyState
+ *
+ * Generic empty state component for displaying empty lists, no search results,
+ * or error states with terminal/brutalist aesthetic. Includes primary and secondary actions.
+ *
+ * @module components/molecules/EmptyState
+ *
+ * @example
+ * ```tsx
+ * <EmptyState
+ *   icon="events"
+ *   title="NO TRIGGERS YET"
+ *   description="Create your first trigger to get started"
+ *   action={{ label: 'CREATE TRIGGER', onClick: handleCreate }}
+ * />
+ * ```
  */
 
 import type { ReactNode } from 'react'
@@ -8,6 +22,7 @@ import { Button } from '@/components/atoms/button'
 import { Icon, type IconName } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
+/** Props for the EmptyState component */
 interface EmptyStateProps {
   icon?: IconName
   title: string
@@ -29,6 +44,9 @@ interface EmptyStateProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
+/**
+ * Renders a centered empty state with icon, title, description, and optional actions.
+ */
 export function EmptyState({
   icon = 'events',
   title,
@@ -143,9 +161,10 @@ export function EmptyState({
 }
 
 /**
- * Specific empty state variants for common use cases
+ * NoResultsState
+ *
+ * Pre-configured empty state for search results with optional clear filters action.
  */
-
 export function NoResultsState({
   searchQuery,
   onClear,
@@ -181,6 +200,11 @@ export function NoResultsState({
   )
 }
 
+/**
+ * EmptyListState
+ *
+ * Pre-configured empty state for empty lists with optional create action.
+ */
 export function EmptyListState({
   itemName = 'items',
   onCreate,
@@ -210,6 +234,11 @@ export function EmptyListState({
   )
 }
 
+/**
+ * ErrorState
+ *
+ * Pre-configured empty state for error conditions with optional retry action.
+ */
 export function ErrorState({
   title = 'SOMETHING WENT WRONG',
   message,

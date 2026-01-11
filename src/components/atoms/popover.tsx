@@ -1,3 +1,24 @@
+/**
+ * Popover components
+ *
+ * Floating content panel anchored to a trigger element.
+ * Built on Radix UI Popover for accessible positioning and focus management.
+ *
+ * @module components/atoms/popover
+ *
+ * @example
+ * ```tsx
+ * <Popover>
+ *   <PopoverTrigger asChild>
+ *     <Button>Toggle Info</Button>
+ *   </PopoverTrigger>
+ *   <PopoverContent>
+ *     <p>Popover content here</p>
+ *   </PopoverContent>
+ * </Popover>
+ * ```
+ */
+
 'use client'
 
 import * as PopoverPrimitive from '@radix-ui/react-popover'
@@ -5,14 +26,21 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Root popover container managing open state */
 function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
+/** Button that toggles the popover */
 function PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
+/**
+ * Popover content panel with positioning
+ * @param align - Horizontal alignment relative to trigger (default: 'center')
+ * @param sideOffset - Distance from trigger in pixels (default: 4)
+ */
 function PopoverContent({
   className,
   align = 'center',
@@ -35,6 +63,7 @@ function PopoverContent({
   )
 }
 
+/** Alternative anchor element for popover positioning */
 function PopoverAnchor({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 }

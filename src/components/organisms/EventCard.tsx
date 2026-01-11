@@ -1,3 +1,20 @@
+/**
+ * EventCard
+ *
+ * Displays a blockchain event card with event type, chain, and registry badges.
+ * Supports both full card view and compact inline list view.
+ *
+ * @module components/organisms/EventCard
+ *
+ * @example
+ * ```tsx
+ * // Full card
+ * <EventCard event={blockchainEvent} />
+ *
+ * // Compact inline
+ * <EventCard event={blockchainEvent} compact />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -11,8 +28,13 @@ import { formatDateTime, formatTxHash } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { BlockchainEvent } from '@/types/models'
 
+/**
+ * Props for the EventCard component.
+ */
 interface EventCardProps {
+  /** The blockchain event data to display */
   event: BlockchainEvent
+  /** Additional CSS classes */
   className?: string
   /** Compact mode for inline lists */
   compact?: boolean

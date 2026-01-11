@@ -1,8 +1,25 @@
+/**
+ * Logo component
+ *
+ * AgentAuri branded logo with pixel-art styling.
+ * Supports different variants for various contexts (hero, compact, icon).
+ *
+ * @module components/atoms/logo
+ *
+ * @example
+ * ```tsx
+ * <Logo variant="hero" />
+ * <Logo variant="compact" />
+ * <Logo variant="icon" />
+ * ```
+ */
+
 'use client'
 
 import { cn } from '@/lib/utils'
 import { PixelLogo, type PixelLogoAnimation } from './pixel-logo'
 
+/** Logo display variants */
 export type LogoVariant = 'hero' | 'compact' | 'icon'
 
 export interface LogoProps {

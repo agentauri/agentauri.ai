@@ -1,13 +1,41 @@
+/**
+ * ErrorBoundary
+ *
+ * React error boundary component that catches JavaScript errors in child
+ * components. Displays a fallback UI and provides reset/reload options.
+ *
+ * @module components/organisms/ErrorBoundary
+ *
+ * @example
+ * ```tsx
+ * <ErrorBoundary>
+ *   <MyComponent />
+ * </ErrorBoundary>
+ *
+ * // With custom fallback
+ * <ErrorBoundary fallback={<CustomError />}>
+ *   <MyComponent />
+ * </ErrorBoundary>
+ * ```
+ */
 'use client'
 
 import { Component, type ReactNode } from 'react'
 import { Button } from '@/components/atoms/button'
 
+/**
+ * Props for the ErrorBoundary component.
+ */
 interface ErrorBoundaryProps {
+  /** Child components to render */
   children: ReactNode
+  /** Optional custom fallback UI to display on error */
   fallback?: ReactNode
 }
 
+/**
+ * Internal state for ErrorBoundary.
+ */
 interface ErrorBoundaryState {
   hasError: boolean
   error: Error | null
@@ -65,16 +93,30 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 }
 
+/**
+ * Props for the QueryErrorBoundary component.
+ */
 interface QueryErrorBoundaryProps {
+  /** Child components to render */
   children: ReactNode
+  /** Optional callback when user clicks retry */
   onReset?: () => void
 }
 
+/**
+ * Internal state for QueryErrorBoundary.
+ */
 interface QueryErrorBoundaryState {
   hasError: boolean
   error: Error | null
 }
 
+/**
+ * QueryErrorBoundary
+ *
+ * A specialized error boundary for data fetching errors.
+ * Displays a compact error message with retry functionality.
+ */
 export class QueryErrorBoundary extends Component<
   QueryErrorBoundaryProps,
   QueryErrorBoundaryState

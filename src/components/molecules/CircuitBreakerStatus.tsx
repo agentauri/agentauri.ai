@@ -1,3 +1,18 @@
+/**
+ * CircuitBreakerStatus
+ *
+ * Displays API health status widget showing system operational state
+ * and individual service statuses (database, indexer, cache).
+ *
+ * @module components/molecules/CircuitBreakerStatus
+ *
+ * @example
+ * ```tsx
+ * <CircuitBreakerStatus />
+ * <CircuitBreakerStatus compact />
+ * ```
+ */
+
 'use client'
 
 import { Box } from '@/components/atoms/box'
@@ -5,13 +20,14 @@ import { Icon } from '@/components/atoms/icon'
 import { useHealthStatus } from '@/hooks/use-health'
 import { cn } from '@/lib/utils'
 
+/** Props for the CircuitBreakerStatus component */
 interface CircuitBreakerStatusProps {
   className?: string
   compact?: boolean
 }
 
 /**
- * Circuit breaker status widget showing API health
+ * Renders system health status indicator with optional detailed service breakdown.
  */
 export function CircuitBreakerStatus({ className, compact = false }: CircuitBreakerStatusProps) {
   const { data, isLoading, isError } = useHealthStatus()
@@ -96,6 +112,9 @@ export function CircuitBreakerStatus({ className, compact = false }: CircuitBrea
   )
 }
 
+/**
+ * Renders a single service status indicator with name and up/down state.
+ */
 function ServiceStatus({ name, status }: { name: string; status: 'up' | 'down' | 'connected' | 'disconnected' }) {
   const isUp = status === 'up' || status === 'connected'
   return (

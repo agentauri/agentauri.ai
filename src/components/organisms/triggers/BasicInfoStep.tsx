@@ -1,3 +1,16 @@
+/**
+ * BasicInfoStep
+ *
+ * Step 1 of the trigger creation wizard. Collects basic trigger
+ * information including name, description, blockchain, and stateful mode.
+ *
+ * @module components/organisms/triggers/BasicInfoStep
+ *
+ * @example
+ * ```tsx
+ * <BasicInfoStep form={form} />
+ * ```
+ */
 'use client'
 
 import type { UseFormReturn } from 'react-hook-form'
@@ -16,7 +29,11 @@ import { Textarea } from '@/components/atoms/textarea'
 import { CHAIN_NAMES, TESTNET_CHAINS } from '@/lib/constants'
 import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
 
+/**
+ * Props for the BasicInfoStep component.
+ */
 interface BasicInfoStepProps {
+  /** React Hook Form instance for the trigger form */
   form: UseFormReturn<CreateTriggerFormValues>
 }
 

@@ -1,8 +1,29 @@
+/**
+ * DetailPageHeader
+ *
+ * Page header component for detail pages with back navigation link, title,
+ * optional subtitle, and action slot (e.g., for StatusBadge).
+ *
+ * @module components/molecules/DetailPageHeader
+ *
+ * @example
+ * ```tsx
+ * <DetailPageHeader
+ *   backHref="/dashboard/triggers"
+ *   backLabel="TRIGGERS"
+ *   title="Trigger Details"
+ *   subtitle="Monitor agent registration events"
+ *   action={<StatusBadge enabled={trigger.enabled} />}
+ * />
+ * ```
+ */
+
 'use client'
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
+/** Props for the DetailPageHeader component */
 interface DetailPageHeaderProps {
   /** URL to navigate back to */
   backHref: string
@@ -16,6 +37,9 @@ interface DetailPageHeaderProps {
   action?: ReactNode
 }
 
+/**
+ * Renders a detail page header with back link, title, and optional action slot.
+ */
 export function DetailPageHeader({
   backHref,
   backLabel = 'BACK',

@@ -1,9 +1,29 @@
+/**
+ * Pagination
+ *
+ * Navigation component for paginated data with page numbers, ellipsis, and prev/next controls.
+ * Supports optional first/last page buttons with terminal styling.
+ *
+ * @module components/molecules/Pagination
+ *
+ * @example
+ * ```tsx
+ * <Pagination
+ *   currentPage={5}
+ *   totalPages={20}
+ *   onPageChange={setPage}
+ *   showFirstLast
+ * />
+ * ```
+ */
+
 'use client'
 
 import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
+/** Props for the Pagination component */
 interface PaginationProps {
   currentPage: number
   totalPages: number
@@ -12,6 +32,9 @@ interface PaginationProps {
   showFirstLast?: boolean
 }
 
+/**
+ * Renders pagination controls with page numbers, ellipsis, and navigation buttons.
+ */
 export function Pagination({
   currentPage,
   totalPages,

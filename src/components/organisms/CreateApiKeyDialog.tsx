@@ -1,3 +1,21 @@
+/**
+ * CreateApiKeyDialog
+ *
+ * A dialog for creating new API keys with name and access tier selection.
+ * Returns the created key value via the onSuccess callback.
+ *
+ * @module components/organisms/CreateApiKeyDialog
+ *
+ * @example
+ * ```tsx
+ * <CreateApiKeyDialog
+ *   organizationId="org_123"
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   onSuccess={(key) => console.log('Created:', key)}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -23,10 +41,17 @@ import {
 import { useCreateApiKey } from '@/hooks'
 import { QUERY_TIERS, type QueryTier } from '@/lib/constants'
 
+/**
+ * Props for the CreateApiKeyDialog component.
+ */
 interface CreateApiKeyDialogProps {
+  /** The organization ID to create the key for */
   organizationId: string
+  /** Whether the dialog is open */
   open: boolean
+  /** Callback to control dialog open state */
   onOpenChange: (open: boolean) => void
+  /** Callback when key is successfully created with the new key value */
   onSuccess?: (key: string) => void
 }
 

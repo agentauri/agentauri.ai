@@ -1,3 +1,20 @@
+/**
+ * Tooltip components
+ *
+ * Accessible tooltip for displaying additional information on hover.
+ * Built on Radix UI primitives.
+ *
+ * @module components/atoms/tooltip
+ *
+ * @example
+ * ```tsx
+ * <Tooltip>
+ *   <TooltipTrigger>Hover me</TooltipTrigger>
+ *   <TooltipContent>Tooltip content</TooltipContent>
+ * </Tooltip>
+ * ```
+ */
+
 'use client'
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
@@ -5,6 +22,7 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Tooltip context provider with configurable delay */
 function TooltipProvider({
   delayDuration = 0,
   ...props
@@ -18,6 +36,7 @@ function TooltipProvider({
   )
 }
 
+/** Tooltip root component (includes provider) */
 function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return (
     <TooltipProvider>
@@ -26,10 +45,12 @@ function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root
   )
 }
 
+/** Element that triggers tooltip display */
 function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
+/** Tooltip content with optional arrow */
 function TooltipContent({
   className,
   sideOffset = 0,

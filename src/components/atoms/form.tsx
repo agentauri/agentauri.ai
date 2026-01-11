@@ -1,3 +1,36 @@
+/**
+ * Form components
+ *
+ * Form field wrappers integrating React Hook Form with accessible labels,
+ * descriptions, and validation error messages.
+ *
+ * @module components/atoms/form
+ *
+ * @example
+ * ```tsx
+ * const form = useForm<FormData>()
+ *
+ * <Form {...form}>
+ *   <form onSubmit={form.handleSubmit(onSubmit)}>
+ *     <FormField
+ *       control={form.control}
+ *       name="email"
+ *       render={({ field }) => (
+ *         <FormItem>
+ *           <FormLabel>Email</FormLabel>
+ *           <FormControl>
+ *             <Input {...field} />
+ *           </FormControl>
+ *           <FormDescription>Your email address</FormDescription>
+ *           <FormMessage />
+ *         </FormItem>
+ *       )}
+ *     />
+ *   </form>
+ * </Form>
+ * ```
+ */
+
 'use client'
 
 import type * as LabelPrimitive from '@radix-ui/react-label'
@@ -15,6 +48,7 @@ import {
 import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 
+/** Form provider wrapping React Hook Form context */
 const Form = FormProvider
 
 type FormFieldContextValue<
@@ -26,6 +60,7 @@ type FormFieldContextValue<
 
 const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue)
 
+/** Controller wrapper providing field context for form items */
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -39,6 +74,7 @@ const FormField = <
   )
 }
 
+/** Hook to access form field state and IDs within FormItem */
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
@@ -68,6 +104,7 @@ type FormItemContextValue = {
 
 const FormItemContext = React.createContext<FormItemContextValue>({} as FormItemContextValue)
 
+/** Container for a single form field with label, control, and messages */
 function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   const id = React.useId()
 
@@ -78,6 +115,7 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
+/** Form field label with error state styling */
 function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
   const { error, formItemId } = useFormField()
 
@@ -92,6 +130,7 @@ function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPri
   )
 }
 
+/** Wrapper for form input with aria attributes */
 function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
 
@@ -106,6 +145,7 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
   )
 }
 
+/** Helper text displayed below form control */
 function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   const { formDescriptionId } = useFormField()
 
@@ -119,6 +159,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   )
 }
 
+/** Validation error message with destructive styling */
 function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
   const { error, formMessageId } = useFormField()
   const body = error ? String(error?.message ?? '') : props.children

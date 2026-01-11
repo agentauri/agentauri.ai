@@ -1,3 +1,31 @@
+/**
+ * Dialog components
+ *
+ * Accessible modal dialog built on Radix UI primitives.
+ * Supports customizable overlay, content, header, footer, and close button.
+ *
+ * @module components/atoms/dialog
+ *
+ * @example
+ * ```tsx
+ * <Dialog open={open} onOpenChange={setOpen}>
+ *   <DialogTrigger asChild>
+ *     <Button>Open Dialog</Button>
+ *   </DialogTrigger>
+ *   <DialogContent>
+ *     <DialogHeader>
+ *       <DialogTitle>Dialog Title</DialogTitle>
+ *       <DialogDescription>Dialog description text.</DialogDescription>
+ *     </DialogHeader>
+ *     <p>Dialog body content here.</p>
+ *     <DialogFooter>
+ *       <Button onClick={() => setOpen(false)}>Close</Button>
+ *     </DialogFooter>
+ *   </DialogContent>
+ * </Dialog>
+ * ```
+ */
+
 'use client'
 
 import * as DialogPrimitive from '@radix-ui/react-dialog'
@@ -6,22 +34,27 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Root dialog container managing open state */
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
+/** Button that opens the dialog */
 function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
+/** Portal for rendering dialog outside DOM hierarchy */
 function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
+/** Button that closes the dialog */
 function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
 
+/** Semi-transparent backdrop overlay */
 function DialogOverlay({
   className,
   ...props
@@ -38,6 +71,10 @@ function DialogOverlay({
   )
 }
 
+/**
+ * Dialog content panel with optional close button
+ * @param showCloseButton - Whether to show the X close button (default: true)
+ */
 function DialogContent({
   className,
   children,
@@ -72,6 +109,7 @@ function DialogContent({
   )
 }
 
+/** Dialog header section for title and description */
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -82,6 +120,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
+/** Dialog footer section for action buttons */
 function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -92,6 +131,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
+/** Dialog title with terminal typography */
 function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
@@ -102,6 +142,7 @@ function DialogTitle({ className, ...props }: React.ComponentProps<typeof Dialog
   )
 }
 
+/** Dialog description with muted text */
 function DialogDescription({
   className,
   ...props

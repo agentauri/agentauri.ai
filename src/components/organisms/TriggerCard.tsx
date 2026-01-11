@@ -1,3 +1,26 @@
+/**
+ * TriggerCard
+ *
+ * Displays a summary card for a trigger with status, chain, and registry badges.
+ * Includes actions to view, enable/disable, and delete the trigger.
+ *
+ * @module components/organisms/TriggerCard
+ *
+ * @example
+ * ```tsx
+ * <TriggerCard
+ *   trigger={{
+ *     id: '123',
+ *     name: 'High Reputation Alert',
+ *     enabled: true,
+ *     chainId: 1,
+ *     registry: 'reputation',
+ *     conditions: [],
+ *     actions: []
+ *   }}
+ * />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -19,8 +42,13 @@ import { cn } from '@/lib/utils'
 import type { Trigger } from '@/types/models'
 import { ChainBadge, RegistryBadge, StatusBadge } from '@/components/molecules'
 
+/**
+ * Props for the TriggerCard component.
+ */
 interface TriggerCardProps {
+  /** The trigger data to display */
   trigger: Trigger
+  /** Additional CSS classes */
   className?: string
 }
 

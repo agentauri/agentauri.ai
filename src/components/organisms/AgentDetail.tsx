@@ -1,3 +1,26 @@
+/**
+ * AgentDetail
+ *
+ * Displays detailed information about a linked agent including wallet address,
+ * chain, linked date, and recent events. Provides actions to unlink the agent.
+ *
+ * @module components/organisms/AgentDetail
+ *
+ * @example
+ * ```tsx
+ * <AgentDetail
+ *   agent={{
+ *     id: '123',
+ *     agentId: 42,
+ *     walletAddress: '0x1234...',
+ *     chainId: 1,
+ *     linkedAt: '2024-01-01T00:00:00Z',
+ *     organizationId: 'org_123'
+ *   }}
+ *   organizationId="org_123"
+ * />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -20,9 +43,15 @@ import { cn } from '@/lib/utils'
 import type { LinkedAgent } from '@/types/models'
 import { EventCard } from './EventCard'
 
+/**
+ * Props for the AgentDetail component.
+ */
 interface AgentDetailProps {
+  /** The linked agent data to display */
   agent: LinkedAgent
+  /** The organization ID the agent is linked to */
   organizationId: string
+  /** Additional CSS classes */
   className?: string
 }
 

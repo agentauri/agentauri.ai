@@ -1,3 +1,21 @@
+/**
+ * LinkAgentDialog
+ *
+ * A multi-step dialog for linking an ERC-8004 agent to an organization.
+ * Handles wallet connection, message signing, and agent linking verification.
+ *
+ * @module components/organisms/LinkAgentDialog
+ *
+ * @example
+ * ```tsx
+ * <LinkAgentDialog
+ *   organizationId="org_123"
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   onSuccess={() => console.log('Agent linked!')}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -24,10 +42,17 @@ import {
 import { useLinkAgent } from '@/hooks'
 import { SUPPORTED_CHAINS, type SupportedChainId } from '@/lib/constants'
 
+/**
+ * Props for the LinkAgentDialog component.
+ */
 interface LinkAgentDialogProps {
+  /** The organization ID to link the agent to */
   organizationId: string
+  /** Whether the dialog is open */
   open: boolean
+  /** Callback to control dialog open state */
   onOpenChange: (open: boolean) => void
+  /** Callback when agent is successfully linked */
   onSuccess?: () => void
 }
 

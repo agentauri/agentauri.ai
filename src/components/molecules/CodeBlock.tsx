@@ -1,6 +1,20 @@
 /**
- * Code block component with copy functionality
- * Terminal/brutalist design
+ * CodeBlock
+ *
+ * Displays code snippets with syntax highlighting styling, optional line numbers,
+ * and copy-to-clipboard functionality. Features terminal/brutalist design aesthetic.
+ *
+ * @module components/molecules/CodeBlock
+ *
+ * @example
+ * ```tsx
+ * <CodeBlock
+ *   code="const x = 1;"
+ *   language="typescript"
+ *   showLineNumbers
+ *   copyable
+ * />
+ * ```
  */
 
 'use client'
@@ -9,6 +23,7 @@ import { useState } from 'react'
 import { Button } from '@/components/atoms/button'
 import { cn } from '@/lib/utils'
 
+/** Props for the CodeBlock component */
 interface CodeBlockProps {
   code: string
   language?: string
@@ -19,6 +34,9 @@ interface CodeBlockProps {
   title?: string
 }
 
+/**
+ * Renders a code block with optional title, language label, line numbers, and copy button.
+ */
 export function CodeBlock({
   code,
   language,
@@ -99,13 +117,20 @@ export function CodeBlock({
 }
 
 /**
- * Inline code component
+ * InlineCode
+ *
+ * Renders inline code with terminal-styled background and monospace font.
  */
+
+/** Props for the InlineCode component */
 interface InlineCodeProps {
   children: string
   className?: string
 }
 
+/**
+ * Renders inline code text with monospace styling.
+ */
 export function InlineCode({ children, className }: InlineCodeProps) {
   return (
     <code

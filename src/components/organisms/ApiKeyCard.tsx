@@ -1,3 +1,25 @@
+/**
+ * ApiKeyCard
+ *
+ * Displays a summary card for an API key with status and tier badges.
+ * Includes actions to enable/disable, regenerate, and delete the key.
+ *
+ * @module components/organisms/ApiKeyCard
+ *
+ * @example
+ * ```tsx
+ * <ApiKeyCard
+ *   apiKey={{
+ *     id: '123',
+ *     name: 'Production Key',
+ *     keyPrefix: '8004_abc123',
+ *     tier: 'standard',
+ *     enabled: true
+ *   }}
+ *   onRegenerate={(newKey) => console.log('New key:', newKey)}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -19,9 +41,15 @@ import { formatDate, formatDateOrDefault } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { ApiKey } from '@/types/models'
 
+/**
+ * Props for the ApiKeyCard component.
+ */
 interface ApiKeyCardProps {
+  /** The API key data to display */
   apiKey: ApiKey
+  /** Additional CSS classes */
   className?: string
+  /** Callback when a key is regenerated with the new key value */
   onRegenerate?: (newKey: string) => void
 }
 

@@ -1,3 +1,21 @@
+/**
+ * ConditionBuilder
+ *
+ * A form component for building trigger conditions with type-specific configuration.
+ * Supports reputation thresholds, agent filters, event filters, field comparisons, and time conditions.
+ *
+ * @module components/organisms/ConditionBuilder
+ *
+ * @example
+ * ```tsx
+ * <ConditionBuilder
+ *   condition={{ conditionType: 'reputation_threshold', field: 'score', operator: 'gt', value: '800' }}
+ *   onChange={(updated) => console.log(updated)}
+ *   onRemove={() => console.log('Remove condition')}
+ *   canRemove={true}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -10,10 +28,17 @@ import { Textarea } from '@/components/atoms/textarea'
 import type { TriggerCondition } from '@/lib/validations/trigger'
 import { ConditionTypeSelector, type ConditionType } from './ConditionTypeSelector'
 
+/**
+ * Props for the ConditionBuilder component.
+ */
 interface ConditionBuilderProps {
+  /** The condition data to edit */
   condition: Partial<TriggerCondition> & { tempId?: string }
+  /** Callback when the condition is modified */
   onChange: (condition: Partial<TriggerCondition> & { tempId?: string }) => void
+  /** Callback when the condition should be removed */
   onRemove: () => void
+  /** Whether the remove button should be enabled */
   canRemove: boolean
 }
 

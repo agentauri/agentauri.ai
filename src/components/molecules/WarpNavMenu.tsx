@@ -1,20 +1,43 @@
+/**
+ * WarpNavMenu
+ *
+ * Navigation menu for the Warp homepage with animated link buttons.
+ * Automatically adjusts auth link based on authentication state.
+ *
+ * @module components/molecules/WarpNavMenu
+ *
+ * @example
+ * ```tsx
+ * <WarpNavMenu
+ *   visible={showNav}
+ *   items={[
+ *     { label: 'FEATURES', href: '/features' },
+ *     { label: 'DOCS', href: '/docs' },
+ *   ]}
+ * />
+ * ```
+ */
+
 'use client'
 
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth-store'
 
+/** Navigation item with label and href */
 interface NavItem {
   label: string
   href: string
 }
 
+/** Default navigation items for the Warp homepage */
 const NAV_ITEMS: NavItem[] = [
   { label: 'FEATURES', href: '/features' },
   { label: 'PRICING', href: '/pricing' },
   { label: 'DOCS', href: '/docs' },
 ]
 
+/** Props for the WarpNavMenu component */
 interface WarpNavMenuProps {
   /** Navigation items (excluding auth button which is handled separately) */
   items?: NavItem[]
@@ -24,6 +47,9 @@ interface WarpNavMenuProps {
   className?: string
 }
 
+/**
+ * Renders animated navigation links with auth-aware primary action.
+ */
 export function WarpNavMenu({
   items = NAV_ITEMS,
   visible = false,

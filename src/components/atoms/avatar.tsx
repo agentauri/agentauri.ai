@@ -1,3 +1,20 @@
+/**
+ * Avatar components
+ *
+ * User avatar with image and fallback support.
+ * Built on Radix UI primitives.
+ *
+ * @module components/atoms/avatar
+ *
+ * @example
+ * ```tsx
+ * <Avatar>
+ *   <AvatarImage src="/avatar.jpg" alt="User" />
+ *   <AvatarFallback>JD</AvatarFallback>
+ * </Avatar>
+ * ```
+ */
+
 'use client'
 
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
@@ -5,6 +22,7 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Avatar container */
 function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
   return (
     <AvatarPrimitive.Root
@@ -15,6 +33,7 @@ function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimi
   )
 }
 
+/** Avatar image with aspect ratio handling */
 function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
   return (
     <AvatarPrimitive.Image
@@ -25,6 +44,7 @@ function AvatarImage({ className, ...props }: React.ComponentProps<typeof Avatar
   )
 }
 
+/** Fallback content shown when image fails to load */
 function AvatarFallback({
   className,
   ...props

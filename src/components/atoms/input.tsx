@@ -1,7 +1,23 @@
+/**
+ * Input component
+ *
+ * A styled text input with terminal aesthetic.
+ * Supports all native input types and attributes.
+ *
+ * @module components/atoms/input
+ *
+ * @example
+ * ```tsx
+ * <Input type="text" placeholder="Enter name" />
+ * <Input type="email" required />
+ * ```
+ */
+
 import type * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/** Styled input with terminal theme and validation states */
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <input

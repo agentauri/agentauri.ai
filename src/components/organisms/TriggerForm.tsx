@@ -1,3 +1,20 @@
+/**
+ * TriggerForm
+ *
+ * A multi-step form for creating and editing triggers. Supports both UI mode
+ * (step-by-step wizard) and JSON mode (direct JSON editing) for power users.
+ *
+ * @module components/organisms/TriggerForm
+ *
+ * @example
+ * ```tsx
+ * // Create new trigger
+ * <TriggerForm organizationId="org_123" mode="create" />
+ *
+ * // Edit existing trigger
+ * <TriggerForm organizationId="org_123" trigger={existingTrigger} mode="edit" />
+ * ```
+ */
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -25,9 +42,15 @@ import { ConditionsStep } from './triggers/ConditionsStep'
 import { ActionsStep } from './triggers/ActionsStep'
 import { ReviewStep } from './triggers/ReviewStep'
 
+/**
+ * Props for the TriggerForm component.
+ */
 interface TriggerFormProps {
+  /** The organization ID to create the trigger under */
   organizationId: string
+  /** Existing trigger data for editing */
   trigger?: Trigger
+  /** Form mode - create new or edit existing */
   mode?: 'create' | 'edit'
 }
 

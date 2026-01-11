@@ -1,3 +1,25 @@
+/**
+ * ConfirmDialog
+ *
+ * Modal dialog for confirming user actions with cancel and confirm buttons.
+ * Supports default and destructive variants with loading state.
+ *
+ * @module components/molecules/ConfirmDialog
+ *
+ * @example
+ * ```tsx
+ * <ConfirmDialog
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   title="Delete Trigger"
+ *   description="This action cannot be undone."
+ *   variant="destructive"
+ *   onConfirm={handleDelete}
+ *   isLoading={isDeleting}
+ * />
+ * ```
+ */
+
 'use client'
 
 import {
@@ -10,6 +32,7 @@ import {
 } from '@/components/atoms/dialog'
 import { Button } from '@/components/atoms/button'
 
+/** Props for the ConfirmDialog component */
 interface ConfirmDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -23,6 +46,9 @@ interface ConfirmDialogProps {
   isLoading?: boolean
 }
 
+/**
+ * Renders a confirmation dialog with customizable title, description, and action buttons.
+ */
 export function ConfirmDialog({
   open,
   onOpenChange,

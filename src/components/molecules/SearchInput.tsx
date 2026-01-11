@@ -1,5 +1,21 @@
 /**
- * Terminal-styled search input with clear button and optional debounce
+ * SearchInput
+ *
+ * Terminal-styled search input with clear button, optional debounce, and keyboard shortcuts.
+ * Supports both controlled and uncontrolled modes with Enter key submission.
+ *
+ * @module components/molecules/SearchInput
+ *
+ * @example
+ * ```tsx
+ * <SearchInput
+ *   value={query}
+ *   onChange={setQuery}
+ *   onSearch={handleSearch}
+ *   debounceMs={300}
+ *   placeholder="> SEARCH AGENTS..."
+ * />
+ * ```
  */
 
 'use client'
@@ -10,6 +26,7 @@ import { Button } from '@/components/atoms/button'
 import { Icon } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
+/** Props for the SearchInput component */
 interface SearchInputProps {
   value?: string
   onChange?: (value: string) => void
@@ -22,6 +39,9 @@ interface SearchInputProps {
   autoFocus?: boolean
 }
 
+/**
+ * Renders a search input with clear button, search icon, and optional debounce indicator.
+ */
 export function SearchInput({
   value: controlledValue,
   onChange,
@@ -123,12 +143,19 @@ export function SearchInput({
 }
 
 /**
- * Compact search input for inline use
+ * CompactSearchInput
+ *
+ * Minimal search input wrapped in a form for inline use without clear button.
  */
+
+/** Props for the CompactSearchInput component */
 interface CompactSearchInputProps extends Omit<SearchInputProps, 'showClearButton'> {
   onSubmit?: (value: string) => void
 }
 
+/**
+ * Renders a compact search input with form submission support.
+ */
 export function CompactSearchInput({ onSubmit, ...props }: CompactSearchInputProps) {
   return (
     <form

@@ -1,9 +1,31 @@
+/**
+ * WarpStarField component
+ *
+ * Canvas-based animated star field with warp speed effect.
+ * Renders stars with depth-based sizing and parallax movement.
+ * Uses terminal green color palette from CSS variables.
+ *
+ * @module components/atoms/WarpStarField
+ *
+ * @example
+ * ```tsx
+ * const { stars, parallaxOffset } = useWarpAnimation()
+ *
+ * <WarpStarField
+ *   stars={stars}
+ *   parallaxOffset={parallaxOffset}
+ *   centerDeadzone={0.15}
+ * />
+ * ```
+ */
+
 'use client'
 
 import { useRef, useEffect, useCallback } from 'react'
 import type { Star } from '@/hooks/use-warp-animation'
 import { cn } from '@/lib/utils'
 
+/** Default terminal colors (fallback for SSR) */
 // Default terminal colors (fallback for SSR)
 const DEFAULT_COLORS = {
   green: '#33FF33',
@@ -12,10 +34,7 @@ const DEFAULT_COLORS = {
   bg: '#0a0a0a',
 }
 
-/**
- * Gets terminal colors from CSS custom properties
- * Falls back to defaults if not available (SSR or pre-paint)
- */
+/** Gets terminal colors from CSS custom properties with SSR fallbacks */
 function getTerminalColors() {
   if (typeof window === 'undefined') {
     return DEFAULT_COLORS
@@ -43,6 +62,12 @@ interface WarpStarFieldProps {
   className?: string
 }
 
+/**
+ * Canvas-rendered star field with warp speed animation
+ * @param stars - Array of star objects from useWarpAnimation
+ * @param parallaxOffset - Mouse-based offset for parallax effect
+ * @param centerDeadzone - Radius around center where stars fade (0-1)
+ */
 export function WarpStarField({
   stars,
   parallaxOffset = { x: 0, y: 0 },

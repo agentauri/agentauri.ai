@@ -1,3 +1,17 @@
+/**
+ * OrganizationSwitcher
+ *
+ * Dropdown component for switching between organizations with role display.
+ * Supports collapsed mode for sidebar and includes organization creation dialog.
+ *
+ * @module components/molecules/OrganizationSwitcher
+ *
+ * @example
+ * ```tsx
+ * <OrganizationSwitcher collapsed={isSidebarCollapsed} />
+ * ```
+ */
+
 'use client'
 
 import { useState } from 'react'
@@ -18,11 +32,13 @@ import { useOrganizations, useCurrentOrganization, useSwitchOrganization } from 
 import { cn } from '@/lib/utils'
 import type { OrganizationRole } from '@/lib/constants'
 
+/** Props for the OrganizationSwitcher component */
 interface OrganizationSwitcherProps {
   collapsed?: boolean
   className?: string
 }
 
+/** Color classes for each organization role */
 const ROLE_COLORS: Record<OrganizationRole, string> = {
   owner: 'text-yellow-400',
   admin: 'text-terminal-green',
@@ -30,6 +46,9 @@ const ROLE_COLORS: Record<OrganizationRole, string> = {
   viewer: 'text-gray-500',
 }
 
+/**
+ * Renders an organization dropdown with current org display and switching functionality.
+ */
 export function OrganizationSwitcher({ collapsed = false, className }: OrganizationSwitcherProps) {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const { data: orgsData, isLoading: orgsLoading } = useOrganizations()

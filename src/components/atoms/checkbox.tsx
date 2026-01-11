@@ -1,13 +1,35 @@
+/**
+ * Checkbox component
+ *
+ * Terminal-styled checkbox with pixel-perfect design.
+ * Displays an 'X' mark when checked.
+ *
+ * @module components/atoms/checkbox
+ *
+ * @example
+ * ```tsx
+ * <Checkbox checked={isEnabled} onCheckedChange={setIsEnabled} />
+ * <Checkbox disabled />
+ * ```
+ */
+
 'use client'
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
+/**
+ * Checkbox props
+ *
+ * @param checked - Controlled checked state
+ * @param onCheckedChange - Callback when checked state changes
+ */
 interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
   checked?: boolean
   onCheckedChange?: (checked: boolean) => void
 }
 
+/** Terminal-styled checkbox with 'X' indicator */
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, checked, onCheckedChange, disabled, ...props }, ref) => {
     return (

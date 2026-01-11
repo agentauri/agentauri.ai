@@ -1,3 +1,28 @@
+/**
+ * Dropdown Menu components
+ *
+ * Accessible dropdown menu with support for items, checkboxes, radio groups,
+ * submenus, separators, and keyboard navigation.
+ * Built on Radix UI DropdownMenu primitives.
+ *
+ * @module components/atoms/dropdown-menu
+ *
+ * @example
+ * ```tsx
+ * <DropdownMenu>
+ *   <DropdownMenuTrigger asChild>
+ *     <Button>Options</Button>
+ *   </DropdownMenuTrigger>
+ *   <DropdownMenuContent>
+ *     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+ *     <DropdownMenuSeparator />
+ *     <DropdownMenuItem>Edit</DropdownMenuItem>
+ *     <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+ *   </DropdownMenuContent>
+ * </DropdownMenu>
+ * ```
+ */
+
 'use client'
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
@@ -6,22 +31,29 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Root dropdown menu container managing open state */
 function DropdownMenu({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
 }
 
+/** Portal for rendering menu outside DOM hierarchy */
 function DropdownMenuPortal({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
 }
 
+/** Button that opens the dropdown menu */
 function DropdownMenuTrigger({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
   return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
 }
 
+/**
+ * Dropdown menu content panel
+ * @param sideOffset - Distance from trigger in pixels (default: 4)
+ */
 function DropdownMenuContent({
   className,
   sideOffset = 4,
@@ -42,10 +74,16 @@ function DropdownMenuContent({
   )
 }
 
+/** Container for grouping related menu items */
 function DropdownMenuGroup({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
   return <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
 }
 
+/**
+ * Interactive menu item
+ * @param inset - Add left padding for alignment with checkbox items
+ * @param variant - Visual style: 'default' or 'destructive'
+ */
 function DropdownMenuItem({
   className,
   inset,
@@ -69,6 +107,7 @@ function DropdownMenuItem({
   )
 }
 
+/** Menu item with checkbox toggle */
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -95,12 +134,14 @@ function DropdownMenuCheckboxItem({
   )
 }
 
+/** Container for radio button items */
 function DropdownMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
   return <DropdownMenuPrimitive.RadioGroup data-slot="dropdown-menu-radio-group" {...props} />
 }
 
+/** Menu item with radio button selection */
 function DropdownMenuRadioItem({
   className,
   children,
@@ -125,6 +166,10 @@ function DropdownMenuRadioItem({
   )
 }
 
+/**
+ * Non-interactive label for menu sections
+ * @param inset - Add left padding for alignment
+ */
 function DropdownMenuLabel({
   className,
   inset,
@@ -142,6 +187,7 @@ function DropdownMenuLabel({
   )
 }
 
+/** Visual divider between menu sections */
 function DropdownMenuSeparator({
   className,
   ...props
@@ -155,6 +201,7 @@ function DropdownMenuSeparator({
   )
 }
 
+/** Keyboard shortcut hint displayed in menu item */
 function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
@@ -165,10 +212,15 @@ function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'spa
   )
 }
 
+/** Container for nested submenu */
 function DropdownMenuSub({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
   return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
 }
 
+/**
+ * Trigger that opens a submenu
+ * @param inset - Add left padding for alignment
+ */
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -193,6 +245,7 @@ function DropdownMenuSubTrigger({
   )
 }
 
+/** Content panel for submenu */
 function DropdownMenuSubContent({
   className,
   ...props

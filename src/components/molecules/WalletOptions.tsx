@@ -1,3 +1,20 @@
+/**
+ * WalletOptions
+ *
+ * Displays available Web3 wallet connectors (MetaMask, WalletConnect, Coinbase) with icons.
+ * Handles wallet connection flow with loading states.
+ *
+ * @module components/molecules/WalletOptions
+ *
+ * @example
+ * ```tsx
+ * <WalletOptions
+ *   onSelect={() => setDialogOpen(false)}
+ *   className="mt-4"
+ * />
+ * ```
+ */
+
 'use client'
 
 import { useState } from 'react'
@@ -7,6 +24,7 @@ import { Spinner } from '@/components/atoms/spinner'
 import { getWalletIcon } from '@/components/atoms/wallet-icons'
 import { cn } from '@/lib/utils'
 
+/** Props for the WalletOptions component */
 interface WalletOptionsProps {
   /** Callback when a wallet is selected */
   onSelect?: () => void
@@ -15,7 +33,7 @@ interface WalletOptionsProps {
 }
 
 /**
- * Get display name for each connector type
+ * Returns display name and description for each wallet connector type.
  */
 function getConnectorInfo(connectorId: string) {
   switch (connectorId) {
@@ -42,6 +60,9 @@ function getConnectorInfo(connectorId: string) {
   }
 }
 
+/**
+ * Renders a list of available wallet connectors with connection handling.
+ */
 export function WalletOptions({ onSelect, className }: WalletOptionsProps) {
   const { connect, connectors, isPending } = useConnect()
   const [connectingId, setConnectingId] = useState<string | null>(null)

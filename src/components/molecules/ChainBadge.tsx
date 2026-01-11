@@ -1,12 +1,29 @@
+/**
+ * ChainBadge
+ *
+ * Displays a blockchain network identifier badge with chain-specific colors.
+ * Supports all chains defined in SUPPORTED_CHAINS with fallback for unknown chain IDs.
+ *
+ * @module components/molecules/ChainBadge
+ *
+ * @example
+ * ```tsx
+ * <ChainBadge chainId={1} />
+ * <ChainBadge chainId={8453} className="ml-2" />
+ * ```
+ */
+
 import { Badge } from '@/components/atoms/badge'
 import { SUPPORTED_CHAINS, type SupportedChainId } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
+/** Props for the ChainBadge component */
 interface ChainBadgeProps {
   chainId: SupportedChainId | number
   className?: string
 }
 
+/** Human-readable chain names for display */
 const CHAIN_NAMES: Record<SupportedChainId, string> = {
   [SUPPORTED_CHAINS.MAINNET]: 'ETH MAIN',
   [SUPPORTED_CHAINS.BASE]: 'BASE',
@@ -16,6 +33,7 @@ const CHAIN_NAMES: Record<SupportedChainId, string> = {
   [SUPPORTED_CHAINS.POLYGON_AMOY]: 'POLYGON',
 }
 
+/** Color classes for each supported chain */
 const CHAIN_COLORS: Record<SupportedChainId, string> = {
   [SUPPORTED_CHAINS.MAINNET]: 'bg-terminal-green/20 text-terminal-bright border-terminal-green',
   [SUPPORTED_CHAINS.BASE]: 'bg-blue-500/20 text-blue-400 border-blue-500',
@@ -25,6 +43,9 @@ const CHAIN_COLORS: Record<SupportedChainId, string> = {
   [SUPPORTED_CHAINS.POLYGON_AMOY]: 'bg-purple-600/20 text-purple-400 border-purple-600',
 }
 
+/**
+ * Renders a badge displaying the blockchain network name with chain-specific styling.
+ */
 export function ChainBadge({ chainId, className }: ChainBadgeProps) {
   // Type-safe chain ID access with fallback for unsupported chains
   const typedChainId = chainId as SupportedChainId

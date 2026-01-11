@@ -1,3 +1,18 @@
+/**
+ * AgentAddressBadge
+ *
+ * Displays a blockchain address badge with optional truncation and copy-to-clipboard functionality.
+ * Shows a toast notification on successful copy.
+ *
+ * @module components/molecules/AgentAddressBadge
+ *
+ * @example
+ * ```tsx
+ * <AgentAddressBadge address="0x1234...5678" />
+ * <AgentAddressBadge address="0x1234...5678" truncate={false} copyable={false} />
+ * ```
+ */
+
 'use client'
 
 import { useState } from 'react'
@@ -6,6 +21,7 @@ import { Icon } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
+/** Props for the AgentAddressBadge component */
 interface AgentAddressBadgeProps {
   address: string
   className?: string
@@ -13,6 +29,9 @@ interface AgentAddressBadgeProps {
   copyable?: boolean
 }
 
+/**
+ * Renders a monospace badge displaying a blockchain address with optional copy functionality.
+ */
 export function AgentAddressBadge({
   address,
   className,

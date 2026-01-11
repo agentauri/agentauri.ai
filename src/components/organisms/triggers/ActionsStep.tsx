@@ -1,3 +1,16 @@
+/**
+ * ActionsStep
+ *
+ * Step 3 of the trigger creation wizard. Allows users to configure
+ * one or more actions that execute when trigger conditions are met.
+ *
+ * @module components/organisms/triggers/ActionsStep
+ *
+ * @example
+ * ```tsx
+ * <ActionsStep form={form} />
+ * ```
+ */
 'use client'
 
 import type { UseFormReturn } from 'react-hook-form'
@@ -8,7 +21,11 @@ import { FormField, FormItem, FormMessage } from '@/components/atoms/form'
 import { ActionBuilder } from '../ActionBuilder'
 import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
 
+/**
+ * Props for the ActionsStep component.
+ */
 interface ActionsStepProps {
+  /** React Hook Form instance for the trigger form */
   form: UseFormReturn<CreateTriggerFormValues>
 }
 

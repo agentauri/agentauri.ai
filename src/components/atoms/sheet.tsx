@@ -1,3 +1,33 @@
+/**
+ * Sheet components
+ *
+ * Slide-out panel component built on Radix UI Dialog primitives.
+ * Supports multiple sides (top, right, bottom, left) for flexible positioning.
+ *
+ * @module components/atoms/sheet
+ *
+ * @example
+ * ```tsx
+ * <Sheet open={open} onOpenChange={setOpen}>
+ *   <SheetTrigger asChild>
+ *     <Button>Open Menu</Button>
+ *   </SheetTrigger>
+ *   <SheetContent side="right">
+ *     <SheetHeader>
+ *       <SheetTitle>Menu</SheetTitle>
+ *       <SheetDescription>Navigation options</SheetDescription>
+ *     </SheetHeader>
+ *     <nav>...</nav>
+ *     <SheetFooter>
+ *       <SheetClose asChild>
+ *         <Button>Close</Button>
+ *       </SheetClose>
+ *     </SheetFooter>
+ *   </SheetContent>
+ * </Sheet>
+ * ```
+ */
+
 'use client'
 
 import * as SheetPrimitive from '@radix-ui/react-dialog'
@@ -6,22 +36,27 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Root sheet container managing open state */
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
+/** Button that opens the sheet */
 function SheetTrigger({ ...props }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 }
 
+/** Button that closes the sheet */
 function SheetClose({ ...props }: React.ComponentProps<typeof SheetPrimitive.Close>) {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />
 }
 
+/** Portal for rendering sheet outside DOM hierarchy */
 function SheetPortal({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>) {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 }
 
+/** Semi-transparent backdrop overlay */
 function SheetOverlay({
   className,
   ...props
@@ -38,6 +73,10 @@ function SheetOverlay({
   )
 }
 
+/**
+ * Sheet content panel with slide animation
+ * @param side - Which edge the sheet slides from (default: 'right')
+ */
 function SheetContent({
   className,
   children,
@@ -75,6 +114,7 @@ function SheetContent({
   )
 }
 
+/** Sheet header section for title and description */
 function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -85,6 +125,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
+/** Sheet footer section for action buttons */
 function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -95,6 +136,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
+/** Sheet title with foreground text */
 function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>) {
   return (
     <SheetPrimitive.Title
@@ -105,6 +147,7 @@ function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPr
   )
 }
 
+/** Sheet description with muted text */
 function SheetDescription({
   className,
   ...props

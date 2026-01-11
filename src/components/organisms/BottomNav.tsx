@@ -1,3 +1,20 @@
+/**
+ * BottomNav
+ *
+ * A mobile bottom navigation bar with icons and labels.
+ * Supports both public and dashboard variants with different nav items.
+ *
+ * @module components/organisms/BottomNav
+ *
+ * @example
+ * ```tsx
+ * // Public site navigation
+ * <BottomNav variant="public" />
+ *
+ * // Dashboard navigation with more menu
+ * <BottomNav variant="dashboard" onMoreClick={() => setMenuOpen(true)} />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -5,6 +22,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Icon, type IconName } from '@/components/atoms/icon'
 
+/** Navigation item configuration */
 interface NavItem {
   href: string
   icon: IconName
@@ -12,6 +30,7 @@ interface NavItem {
   onClick?: () => void
 }
 
+/** Public site navigation items */
 const publicItems: NavItem[] = [
   { href: '/', icon: 'dashboard', label: 'HOME' },
   { href: '/features', icon: 'warning', label: 'FEAT' },
@@ -20,6 +39,7 @@ const publicItems: NavItem[] = [
   { href: '/login', icon: 'add', label: 'LOGIN' },
 ]
 
+/** Dashboard navigation items */
 const dashboardItems: NavItem[] = [
   { href: '/dashboard', icon: 'dashboard', label: 'DASH' },
   { href: '/dashboard/triggers', icon: 'triggers', label: 'TRIG' },
@@ -27,9 +47,15 @@ const dashboardItems: NavItem[] = [
   { href: '/dashboard/agents', icon: 'agents', label: 'AGNT' },
 ]
 
+/**
+ * Props for the BottomNav component.
+ */
 interface BottomNavProps {
+  /** Navigation variant - public site or dashboard */
   variant: 'public' | 'dashboard'
+  /** Callback when more button is clicked (dashboard only) */
   onMoreClick?: () => void
+  /** Additional CSS classes */
   className?: string
 }
 

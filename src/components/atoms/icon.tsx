@@ -1,6 +1,17 @@
 /**
  * Pixel-art SVG icon library
- * All icons are designed on a 16x16 grid with sharp, pixel-perfect edges
+ *
+ * Custom icon set designed on a 16x16 grid with sharp, pixel-perfect edges.
+ * All icons use the terminal green color and maintain consistent visual weight.
+ *
+ * @module components/atoms/icon
+ *
+ * @example
+ * ```tsx
+ * <Icon name="dashboard" />
+ * <Icon name="settings" size="lg" />
+ * <Icon name="warning" className="text-destructive" />
+ * ```
  */
 
 import type * as React from 'react'
@@ -55,6 +66,12 @@ export type IconName =
   | 'logo'
   | 'menu'
 
+/**
+ * Icon component props
+ *
+ * @param name - Icon identifier from IconName union type
+ * @param size - Size preset: xs (10px), sm (12px), md (16px), lg (20px), xl (24px)
+ */
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   name: IconName
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
@@ -285,6 +302,13 @@ const icons: Record<IconName, React.ReactNode> = {
   ),
 }
 
+/**
+ * Renders a pixel-art SVG icon
+ *
+ * @param name - Icon name from the IconName type
+ * @param size - Size preset (default: 'md')
+ * @param className - Additional CSS classes
+ */
 export function Icon({ name, size = 'md', className, ...props }: IconProps) {
   const s = sizeMap[size]
 

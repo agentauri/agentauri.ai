@@ -1,9 +1,38 @@
+/**
+ * Table components
+ *
+ * Composable HTML table components with terminal styling.
+ * Supports header, body, footer, rows, cells, and captions.
+ *
+ * @module components/atoms/table
+ *
+ * @example
+ * ```tsx
+ * <Table>
+ *   <TableHeader>
+ *     <TableRow>
+ *       <TableHead>Name</TableHead>
+ *       <TableHead>Status</TableHead>
+ *     </TableRow>
+ *   </TableHeader>
+ *   <TableBody>
+ *     <TableRow>
+ *       <TableCell>Agent A</TableCell>
+ *       <TableCell>Active</TableCell>
+ *     </TableRow>
+ *   </TableBody>
+ *   <TableCaption>Agent status overview</TableCaption>
+ * </Table>
+ * ```
+ */
+
 'use client'
 
 import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Table container with horizontal scroll wrapper */
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
   return (
     <div data-slot="table-container" className="relative w-full overflow-x-auto">
@@ -16,10 +45,12 @@ function Table({ className, ...props }: React.ComponentProps<'table'>) {
   )
 }
 
+/** Table header section containing column headings */
 function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
   return <thead data-slot="table-header" className={cn('[&_tr]:border-b', className)} {...props} />
 }
 
+/** Table body section containing data rows */
 function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
   return (
     <tbody
@@ -30,6 +61,7 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
   )
 }
 
+/** Table footer section for summary rows */
 function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
   return (
     <tfoot
@@ -40,6 +72,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
   )
 }
 
+/** Table row with hover and selection states */
 function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
   return (
     <tr
@@ -53,6 +86,7 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
   )
 }
 
+/** Table header cell with bold styling */
 function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   return (
     <th
@@ -66,6 +100,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   )
 }
 
+/** Table data cell */
 function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
   return (
     <td
@@ -79,6 +114,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
   )
 }
 
+/** Table caption for accessibility and context */
 function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) {
   return (
     <caption

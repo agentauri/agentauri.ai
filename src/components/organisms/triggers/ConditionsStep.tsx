@@ -1,3 +1,16 @@
+/**
+ * ConditionsStep
+ *
+ * Step 2 of the trigger creation wizard. Allows users to select an event type
+ * and optionally add advanced field filters to narrow down trigger conditions.
+ *
+ * @module components/organisms/triggers/ConditionsStep
+ *
+ * @example
+ * ```tsx
+ * <ConditionsStep form={form} />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -13,7 +26,11 @@ import { Textarea } from '@/components/atoms/textarea'
 import { EVENT_TYPES, EVENT_TYPE_INFO, type EventType, type Registry } from '@/lib/constants'
 import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
 
+/**
+ * Props for the ConditionsStep component.
+ */
 interface ConditionsStepProps {
+  /** React Hook Form instance for the trigger form */
   form: UseFormReturn<CreateTriggerFormValues>
 }
 

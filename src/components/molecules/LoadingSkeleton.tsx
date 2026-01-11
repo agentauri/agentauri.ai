@@ -1,13 +1,42 @@
+/**
+ * LoadingSkeleton
+ *
+ * Collection of skeleton loading components for various UI patterns including
+ * pages, cards, tables, and forms. Used as placeholders while content loads.
+ *
+ * @module components/molecules/LoadingSkeleton
+ *
+ * @example
+ * ```tsx
+ * // Basic skeleton
+ * <Skeleton className="h-8 w-32" />
+ *
+ * // Pre-built patterns
+ * <PageSkeleton />
+ * <CardSkeleton />
+ * <TableSkeleton rows={5} />
+ * <FormSkeleton />
+ * <LoadingSkeleton count={3} height={100} />
+ * ```
+ */
+
 import { cn } from '@/lib/utils'
 
+/** Props for the Skeleton component */
 interface SkeletonProps {
   className?: string
 }
 
+/**
+ * Base skeleton element with pulse animation.
+ */
 export function Skeleton({ className }: SkeletonProps) {
   return <div className={cn('animate-pulse rounded-md bg-muted', className)} />
 }
 
+/**
+ * Full page skeleton layout with header, stats grid, and content areas.
+ */
 export function PageSkeleton() {
   return (
     <div className="flex min-h-screen flex-col">
@@ -39,6 +68,9 @@ export function PageSkeleton() {
   )
 }
 
+/**
+ * Card-shaped skeleton with title, value, and description placeholders.
+ */
 export function CardSkeleton() {
   return (
     <div className="rounded-lg border bg-card p-6">
@@ -49,6 +81,9 @@ export function CardSkeleton() {
   )
 }
 
+/**
+ * Table skeleton with header and configurable row count.
+ */
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="rounded-lg border">
@@ -73,6 +108,9 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   )
 }
 
+/**
+ * Form skeleton with labeled input fields and submit button.
+ */
 export function FormSkeleton() {
   return (
     <div className="space-y-6">
@@ -93,6 +131,9 @@ export function FormSkeleton() {
   )
 }
 
+/**
+ * Generic loading skeleton with configurable count and height.
+ */
 export function LoadingSkeleton({ count = 3, height = 100 }: { count?: number; height?: number }) {
   return (
     <div className="space-y-4">

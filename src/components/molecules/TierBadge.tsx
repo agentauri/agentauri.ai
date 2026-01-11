@@ -1,3 +1,18 @@
+/**
+ * TierBadge
+ *
+ * Displays an API query tier level badge (basic, standard, advanced, full)
+ * with tier-specific colors and star icon.
+ *
+ * @module components/molecules/TierBadge
+ *
+ * @example
+ * ```tsx
+ * <TierBadge tier="standard" />
+ * <TierBadge tier="advanced" className="ml-2" />
+ * ```
+ */
+
 'use client'
 
 import { Badge } from '@/components/atoms/badge'
@@ -5,6 +20,7 @@ import { Icon, type IconName } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 import type { QueryTier } from '@/lib/constants'
 
+/** Configuration for each query tier including label, icon, and styling */
 const tierConfig: Record<QueryTier, { label: string; icon: IconName; className: string }> = {
   basic: {
     label: 'BASIC',
@@ -28,11 +44,15 @@ const tierConfig: Record<QueryTier, { label: string; icon: IconName; className: 
   },
 }
 
+/** Props for the TierBadge component */
 interface TierBadgeProps {
   tier: QueryTier
   className?: string
 }
 
+/**
+ * Renders a badge displaying the API query tier with appropriate styling.
+ */
 export function TierBadge({ tier, className }: TierBadgeProps) {
   const config = tierConfig[tier]
 

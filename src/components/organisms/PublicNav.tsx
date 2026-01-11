@@ -1,3 +1,28 @@
+/**
+ * PublicNav
+ *
+ * Horizontal navigation bar for public pages with logo, links, and CTA button.
+ * Supports badges, icons, and full customization of navigation items.
+ *
+ * @module components/organisms/PublicNav
+ *
+ * @example
+ * ```tsx
+ * // Default navigation
+ * <PublicNav />
+ *
+ * // Authenticated user
+ * <PublicNav isAuthenticated={true} />
+ *
+ * // Custom items
+ * <PublicNav
+ *   items={[
+ *     { href: '/about', label: 'ABOUT' },
+ *     { href: '/blog', label: 'BLOG', badge: { text: 'NEW' } }
+ *   ]}
+ * />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -11,20 +36,24 @@ import { Separator } from '@/components/atoms/separator'
 import { cn } from '@/lib/utils'
 
 /**
- * Navigation item configuration
+ * Navigation item configuration.
  */
 export interface NavItem {
+  /** Link destination */
   href: string
+  /** Display label */
   label: string
+  /** Optional badge to display next to label */
   badge?: {
     text: string
     variant?: 'default' | 'secondary' | 'destructive' | 'outline'
   }
+  /** Optional icon to display before label */
   icon?: IconName
 }
 
 /**
- * Public navigation bar props
+ * Props for the PublicNav component.
  */
 export interface PublicNavProps {
   /** Navigation items. Defaults to features, pricing, docs, changelog */
@@ -43,6 +72,7 @@ export interface PublicNavProps {
   }
   /** Show separators between sections */
   showSeparators?: boolean
+  /** Additional CSS classes */
   className?: string
 }
 

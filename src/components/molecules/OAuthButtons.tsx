@@ -1,3 +1,21 @@
+/**
+ * OAuthButtons
+ *
+ * Renders OAuth login buttons for available providers (Google, GitHub) with pixel art icons.
+ * Handles redirect to OAuth flow with configurable post-auth destination.
+ *
+ * @module components/molecules/OAuthButtons
+ *
+ * @example
+ * ```tsx
+ * <OAuthButtons
+ *   providers={['google', 'github']}
+ *   redirectAfter="/dashboard/agents"
+ *   isLoading={isPending}
+ * />
+ * ```
+ */
+
 'use client'
 
 import { Button } from '@/components/atoms/button'
@@ -6,11 +24,13 @@ import { authApi } from '@/lib/api/auth'
 import type { OAuthProvider } from '@/lib/validations'
 import { cn } from '@/lib/utils'
 
+/** Configuration for OAuth provider display */
 interface OAuthProviderConfig {
   id: OAuthProvider
   name: string
 }
 
+/** Available OAuth providers with their display names */
 const OAUTH_PROVIDERS: OAuthProviderConfig[] = [
   {
     id: 'google',
@@ -33,6 +53,9 @@ interface OAuthButtonsProps {
   isLoading?: boolean
 }
 
+/**
+ * Renders a list of OAuth provider buttons that initiate the OAuth flow on click.
+ */
 export function OAuthButtons({
   providers,
   redirectAfter,

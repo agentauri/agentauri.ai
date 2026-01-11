@@ -1,7 +1,28 @@
+/**
+ * Spinner component
+ *
+ * Circular loading indicator with terminal colors.
+ * Includes proper ARIA attributes for accessibility.
+ *
+ * @module components/atoms/spinner
+ *
+ * @example
+ * ```tsx
+ * <Spinner />
+ * <Spinner size="sm" />
+ * <Spinner size="lg" />
+ * ```
+ */
+
 'use client'
 
 import { cn } from '@/lib/utils'
 
+/**
+ * Spinner props
+ *
+ * @param size - Size preset: sm (16px), md (24px), lg (32px)
+ */
 interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg'
   className?: string
@@ -13,6 +34,7 @@ const sizeClasses = {
   lg: 'w-8 h-8',
 }
 
+/** Circular loading indicator with terminal styling */
 export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
     // biome-ignore lint/a11y/useSemanticElements: role="status" is correct for live regions (loading indicators)

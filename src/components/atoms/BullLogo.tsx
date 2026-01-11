@@ -1,9 +1,28 @@
-'use client'
-
 /**
- * AgentAuri Bull Logo
- * Pixel art bull logo representing Taurus - strength and reliability
+ * Bull Logo components
+ *
+ * Pixel art bull logo for AgentAuri branding.
+ * Multiple variants (filled, outline, minimal) with animation options.
+ * Represents Taurus - strength and reliability.
+ *
+ * @module components/atoms/BullLogo
+ *
+ * @example
+ * ```tsx
+ * // Basic usage
+ * <LogoBull size={64} variant="filled" glow />
+ *
+ * // Animated versions
+ * <LogoBullAnimated size={48} />
+ * <LogoBullBoot size={64} onComplete={() => console.log('Ready!')} />
+ * <LogoBullGlitch size={48} />
+ *
+ * // With text
+ * <LogoBullWithText size={32} glow />
+ * ```
  */
+
+'use client'
 
 import { cn } from '@/lib/utils'
 

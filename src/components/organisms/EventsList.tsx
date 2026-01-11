@@ -1,3 +1,21 @@
+/**
+ * EventsList
+ *
+ * Displays a filterable grid of blockchain event cards with search,
+ * chain, registry, and event type filters. Handles loading states,
+ * errors, and empty states.
+ *
+ * @module components/organisms/EventsList
+ *
+ * @example
+ * ```tsx
+ * // All events
+ * <EventsList />
+ *
+ * // Events for a specific agent
+ * <EventsList agentId={42} />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -19,7 +37,11 @@ import { EVENT_TYPES } from '@/lib/validations/event'
 import type { EventFilters } from '@/lib/validations/event'
 import { EventCard } from './EventCard'
 
+/**
+ * Props for the EventsList component.
+ */
 interface EventsListProps {
+  /** Optional agent ID to filter events by */
   agentId?: number
 }
 

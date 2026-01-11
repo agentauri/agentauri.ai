@@ -1,3 +1,32 @@
+/**
+ * Command components
+ *
+ * Command palette / search interface built on cmdk.
+ * Supports filterable command lists with keyboard navigation.
+ *
+ * @module components/atoms/command
+ *
+ * @example
+ * ```tsx
+ * <Command>
+ *   <CommandInput placeholder="Type a command..." />
+ *   <CommandList>
+ *     <CommandEmpty>No results found.</CommandEmpty>
+ *     <CommandGroup heading="Actions">
+ *       <CommandItem>Search</CommandItem>
+ *       <CommandItem>Settings</CommandItem>
+ *     </CommandGroup>
+ *   </CommandList>
+ * </Command>
+ *
+ * // Or as a dialog:
+ * <CommandDialog open={open} onOpenChange={setOpen}>
+ *   <CommandInput placeholder="Search..." />
+ *   <CommandList>...</CommandList>
+ * </CommandDialog>
+ * ```
+ */
+
 'use client'
 
 import { Command as CommandPrimitive } from 'cmdk'
@@ -12,6 +41,7 @@ import {
 } from '@/components/atoms/dialog'
 import { cn } from '@/lib/utils'
 
+/** Root command container with search and list */
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
   return (
     <CommandPrimitive
@@ -25,6 +55,12 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
   )
 }
 
+/**
+ * Command palette in a modal dialog
+ * @param title - Accessible title for screen readers
+ * @param description - Accessible description for screen readers
+ * @param showCloseButton - Whether to show close button (default: true)
+ */
 function CommandDialog({
   title = 'Command Palette',
   description = 'Search for a command to run...',
@@ -56,6 +92,7 @@ function CommandDialog({
   )
 }
 
+/** Search input for filtering command items */
 function CommandInput({
   className,
   ...props
@@ -75,6 +112,7 @@ function CommandInput({
   )
 }
 
+/** Scrollable container for command items */
 function CommandList({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.List>) {
   return (
     <CommandPrimitive.List
@@ -85,6 +123,7 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
   )
 }
 
+/** Displayed when no command items match the search */
 function CommandEmpty({ ...props }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
   return (
     <CommandPrimitive.Empty
@@ -95,6 +134,7 @@ function CommandEmpty({ ...props }: React.ComponentProps<typeof CommandPrimitive
   )
 }
 
+/** Container for grouping related command items */
 function CommandGroup({
   className,
   ...props
@@ -111,6 +151,7 @@ function CommandGroup({
   )
 }
 
+/** Visual divider between command groups */
 function CommandSeparator({
   className,
   ...props
@@ -124,6 +165,7 @@ function CommandSeparator({
   )
 }
 
+/** Selectable command item */
 function CommandItem({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Item>) {
   return (
     <CommandPrimitive.Item
@@ -137,6 +179,7 @@ function CommandItem({ className, ...props }: React.ComponentProps<typeof Comman
   )
 }
 
+/** Keyboard shortcut hint displayed in command item */
 function CommandShortcut({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span

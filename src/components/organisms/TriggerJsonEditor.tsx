@@ -1,3 +1,19 @@
+/**
+ * TriggerJsonEditor
+ *
+ * A JSON text editor for trigger configuration with real-time validation.
+ * Provides formatting, reset, and schema guidance for power users.
+ *
+ * @module components/organisms/TriggerJsonEditor
+ *
+ * @example
+ * ```tsx
+ * <TriggerJsonEditor
+ *   value={{ name: 'My Trigger', conditions: [], actions: [] }}
+ *   onChange={(updated) => console.log('JSON updated:', updated)}
+ * />
+ * ```
+ */
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -8,9 +24,15 @@ import { Textarea } from '@/components/atoms/textarea'
 import { createTriggerRequestSchema, type CreateTriggerRequest } from '@/lib/validations/trigger'
 import { cn } from '@/lib/utils'
 
+/**
+ * Props for the TriggerJsonEditor component.
+ */
 interface TriggerJsonEditorProps {
+  /** The current trigger request value */
   value: CreateTriggerRequest
+  /** Callback when the JSON is modified and valid */
   onChange: (value: CreateTriggerRequest) => void
+  /** Additional CSS classes */
   className?: string
 }
 

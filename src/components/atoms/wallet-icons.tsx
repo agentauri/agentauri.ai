@@ -1,3 +1,28 @@
+/**
+ * Wallet Icons
+ *
+ * SVG pixel art icons for wallet connectors and OAuth providers.
+ * All icons use terminal green (#33FF33) color palette.
+ * Designed on 24x24 grid for pixel-perfect rendering.
+ *
+ * @module components/atoms/wallet-icons
+ *
+ * @example
+ * ```tsx
+ * // Direct usage
+ * <MetaMaskIcon size={32} />
+ * <GoogleIcon size={24} />
+ *
+ * // Dynamic wallet icon
+ * const WalletIcon = getWalletIcon('injected')
+ * <WalletIcon size={24} />
+ *
+ * // Dynamic OAuth icon
+ * const OAuthIcon = getOAuthIcon('github')
+ * <OAuthIcon size={24} />
+ * ```
+ */
+
 'use client'
 
 import { cn } from '@/lib/utils'
@@ -9,13 +34,7 @@ interface WalletIconProps {
   className?: string
 }
 
-/**
- * SVG Pixel Art Icons for Wallets and OAuth providers
- * All icons use terminal green (#33FF33) color palette
- * Designed on 24x24 grid for pixel-perfect rendering
- */
-
-// MetaMask Fox - simplified pixel art
+/** MetaMask fox icon in pixel art style */
 export function MetaMaskIcon({ size = 24, className }: WalletIconProps) {
   return (
     <svg
@@ -45,7 +64,7 @@ export function MetaMaskIcon({ size = 24, className }: WalletIconProps) {
   )
 }
 
-// WalletConnect - stylized W
+/** WalletConnect icon with stylized W */
 export function WalletConnectIcon({ size = 24, className }: WalletIconProps) {
   return (
     <svg
@@ -72,7 +91,7 @@ export function WalletConnectIcon({ size = 24, className }: WalletIconProps) {
   )
 }
 
-// Coinbase - C in square
+/** Coinbase icon with C in square border */
 export function CoinbaseIcon({ size = 24, className }: WalletIconProps) {
   return (
     <svg
@@ -103,7 +122,7 @@ export function CoinbaseIcon({ size = 24, className }: WalletIconProps) {
   )
 }
 
-// Google - G letter pixel style
+/** Google G letter icon */
 export function GoogleIcon({ size = 24, className }: WalletIconProps) {
   return (
     <svg
@@ -130,7 +149,7 @@ export function GoogleIcon({ size = 24, className }: WalletIconProps) {
   )
 }
 
-// GitHub - Octocat simplified
+/** GitHub octocat icon simplified */
 export function GitHubIcon({ size = 24, className }: WalletIconProps) {
   return (
     <svg
@@ -162,7 +181,7 @@ export function GitHubIcon({ size = 24, className }: WalletIconProps) {
   )
 }
 
-// Generic wallet icon
+/** Generic wallet icon fallback */
 export function WalletIcon({ size = 24, className }: WalletIconProps) {
   return (
     <svg

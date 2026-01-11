@@ -1,3 +1,24 @@
+/**
+ * PublicMobileNav
+ *
+ * Mobile navigation component for public pages with Command Prompt style aesthetics.
+ * Features fixed bottom bar, full-screen overlay menu, numbered navigation items,
+ * and touch-friendly tap targets.
+ *
+ * @module components/molecules/PublicMobileNav
+ *
+ * @example
+ * ```tsx
+ * <PublicMobileNav
+ *   items={[
+ *     { href: '/features', label: 'FEATURES' },
+ *     { href: '/pricing', label: 'PRICING' },
+ *   ]}
+ *   isAuthenticated={false}
+ * />
+ * ```
+ */
+
 'use client'
 
 import Link from 'next/link'
@@ -10,6 +31,7 @@ import { Logo } from '@/components/atoms/logo'
 import { cn } from '@/lib/utils'
 import type { NavItem } from '@/components/organisms/PublicNav'
 
+/** Props for the PublicMobileNav component */
 interface PublicMobileNavProps {
   /** Navigation items */
   items?: NavItem[]
@@ -23,6 +45,7 @@ interface PublicMobileNavProps {
   className?: string
 }
 
+/** Default navigation items for public pages */
 const DEFAULT_ITEMS: NavItem[] = [
   { href: '/features', label: 'FEATURES' },
   { href: '/pricing', label: 'PRICING' },
@@ -31,13 +54,7 @@ const DEFAULT_ITEMS: NavItem[] = [
 ]
 
 /**
- * Mobile navigation for public pages - Command Prompt style
- *
- * Features:
- * - Fixed bottom bar with "> MENU_" prompt
- * - Full-screen overlay with numbered menu items
- * - Terminal aesthetic with step-based animations
- * - Touch-friendly 44px minimum tap targets
+ * Renders mobile navigation with fixed bottom bar and full-screen overlay menu.
  */
 export function PublicMobileNav({
   items = DEFAULT_ITEMS,

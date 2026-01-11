@@ -1,3 +1,20 @@
+/**
+ * EventTypeSelector
+ *
+ * A dropdown selector for choosing blockchain event types.
+ * Displays available event types with icons and optional descriptions.
+ *
+ * @module components/organisms/EventTypeSelector
+ *
+ * @example
+ * ```tsx
+ * <EventTypeSelector
+ *   value="ReputationUpdated"
+ *   onChange={(type) => console.log('Selected:', type)}
+ *   showDescription={true}
+ * />
+ * ```
+ */
 'use client'
 
 import { Box } from '@/components/atoms/box'
@@ -6,10 +23,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { EVENT_TYPES, EVENT_TYPE_INFO, type EventType } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
+/**
+ * Props for the EventTypeSelector component.
+ */
 interface EventTypeSelectorProps {
+  /** Currently selected event type value */
   value: string
+  /** Callback when an event type is selected */
   onChange: (value: EventType) => void
+  /** Additional CSS classes */
   className?: string
+  /** Whether to show the description box below the selector */
   showDescription?: boolean
 }
 

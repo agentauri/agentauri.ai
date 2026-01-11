@@ -1,12 +1,28 @@
 /**
- * Stat card component for displaying metrics and statistics
- * Terminal/brutalist design
+ * StatCard
+ *
+ * Displays metrics and statistics with label, value, optional icon, and trend indicator.
+ * Features terminal/brutalist design with multiple size and variant options.
+ *
+ * @module components/molecules/StatCard
+ *
+ * @example
+ * ```tsx
+ * <StatCard
+ *   label="Total Agents"
+ *   value={1234}
+ *   icon="agents"
+ *   change={{ value: "+12%", trend: "up" }}
+ *   variant="highlight"
+ * />
+ * ```
  */
 
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Icon, type IconName } from '@/components/atoms/icon'
 
+/** Props for the StatCard component */
 interface StatCardProps {
   label: string
   value: string | number
@@ -23,6 +39,7 @@ interface StatCardProps {
   children?: ReactNode
 }
 
+/** Style configurations for each stat card variant */
 const variantStyles = {
   default: {
     border: 'border-terminal',
@@ -44,6 +61,7 @@ const variantStyles = {
   },
 }
 
+/** Padding and typography configurations for each size */
 const sizeStyles = {
   sm: {
     padding: 'p-3',
@@ -62,6 +80,9 @@ const sizeStyles = {
   },
 }
 
+/**
+ * Renders a statistic card with label, value, optional trend indicator, and custom content.
+ */
 export function StatCard({
   label,
   value,

@@ -1,7 +1,23 @@
+/**
+ * Textarea component
+ *
+ * Multi-line text input with terminal styling.
+ * Auto-sizes based on content with minimum height.
+ *
+ * @module components/atoms/textarea
+ *
+ * @example
+ * ```tsx
+ * <Textarea placeholder="Enter description..." />
+ * <Textarea rows={5} />
+ * ```
+ */
+
 import type * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/** Styled multi-line text input */
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <textarea

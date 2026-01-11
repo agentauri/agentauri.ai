@@ -1,3 +1,19 @@
+/**
+ * CreditBalanceCard
+ *
+ * Displays the current credit balance for an organization with
+ * lifetime purchased and used statistics. Includes optional buy credits button.
+ *
+ * @module components/organisms/CreditBalanceCard
+ *
+ * @example
+ * ```tsx
+ * <CreditBalanceCard
+ *   organizationId="org_123"
+ *   onBuyCredits={() => openPurchaseModal()}
+ * />
+ * ```
+ */
 'use client'
 
 import { Box } from '@/components/atoms/box'
@@ -7,9 +23,15 @@ import { ApiErrorDisplay } from '@/components/molecules'
 import { useCreditBalance } from '@/hooks'
 import { cn } from '@/lib/utils'
 
+/**
+ * Props for the CreditBalanceCard component.
+ */
 interface CreditBalanceCardProps {
+  /** The organization ID to fetch credit balance for */
   organizationId: string
+  /** Callback when buy credits button is clicked */
   onBuyCredits?: () => void
+  /** Additional CSS classes */
   className?: string
 }
 

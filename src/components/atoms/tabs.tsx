@@ -1,3 +1,24 @@
+/**
+ * Tabs components
+ *
+ * Accessible tabbed interface built on Radix UI Tabs primitives.
+ * Supports keyboard navigation and automatic content switching.
+ *
+ * @module components/atoms/tabs
+ *
+ * @example
+ * ```tsx
+ * <Tabs defaultValue="account">
+ *   <TabsList>
+ *     <TabsTrigger value="account">Account</TabsTrigger>
+ *     <TabsTrigger value="settings">Settings</TabsTrigger>
+ *   </TabsList>
+ *   <TabsContent value="account">Account settings here</TabsContent>
+ *   <TabsContent value="settings">General settings here</TabsContent>
+ * </Tabs>
+ * ```
+ */
+
 'use client'
 
 import * as TabsPrimitive from '@radix-ui/react-tabs'
@@ -5,6 +26,7 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Root tabs container managing active tab state */
 function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return (
     <TabsPrimitive.Root
@@ -15,6 +37,7 @@ function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
   )
 }
 
+/** Container for tab trigger buttons */
 function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) {
   return (
     <TabsPrimitive.List
@@ -28,6 +51,7 @@ function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimi
   )
 }
 
+/** Button that activates a tab panel */
 function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
   return (
     <TabsPrimitive.Trigger
@@ -41,6 +65,7 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
   )
 }
 
+/** Content panel displayed when its tab is active */
 function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) {
   return (
     <TabsPrimitive.Content

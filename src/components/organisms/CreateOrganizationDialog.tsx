@@ -1,3 +1,20 @@
+/**
+ * CreateOrganizationDialog
+ *
+ * A dialog for creating new organizations with name, slug, and description.
+ * Auto-generates slug from name and switches to the new organization on success.
+ *
+ * @module components/organisms/CreateOrganizationDialog
+ *
+ * @example
+ * ```tsx
+ * <CreateOrganizationDialog
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   onSuccess={(org) => console.log('Created:', org.name)}
+ * />
+ * ```
+ */
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -28,14 +45,22 @@ import {
   type Organization,
 } from '@/lib/validations'
 
+/**
+ * Props for the CreateOrganizationDialog component.
+ */
 interface CreateOrganizationDialogProps {
+  /** Whether the dialog is open */
   open: boolean
+  /** Callback to control dialog open state */
   onOpenChange: (open: boolean) => void
+  /** Callback when organization is successfully created */
   onSuccess?: (org: Organization) => void
 }
 
 /**
- * Generate slug from organization name
+ * Generates a URL-friendly slug from an organization name.
+ * @param name - The organization name to convert
+ * @returns A lowercase, hyphenated slug
  */
 function generateSlug(name: string): string {
   return name

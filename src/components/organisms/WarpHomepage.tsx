@@ -1,3 +1,20 @@
+/**
+ * WarpHomepage
+ *
+ * Animated landing page with warp star field effect, logo emergence animation,
+ * and navigation menu. Supports reduced motion preferences and responsive design.
+ *
+ * @module components/organisms/WarpHomepage
+ *
+ * @example
+ * ```tsx
+ * // Default with all animations
+ * <WarpHomepage />
+ *
+ * // Custom star count and nav delay
+ * <WarpHomepage starCount={300} navDelay={1000} />
+ * ```
+ */
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
@@ -8,6 +25,9 @@ import { useWarpAnimation } from '@/hooks/use-warp-animation'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
 import { cn } from '@/lib/utils'
 
+/**
+ * Props for the WarpHomepage component.
+ */
 interface WarpHomepageProps {
   /** Show navigation after logo emerges */
   showNav?: boolean

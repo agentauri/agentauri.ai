@@ -1,3 +1,23 @@
+/**
+ * Collapsible component
+ *
+ * Expandable/collapsible section with terminal styling.
+ * Shows a clickable header that toggles visibility of content.
+ *
+ * @module components/atoms/collapsible
+ *
+ * @example
+ * ```tsx
+ * <Collapsible title="Advanced Options" defaultOpen={false}>
+ *   <p>Hidden content revealed on expand</p>
+ * </Collapsible>
+ *
+ * <Collapsible title="Details" variant="bordered" defaultOpen>
+ *   <p>Content visible by default</p>
+ * </Collapsible>
+ * ```
+ */
+
 'use client'
 
 import type * as React from 'react'
@@ -14,6 +34,12 @@ interface CollapsibleProps {
   className?: string
 }
 
+/**
+ * Collapsible section with terminal-styled toggle
+ * @param title - Header text displayed in toggle button
+ * @param defaultOpen - Initial expanded state (default: false)
+ * @param variant - Box variant styling (default: 'subtle')
+ */
 function Collapsible({
   title,
   children,

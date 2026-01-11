@@ -1,3 +1,16 @@
+/**
+ * ReviewStep
+ *
+ * Step 4 of the trigger creation wizard. Displays a summary of all
+ * configured trigger settings for review before submission.
+ *
+ * @module components/organisms/triggers/ReviewStep
+ *
+ * @example
+ * ```tsx
+ * <ReviewStep form={form} />
+ * ```
+ */
 'use client'
 
 import type { UseFormReturn } from 'react-hook-form'
@@ -6,7 +19,11 @@ import type { Registry } from '@/lib/constants'
 import { ChainBadge, RegistryBadge } from '@/components/molecules'
 import type { CreateTriggerFormValues } from '@/lib/validations/trigger'
 
+/**
+ * Props for the ReviewStep component.
+ */
 interface ReviewStepProps {
+  /** React Hook Form instance for the trigger form */
   form: UseFormReturn<CreateTriggerFormValues>
 }
 

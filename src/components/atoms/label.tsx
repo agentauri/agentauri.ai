@@ -1,3 +1,18 @@
+/**
+ * Label component
+ *
+ * Form label with terminal typography.
+ * Automatically handles disabled states when associated with form controls.
+ *
+ * @module components/atoms/label
+ *
+ * @example
+ * ```tsx
+ * <Label htmlFor="email">Email</Label>
+ * <Input id="email" />
+ * ```
+ */
+
 'use client'
 
 import * as LabelPrimitive from '@radix-ui/react-label'
@@ -5,6 +20,7 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/** Form label with terminal styling */
 function Label({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
   return (
     <LabelPrimitive.Root

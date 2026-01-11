@@ -1,3 +1,21 @@
+/**
+ * ActionBuilder
+ *
+ * A form component for building trigger actions with type-specific configuration.
+ * Supports Telegram, REST API, and MCP action types with validation and sanitization.
+ *
+ * @module components/organisms/ActionBuilder
+ *
+ * @example
+ * ```tsx
+ * <ActionBuilder
+ *   action={{ actionType: 'telegram', priority: 0, config: {} }}
+ *   onChange={(updated) => console.log(updated)}
+ *   onRemove={() => console.log('Remove action')}
+ *   canRemove={true}
+ * />
+ * ```
+ */
 'use client'
 
 import { useState } from 'react'
@@ -17,10 +35,17 @@ import {
 import { cn } from '@/lib/utils'
 import type { TriggerAction } from '@/lib/validations/trigger'
 
+/**
+ * Props for the ActionBuilder component.
+ */
 interface ActionBuilderProps {
+  /** The action data to edit */
   action: Partial<TriggerAction> & { tempId?: string }
+  /** Callback when the action is modified */
   onChange: (action: Partial<TriggerAction> & { tempId?: string }) => void
+  /** Callback when the action should be removed */
   onRemove: () => void
+  /** Whether the remove button should be enabled */
   canRemove: boolean
 }
 

@@ -1,3 +1,19 @@
+/**
+ * MobileMenu
+ *
+ * A full-screen mobile menu overlay for dashboard navigation.
+ * Shows all navigation links with active state indicators.
+ *
+ * @module components/organisms/MobileMenu
+ *
+ * @example
+ * ```tsx
+ * <MobileMenu
+ *   isOpen={menuOpen}
+ *   onClose={() => setMenuOpen(false)}
+ * />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -5,6 +21,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Icon, type IconName } from '@/components/atoms/icon'
 
+/** Menu items configuration */
 const menuItems: { href: string; icon: IconName; label: string }[] = [
   { href: '/dashboard', icon: 'dashboard', label: 'DASHBOARD' },
   { href: '/dashboard/triggers', icon: 'triggers', label: 'TRIGGERS' },
@@ -14,8 +31,13 @@ const menuItems: { href: string; icon: IconName; label: string }[] = [
   { href: '/dashboard/settings', icon: 'settings', label: 'SETTINGS' },
 ]
 
+/**
+ * Props for the MobileMenu component.
+ */
 interface MobileMenuProps {
+  /** Whether the menu is open */
   isOpen: boolean
+  /** Callback when menu should close */
   onClose: () => void
   /** Override pathname for Storybook */
   activePath?: string

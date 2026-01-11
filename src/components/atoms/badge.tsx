@@ -1,9 +1,27 @@
+/**
+ * Badge component
+ *
+ * Small status indicator or label with variant styles.
+ * Supports polymorphic rendering via `asChild` prop.
+ *
+ * @module components/atoms/badge
+ *
+ * @example
+ * ```tsx
+ * <Badge>Default</Badge>
+ * <Badge variant="secondary">Secondary</Badge>
+ * <Badge variant="destructive">Error</Badge>
+ * <Badge variant="outline">Outlined</Badge>
+ * ```
+ */
+
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import type * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/** Badge style variants using class-variance-authority */
 const badgeVariants = cva(
   "inline-flex items-center justify-center rounded-md border px-2 py-0.5 typo-ui w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
   {
@@ -25,6 +43,12 @@ const badgeVariants = cva(
   }
 )
 
+/**
+ * Badge component for status indicators and labels
+ *
+ * @param variant - Visual style: default, secondary, destructive, outline
+ * @param asChild - Render as child element for composition
+ */
 function Badge({
   className,
   variant,

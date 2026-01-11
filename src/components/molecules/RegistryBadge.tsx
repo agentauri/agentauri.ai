@@ -1,31 +1,53 @@
+/**
+ * RegistryBadge
+ *
+ * Displays a badge indicating the registry type (identity, reputation, validation)
+ * with corresponding icon and color styling.
+ *
+ * @module components/molecules/RegistryBadge
+ *
+ * @example
+ * ```tsx
+ * <RegistryBadge registry="reputation" />
+ * <RegistryBadge registry="identity" className="ml-2" />
+ * ```
+ */
+
 import { Badge } from '@/components/atoms/badge'
 import { Icon, type IconName } from '@/components/atoms/icon'
 import type { Registry } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
+/** Props for the RegistryBadge component */
 interface RegistryBadgeProps {
   registry: Registry
   className?: string
 }
 
+/** Display labels for each registry type */
 const REGISTRY_LABELS: Record<Registry, string> = {
   identity: 'IDENTITY',
   reputation: 'REPUTATION',
   validation: 'VALIDATION',
 }
 
+/** Icon names for each registry type */
 const REGISTRY_ICONS: Record<Registry, IconName> = {
   identity: 'agents',
   reputation: 'star',
   validation: 'check',
 }
 
+/** Color classes for each registry type */
 const REGISTRY_COLORS: Record<Registry, string> = {
   identity: 'bg-blue-500/20 text-blue-400 border-blue-500',
   reputation: 'bg-terminal-green/20 text-terminal-bright border-terminal-green',
   validation: 'bg-yellow-500/20 text-yellow-400 border-yellow-500',
 }
 
+/**
+ * Renders a badge with icon showing the ERC-8004 registry type.
+ */
 export function RegistryBadge({ registry, className }: RegistryBadgeProps) {
   const label = REGISTRY_LABELS[registry]
   const icon = REGISTRY_ICONS[registry]

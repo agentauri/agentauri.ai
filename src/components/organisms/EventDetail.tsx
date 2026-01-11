@@ -1,3 +1,16 @@
+/**
+ * EventDetail
+ *
+ * Displays detailed information about a blockchain event including
+ * block number, timestamp, transaction hash, agent info, and raw event data.
+ *
+ * @module components/organisms/EventDetail
+ *
+ * @example
+ * ```tsx
+ * <EventDetail event={blockchainEvent} />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -11,8 +24,13 @@ import { cn } from '@/lib/utils'
 import type { BlockchainEvent } from '@/types/models'
 import { toast } from 'sonner'
 
+/**
+ * Props for the EventDetail component.
+ */
 interface EventDetailProps {
+  /** The blockchain event data to display */
   event: BlockchainEvent
+  /** Additional CSS classes */
   className?: string
 }
 

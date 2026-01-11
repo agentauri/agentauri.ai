@@ -1,14 +1,38 @@
+/**
+ * JsonEditorToggle
+ *
+ * A toggle button group for switching between UI mode and JSON mode
+ * in the trigger editor form.
+ *
+ * @module components/organisms/JsonEditorToggle
+ *
+ * @example
+ * ```tsx
+ * <JsonEditorToggle
+ *   mode="ui"
+ *   onModeChange={(mode) => console.log('Switched to:', mode)}
+ * />
+ * ```
+ */
 'use client'
 
 import { Button } from '@/components/atoms/button'
 import { cn } from '@/lib/utils'
 
+/** Editor mode type - either UI wizard or JSON editor */
 export type EditorMode = 'ui' | 'json'
 
+/**
+ * Props for the JsonEditorToggle component.
+ */
 interface JsonEditorToggleProps {
+  /** Current editor mode */
   mode: EditorMode
+  /** Callback when mode is changed */
   onModeChange: (mode: EditorMode) => void
+  /** Additional CSS classes */
   className?: string
+  /** Whether the toggle is disabled */
   disabled?: boolean
 }
 

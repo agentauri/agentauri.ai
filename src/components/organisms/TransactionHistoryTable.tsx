@@ -1,3 +1,16 @@
+/**
+ * TransactionHistoryTable
+ *
+ * Displays a table of credit transactions including purchases, usage,
+ * refunds, and bonuses. Shows date, type, description, and amount.
+ *
+ * @module components/organisms/TransactionHistoryTable
+ *
+ * @example
+ * ```tsx
+ * <TransactionHistoryTable organizationId="org_123" />
+ * ```
+ */
 'use client'
 
 import { Badge } from '@/components/atoms/badge'
@@ -8,8 +21,13 @@ import { useCreditTransactions } from '@/hooks'
 import { cn } from '@/lib/utils'
 import type { TransactionType } from '@/lib/validations/billing'
 
+/**
+ * Props for the TransactionHistoryTable component.
+ */
 interface TransactionHistoryTableProps {
+  /** The organization ID to fetch transactions for */
   organizationId: string
+  /** Additional CSS classes */
   className?: string
 }
 

@@ -1,3 +1,17 @@
+/**
+ * SidebarUserInfo
+ *
+ * Displays current user's organization context, email, and role in the sidebar.
+ * Supports collapsed mode with tooltip and links to organization management.
+ *
+ * @module components/molecules/SidebarUserInfo
+ *
+ * @example
+ * ```tsx
+ * <SidebarUserInfo collapsed={isSidebarCollapsed} />
+ * ```
+ */
+
 'use client'
 
 import Link from 'next/link'
@@ -8,11 +22,13 @@ import { useCurrentOrganization } from '@/hooks/use-organizations'
 import { cn } from '@/lib/utils'
 import type { OrganizationRole } from '@/lib/constants'
 
+/** Props for the SidebarUserInfo component */
 interface SidebarUserInfoProps {
   collapsed?: boolean
   className?: string
 }
 
+/** Border and text colors for each organization role */
 const ROLE_COLORS: Record<OrganizationRole, string> = {
   owner: 'border-yellow-400 text-yellow-400',
   admin: 'border-terminal-green text-terminal-green',
@@ -20,6 +36,9 @@ const ROLE_COLORS: Record<OrganizationRole, string> = {
   viewer: 'border-gray-500 text-gray-500',
 }
 
+/**
+ * Renders user organization info with link to org management and role badge.
+ */
 export function SidebarUserInfo({ collapsed = false, className }: SidebarUserInfoProps) {
   const { data: session, isLoading: sessionLoading } = useSession()
   const { data: currentOrg, isLoading: orgLoading } = useCurrentOrganization()

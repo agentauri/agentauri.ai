@@ -1,9 +1,36 @@
+/**
+ * PixelLogo component
+ *
+ * Animated pixel art logo renderer using SVG.
+ * Converts text to pixel matrix format with optional boot animation.
+ *
+ * @module components/atoms/pixel-logo
+ *
+ * @example
+ * ```tsx
+ * // Default logo with boot animation
+ * <PixelLogo />
+ *
+ * // Custom text without animation
+ * <PixelLogo text="HELLO" animation="none" />
+ *
+ * // With callback on animation complete
+ * <PixelLogo
+ *   text="AGENTAURI.AI"
+ *   animation="boot"
+ *   bootDuration={2000}
+ *   onAnimationComplete={() => console.log('Done!')}
+ * />
+ * ```
+ */
+
 'use client'
 
 import { useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { usePixelAnimation } from '@/hooks/use-pixel-animation'
 
+/** 5x7 pixel matrix definitions for each supported character */
 // 5x7 pixel matrix for each letter (1 = filled, 0 = empty)
 const PIXEL_LETTERS: Record<string, number[][]> = {
   A: [
@@ -138,6 +165,7 @@ interface PixelData {
   index: number
 }
 
+/** Converts text string to array of pixel coordinates */
 function getPixelsForText(text: string): { pixels: PixelData[]; width: number; height: number } {
   const pixels: PixelData[] = []
   let currentX = 0
@@ -170,6 +198,14 @@ function getPixelsForText(text: string): { pixels: PixelData[]; width: number; h
   return { pixels, width, height }
 }
 
+/**
+ * Pixel art logo with optional boot animation
+ * @param text - Text to render as pixels (default: "AGENTAURI.AI")
+ * @param animation - Animation type: 'none' or 'boot'
+ * @param bootDuration - Boot animation duration in ms (default: 2000)
+ * @param glow - Whether to show glow effect (default: true)
+ * @param onAnimationComplete - Callback when animation finishes
+ */
 export function PixelLogo({
   text = 'AGENTAURI.AI',
   animation = 'boot',

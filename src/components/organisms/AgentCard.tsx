@@ -1,3 +1,25 @@
+/**
+ * AgentCard
+ *
+ * Displays a summary card for a linked agent with chain badge and wallet address.
+ * Includes actions to view details and unlink the agent from the organization.
+ *
+ * @module components/organisms/AgentCard
+ *
+ * @example
+ * ```tsx
+ * <AgentCard
+ *   agent={{
+ *     id: '123',
+ *     agentId: 42,
+ *     walletAddress: '0x1234...',
+ *     chainId: 1,
+ *     linkedAt: '2024-01-01T00:00:00Z'
+ *   }}
+ *   organizationId="org_123"
+ * />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -19,9 +41,15 @@ import { useUnlinkAgent } from '@/hooks'
 import { cn } from '@/lib/utils'
 import type { LinkedAgent } from '@/types/models'
 
+/**
+ * Props for the AgentCard component.
+ */
 interface AgentCardProps {
+  /** The linked agent data to display */
   agent: LinkedAgent
+  /** The organization ID the agent is linked to */
   organizationId: string
+  /** Additional CSS classes */
   className?: string
 }
 

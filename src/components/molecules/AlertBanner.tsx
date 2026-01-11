@@ -1,6 +1,21 @@
 /**
- * Alert banner component for displaying important messages
- * Terminal/brutalist styling
+ * AlertBanner
+ *
+ * Displays important messages with variant-based styling (info, success, warning, error).
+ * Features dismissible functionality and optional action buttons with terminal/brutalist aesthetic.
+ *
+ * @module components/molecules/AlertBanner
+ *
+ * @example
+ * ```tsx
+ * <AlertBanner
+ *   variant="warning"
+ *   title="Connection Lost"
+ *   message="Unable to connect to the server"
+ *   dismissible
+ *   action={{ label: 'Retry', onClick: handleRetry }}
+ * />
+ * ```
  */
 
 'use client'
@@ -10,8 +25,10 @@ import { Button } from '@/components/atoms/button'
 import { Icon, type IconName } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
+/** Available alert variants with distinct visual styles */
 export type AlertVariant = 'info' | 'success' | 'warning' | 'error'
 
+/** Props for the AlertBanner component */
 interface AlertBannerProps {
   variant?: AlertVariant
   title?: string
@@ -25,6 +42,7 @@ interface AlertBannerProps {
   className?: string
 }
 
+/** Style configurations for each alert variant */
 const variantStyles: Record<AlertVariant, { border: string; bg: string; text: string; icon: IconName }> = {
   info: {
     border: 'border-terminal',
@@ -52,6 +70,10 @@ const variantStyles: Record<AlertVariant, { border: string; bg: string; text: st
   },
 }
 
+/**
+ * Alert banner component for displaying important messages with terminal styling.
+ * Supports multiple variants, dismissible behavior, and custom actions.
+ */
 export function AlertBanner({
   variant = 'info',
   title,

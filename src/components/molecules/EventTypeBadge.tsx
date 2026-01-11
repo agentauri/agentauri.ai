@@ -1,8 +1,23 @@
+/**
+ * EventTypeBadge
+ *
+ * Displays a badge for blockchain event types with type-specific icons and colors.
+ * Supports common ERC-8004 events with fallback styling for unknown event types.
+ *
+ * @module components/molecules/EventTypeBadge
+ *
+ * @example
+ * ```tsx
+ * <EventTypeBadge eventType="AgentRegistered" />
+ * <EventTypeBadge eventType="ReputationChanged" showIcon={false} />
+ * ```
+ */
+
 import { Badge } from '@/components/atoms/badge'
 import { Icon, type IconName } from '@/components/atoms/icon'
 import { cn } from '@/lib/utils'
 
-// Event type mappings
+/** Event type configuration mapping with icons, colors, and display labels */
 const EVENT_CONFIG: Record<string, { icon: IconName; color: string; label: string }> = {
   AgentRegistered: {
     icon: 'add',
@@ -46,18 +61,23 @@ const EVENT_CONFIG: Record<string, { icon: IconName; color: string; label: strin
   },
 }
 
+/** Fallback configuration for unknown event types */
 const DEFAULT_CONFIG = {
   icon: 'info' as IconName,
   color: 'bg-terminal-dim/20 text-terminal-dim border-terminal-dim',
   label: 'EVENT',
 }
 
+/** Props for the EventTypeBadge component */
 interface EventTypeBadgeProps {
   eventType: string
   className?: string
   showIcon?: boolean
 }
 
+/**
+ * Renders a badge displaying the blockchain event type with appropriate icon and color.
+ */
 export function EventTypeBadge({ eventType, className, showIcon = true }: EventTypeBadgeProps) {
   const config = EVENT_CONFIG[eventType] ?? {
     ...DEFAULT_CONFIG,

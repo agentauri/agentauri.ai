@@ -1,3 +1,19 @@
+/**
+ * DashboardSidebar
+ *
+ * The main navigation sidebar for the dashboard with collapsible design.
+ * Shows navigation links, user info, and disconnect button.
+ *
+ * @module components/organisms/DashboardSidebar
+ *
+ * @example
+ * ```tsx
+ * <DashboardSidebar />
+ *
+ * // With Storybook override
+ * <DashboardSidebar activePath="/dashboard/triggers" />
+ * ```
+ */
 'use client'
 
 import Link from 'next/link'
@@ -10,11 +26,13 @@ import { Icon, type IconName } from '@/components/atoms/icon'
 import { LogoBull } from '@/components/atoms/BullLogo'
 import { SidebarUserInfo } from '@/components/molecules/SidebarUserInfo'
 
+/** Navigation item type supporting both custom icons and Lucide icons */
 type NavItem = {
   href: string
   label: string
 } & ({ icon: IconName; lucideIcon?: never } | { lucideIcon: React.ComponentType<{ className?: string }>; icon?: never })
 
+/** Navigation items configuration */
 const navItems: NavItem[] = [
   { href: '/dashboard/organizations', lucideIcon: BuildingIcon, label: 'ORGANIZATION' },
   { href: '/dashboard', icon: 'dashboard', label: 'DASHBOARD' },
@@ -26,7 +44,11 @@ const navItems: NavItem[] = [
   { href: '/dashboard/settings', icon: 'settings', label: 'SETTINGS' },
 ]
 
+/**
+ * Props for the DashboardSidebar component.
+ */
 interface DashboardSidebarProps {
+  /** Additional CSS classes */
   className?: string
   /** Override pathname for Storybook */
   activePath?: string
