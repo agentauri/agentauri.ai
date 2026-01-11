@@ -1,3 +1,14 @@
+/**
+ * Blockchain event validation schemas
+ *
+ * Provides Zod schemas for blockchain event operations:
+ * - Event types (AgentRegistered, ReputationChanged, etc.)
+ * - Blockchain event data with transaction details
+ * - Event filtering by chain, registry, type, date range
+ *
+ * @module lib/validations/event
+ */
+
 import { z } from 'zod'
 import {
   chainIdSchema,
@@ -7,10 +18,10 @@ import {
 } from './common'
 
 /**
- * Event-related validation schemas
+ * Supported blockchain event types
+ *
+ * Corresponds to ERC-8004 registry events.
  */
-
-// Event types
 export const EVENT_TYPES = [
   'AgentRegistered',
   'AgentUpdated',
@@ -22,9 +33,15 @@ export const EVENT_TYPES = [
   'Burn',
 ] as const
 
+/** Event type validation schema */
 export const eventTypeSchema = z.enum(EVENT_TYPES)
 
-// Blockchain event schema
+/**
+ * Blockchain event schema
+ *
+ * Full event data from indexed blockchain logs.
+ * Includes transaction details and arbitrary event-specific data.
+ */
 export const blockchainEventSchema = z.object({
   id: uuidSchema,
   chainId: chainIdSchema,
@@ -40,7 +57,12 @@ export const blockchainEventSchema = z.object({
   createdAt: z.string().datetime(),
 })
 
-// Event filters schema
+/**
+ * Event filters schema
+ *
+ * Query parameters for filtering blockchain events.
+ * Supports filtering by chain, registry, event type, agent, and date range.
+ */
 export const eventFiltersSchema = z.object({
   chainId: chainIdSchema.optional(),
   registry: registrySchema.optional(),
@@ -55,10 +77,12 @@ export const eventFiltersSchema = z.object({
   search: z.string().max(100).optional(),
 })
 
-// Event list response
+/** Event list response with pagination */
 export const eventListResponseSchema = paginatedResponseSchema(blockchainEventSchema)
 
-// Inferred types
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Inferred Types
+ * ─────────────────────────────────────────────────────────────────────────────*/
 export type BlockchainEvent = z.infer<typeof blockchainEventSchema>
 export type EventFilters = z.infer<typeof eventFiltersSchema>
 export type EventType = (typeof EVENT_TYPES)[number]

@@ -1,3 +1,15 @@
+/**
+ * Trigger validation schemas
+ *
+ * Provides Zod schemas for automation trigger operations:
+ * - Trigger CRUD with conditions and actions
+ * - Condition configuration (field, operator, value)
+ * - Action configuration (telegram, REST, MCP)
+ * - Security validations (size limits, duplicate detection)
+ *
+ * @module lib/validations/trigger
+ */
+
 import { z } from 'zod'
 import {
   actionTypeSchema,
@@ -8,10 +20,10 @@ import {
 } from './common'
 
 /**
- * Trigger-related validation schemas
+ * Trigger condition schema
+ *
+ * Defines a single condition that must be met for the trigger to fire.
  */
-
-// Trigger condition schema
 export const triggerConditionSchema = z.object({
   id: uuidSchema,
   triggerId: uuidSchema,
@@ -34,7 +46,11 @@ export const triggerConditionSchema = z.object({
   createdAt: z.string().datetime(),
 })
 
-// Trigger action schema
+/**
+ * Trigger action schema
+ *
+ * Defines an action to execute when trigger conditions are met.
+ */
 export const triggerActionSchema = z.object({
   id: uuidSchema,
   triggerId: uuidSchema,
@@ -44,7 +60,11 @@ export const triggerActionSchema = z.object({
   createdAt: z.string().datetime(),
 })
 
-// Trigger base schema
+/**
+ * Trigger base schema
+ *
+ * Full trigger definition including conditions and actions.
+ */
 export const triggerSchema = z.object({
   id: uuidSchema,
   userId: uuidSchema,
@@ -63,7 +83,11 @@ export const triggerSchema = z.object({
   actions: z.array(triggerActionSchema).optional(),
 })
 
-// Create trigger condition input with validation
+/**
+ * Create trigger condition input schema
+ *
+ * Input schema for creating new conditions with strict validation.
+ */
 export const createConditionInputSchema = z.object({
   conditionType: z
     .string()
@@ -96,7 +120,12 @@ export const createConditionInputSchema = z.object({
     }),
 })
 
-// Create trigger action input with size limits
+/**
+ * Create trigger action input schema
+ *
+ * Input schema for creating new actions with size limits.
+ * Config is limited to 20 keys and 10KB total size.
+ */
 export const createActionInputSchema = z.object({
   _key: z.string().optional(), // Internal key for React list rendering (stripped before API)
   actionType: actionTypeSchema,
@@ -111,7 +140,14 @@ export const createActionInputSchema = z.object({
     }),
 })
 
-// Create trigger request with security validations
+/**
+ * Create trigger request schema
+ *
+ * Full request schema with security validations:
+ * - Name: 2-100 chars, alphanumeric + common symbols
+ * - Conditions: 1-20 required, no duplicates
+ * - Actions: 1-10 required
+ */
 export const createTriggerRequestSchema = z
   .object({
     name: z
@@ -150,7 +186,11 @@ export const createTriggerRequestSchema = z
     }
   )
 
-// Update trigger request
+/**
+ * Update trigger request schema
+ *
+ * All fields optional - only send fields to update.
+ */
 export const updateTriggerRequestSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   description: z.string().max(500).nullable().optional(),
@@ -160,7 +200,9 @@ export const updateTriggerRequestSchema = z.object({
   actions: z.array(createActionInputSchema).optional(),
 })
 
-// Trigger list filters
+/**
+ * Trigger list filters schema
+ */
 export const triggerFiltersSchema = z.object({
   chainId: chainIdSchema.optional(),
   registry: registrySchema.optional(),
@@ -168,15 +210,17 @@ export const triggerFiltersSchema = z.object({
   search: z.string().max(100).optional(),
 })
 
-// Trigger list response
+/** Trigger list response with pagination */
 export const triggerListResponseSchema = paginatedResponseSchema(triggerSchema)
 
-// Inferred types
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Inferred Types
+ * ─────────────────────────────────────────────────────────────────────────────*/
 export type Trigger = z.infer<typeof triggerSchema>
 export type TriggerCondition = z.infer<typeof triggerConditionSchema>
 export type TriggerAction = z.infer<typeof triggerActionSchema>
 export type CreateTriggerRequest = z.infer<typeof createTriggerRequestSchema>
-// Form input type (before Zod transforms/coerces values)
+/** Form input type (before Zod transforms/coerces values) */
 export type CreateTriggerFormValues = z.input<typeof createTriggerRequestSchema>
 export type UpdateTriggerRequest = z.infer<typeof updateTriggerRequestSchema>
 export type TriggerFilters = z.infer<typeof triggerFiltersSchema>

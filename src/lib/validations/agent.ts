@@ -1,3 +1,14 @@
+/**
+ * Agent validation schemas
+ *
+ * Provides Zod schemas for agent operations:
+ * - Linked agent data (agents linked to organizations)
+ * - Agent filtering for list queries
+ * - Link agent request (with signature verification)
+ *
+ * @module lib/validations/agent
+ */
+
 import { z } from 'zod'
 import {
   chainIdSchema,
@@ -7,10 +18,10 @@ import {
 } from './common'
 
 /**
- * Agent-related validation schemas
+ * Linked agent schema
+ *
+ * Represents an ERC-8004 agent linked to an organization.
  */
-
-// Linked agent schema (matches LinkedAgent model)
 export const linkedAgentSchema = z.object({
   id: uuidSchema,
   organizationId: uuidSchema,
@@ -20,13 +31,20 @@ export const linkedAgentSchema = z.object({
   linkedAt: z.string().datetime(),
 })
 
-// Agent filters schema
+/**
+ * Agent filters schema for list queries
+ */
 export const agentFiltersSchema = z.object({
   chainId: chainIdSchema.optional(),
   search: z.string().max(100).optional(),
 })
 
-// Link agent request schema
+/**
+ * Link agent request schema
+ *
+ * Links an on-chain agent to the organization.
+ * Requires signature proof of ownership.
+ */
 export const linkAgentRequestSchema = z.object({
   agentId: z.number().int().min(0, 'Agent ID must be a positive number'),
   chainId: chainIdSchema,
@@ -34,10 +52,12 @@ export const linkAgentRequestSchema = z.object({
   message: z.string().min(1, 'Message is required'),
 })
 
-// Agent list response
+/** Agent list response with pagination */
 export const agentListResponseSchema = paginatedResponseSchema(linkedAgentSchema)
 
-// Inferred types
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Inferred Types
+ * ─────────────────────────────────────────────────────────────────────────────*/
 export type LinkedAgent = z.infer<typeof linkedAgentSchema>
 export type AgentFilters = z.infer<typeof agentFiltersSchema>
 export type LinkAgentRequest = z.infer<typeof linkAgentRequestSchema>

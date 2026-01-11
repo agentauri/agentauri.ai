@@ -1,11 +1,22 @@
+/**
+ * Organization validation schemas
+ *
+ * Provides Zod schemas for organization operations:
+ * - Organization CRUD operations
+ * - Member management (invite, update role, remove)
+ * - List responses with pagination
+ *
+ * @module lib/validations/organization
+ */
+
 import { z } from 'zod'
 import { organizationRoleSchema, paginatedResponseSchema, uuidSchema } from './common'
 
 /**
- * Organization-related validation schemas
+ * Organization base schema
+ *
+ * Matches backend snake_case response format.
  */
-
-// Organization base schema (matches backend snake_case response)
 export const organizationSchema = z.object({
   id: uuidSchema,
   name: z.string().min(1).max(100),
@@ -18,7 +29,12 @@ export const organizationSchema = z.object({
   updated_at: z.string(),
 })
 
-// Organization with role schema (flat structure from backend list endpoint)
+/**
+ * Organization with role schema
+ *
+ * Flat structure from backend list endpoint including the
+ * current user's role in the organization.
+ */
 export const organizationWithRoleSchema = z.object({
   id: uuidSchema,
   name: z.string().min(1).max(100),
@@ -32,7 +48,11 @@ export const organizationWithRoleSchema = z.object({
   my_role: organizationRoleSchema,
 })
 
-// Organization member schema
+/**
+ * Organization member schema
+ *
+ * Member details including user info and role.
+ */
 export const organizationMemberSchema = z.object({
   id: uuidSchema,
   userId: uuidSchema,
@@ -43,7 +63,11 @@ export const organizationMemberSchema = z.object({
   createdAt: z.string().datetime(),
 })
 
-// Create organization request
+/**
+ * Create organization request schema
+ *
+ * Slug is auto-generated from name if not provided.
+ */
 export const createOrganizationRequestSchema = z.object({
   name: z
     .string()
@@ -58,30 +82,42 @@ export const createOrganizationRequestSchema = z.object({
   description: z.string().max(500).optional(),
 })
 
-// Update organization request
+/**
+ * Update organization request schema
+ */
 export const updateOrganizationRequestSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   description: z.string().max(500).nullable().optional(),
 })
 
-// Invite member request
+/**
+ * Invite member request schema
+ *
+ * Cannot invite as 'owner' role.
+ */
 export const inviteMemberRequestSchema = z.object({
   email: z.string().email('Invalid email address'),
   role: organizationRoleSchema.exclude(['owner']),
 })
 
-// Update member role request
+/**
+ * Update member role request schema
+ *
+ * Cannot set role to 'owner'.
+ */
 export const updateMemberRoleRequestSchema = z.object({
   role: organizationRoleSchema.exclude(['owner']),
 })
 
-// Organization list response
+/** Organization list response with pagination */
 export const organizationListResponseSchema = paginatedResponseSchema(organizationWithRoleSchema)
 
-// Member list response
+/** Member list response with pagination */
 export const memberListResponseSchema = paginatedResponseSchema(organizationMemberSchema)
 
-// Inferred types
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Inferred Types
+ * ─────────────────────────────────────────────────────────────────────────────*/
 export type Organization = z.infer<typeof organizationSchema>
 export type OrganizationWithRole = z.infer<typeof organizationWithRoleSchema>
 export type OrganizationMember = z.infer<typeof organizationMemberSchema>

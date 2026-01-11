@@ -1,13 +1,24 @@
+/**
+ * User validation schemas
+ *
+ * Provides Zod schemas for user-related operations:
+ * - User profile data
+ * - Profile update requests
+ *
+ * Aligned with backend API spec from api.agentauri.ai
+ *
+ * @module lib/validations/user
+ */
+
 import { z } from 'zod'
 import { uuidSchema } from './common'
 import { walletSchema, organizationMembershipSchema, oauthProviderSchema } from './auth'
 
 /**
- * User validation schemas
- * Aligned with backend API spec from api.agentauri.ai
+ * User schema
+ *
+ * Full user profile including wallets, OAuth providers, and organizations.
  */
-
-// User schema (matches auth.ts userSchema but with more fields)
 export const userSchema = z.object({
   id: uuidSchema,
   username: z.string(),
@@ -22,7 +33,11 @@ export const userSchema = z.object({
   is_active: z.boolean().optional(),
 })
 
-// Update user request
+/**
+ * Update user request schema
+ *
+ * All fields are optional - only send fields to update.
+ */
 export const updateUserRequestSchema = z.object({
   username: z
     .string()
@@ -34,6 +49,8 @@ export const updateUserRequestSchema = z.object({
   avatar: z.string().url().optional(),
 })
 
-// Inferred types
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Inferred Types
+ * ─────────────────────────────────────────────────────────────────────────────*/
 export type User = z.infer<typeof userSchema>
 export type UpdateUserRequest = z.infer<typeof updateUserRequestSchema>

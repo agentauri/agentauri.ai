@@ -1,11 +1,23 @@
+/**
+ * API key validation schemas
+ *
+ * Provides Zod schemas for API key management:
+ * - API key CRUD operations
+ * - Key statistics and usage tracking
+ * - Snake_case to camelCase transformation (backend compatibility)
+ *
+ * @module lib/validations/api-key
+ */
+
 import { z } from 'zod'
 import { queryTierSchema, uuidSchema } from './common'
 
 /**
- * API Key validation schemas
+ * API key schema
+ *
+ * Handles both snake_case (backend) and camelCase (frontend) field names.
+ * Transforms to consistent camelCase output.
  */
-
-// API Key schema - handles snake_case from backend
 export const apiKeySchema = z.object({
   id: uuidSchema,
   organization_id: uuidSchema.optional(),
@@ -37,7 +49,11 @@ export const apiKeySchema = z.object({
   createdAt: data.created_at ?? data.createdAt ?? new Date().toISOString(),
 }))
 
-// Create API key request
+/**
+ * Create API key request schema
+ *
+ * Request body for creating a new API key.
+ */
 export const createApiKeyRequestSchema = z.object({
   name: z
     .string()
@@ -47,13 +63,22 @@ export const createApiKeyRequestSchema = z.object({
   expiresAt: z.string().datetime().optional(),
 })
 
-// Create API key response (includes full key once)
+/**
+ * Create API key response schema
+ *
+ * Response includes the full key (only shown once at creation time).
+ * Key format: `8004_<prefix>.<secret>`
+ */
 export const createApiKeyResponseSchema = z.object({
   apiKey: apiKeySchema,
   key: z.string().regex(/^8004_[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/),
 })
 
-// Update API key request
+/**
+ * Update API key request schema
+ *
+ * All fields optional - only send fields to update.
+ */
 export const updateApiKeyRequestSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   tier: queryTierSchema.optional(),
@@ -61,7 +86,12 @@ export const updateApiKeyRequestSchema = z.object({
   expiresAt: z.string().datetime().nullable().optional(),
 })
 
-// API key list response - handles backend format with items/page/page_size
+/**
+ * API key list response schema
+ *
+ * Handles backend format (items/page/page_size) and transforms
+ * to frontend format (data/pagination).
+ */
 export const apiKeyListResponseSchema = z.object({
   items: z.array(apiKeySchema).optional(),
   data: z.array(apiKeySchema).optional(),
@@ -82,7 +112,12 @@ export const apiKeyListResponseSchema = z.object({
   },
 }))
 
-// API key stats response - handles snake_case from backend
+/**
+ * API key stats schema
+ *
+ * Statistics about API keys and their usage.
+ * Transforms snake_case backend response to camelCase.
+ */
 export const apiKeyStatsSchema = z.object({
   data: z.object({
     // Key counts
@@ -123,7 +158,9 @@ export const apiKeyStatsSchema = z.object({
   keysByType: result.data.keys_by_type ?? {},
 }))
 
-// Inferred types
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Inferred Types
+ * ─────────────────────────────────────────────────────────────────────────────*/
 export type ApiKey = z.infer<typeof apiKeySchema>
 export type CreateApiKeyRequest = z.infer<typeof createApiKeyRequestSchema>
 export type CreateApiKeyResponse = z.infer<typeof createApiKeyResponseSchema>
